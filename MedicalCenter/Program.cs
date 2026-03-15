@@ -1,7 +1,17 @@
+using MedicalCenter.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// pobranie connection string
+var connectionString = builder.Configuration.GetConnectionString("MedicalDB");
+
+// dodanie Entity Framework
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
