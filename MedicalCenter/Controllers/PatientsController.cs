@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MedicalCenter.Data;
+﻿using MedicalCenter.Data;
 using MedicalCenter.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Controllers
 {
+    [Authorize]
     public class PatientsController : Controller
     {
         private readonly AppDbContext _context;
