@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260408154838_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,23 +109,6 @@ namespace MedicalCenter.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppointmentStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                            Name = "Zaplanowana"
-                        },
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-0000-0000-0000-000000000000"),
-                            Name = "Zakończona"
-                        },
-                        new
-                        {
-                            Id = new Guid("12345678-1234-1234-1234-123456789012"),
-                            Name = "Anulowana"
-                        });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Cart", b =>
