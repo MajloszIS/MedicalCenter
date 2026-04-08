@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {
+    [Authorize]
     public class AppointmentController : Controller
     {
         private readonly AppDbContext _context;
