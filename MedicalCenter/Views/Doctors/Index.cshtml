@@ -1,0 +1,22 @@
+﻿@model List<MedicalCenter.Models.Doctor>
+
+<h2>Lekarze</h2>
+
+<table>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.User.FirstName</td>
+            <td>@item.User.LastName</td>
+            <td>@item.User.Phone</td>
+            <td>@item.Specialization.Name</td>
+            <td>
+                <form asp-action="Create" asp-controller="Appointment" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="DoctorId" value="@item.Id" />
+                    <button type="submit">Umów wizytę</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

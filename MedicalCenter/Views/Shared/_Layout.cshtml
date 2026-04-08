@@ -30,6 +30,12 @@
                 </div>
             </div>
         </nav>
+        <div>
+            <form asp-action="Logout" asp-controller="Account" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit">Logout</button>
+            </form>
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">

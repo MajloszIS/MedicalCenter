@@ -66,6 +66,31 @@ namespace MedicalCenter.Data
                 new Role { Id = 3, Name = "Patient" },
                 new Role { Id = 4, Name = "Courier" }
             );
+
+            modelBuilder.Entity<Specialization>().HasData(
+                new Specialization { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Name = "Kardiolog" },
+                new Specialization { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Name = "Neurolog" }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), Email = "admin@medical.pl", PasswordHash = "admin123", FirstName = "Adam", LastName= "Nowak", Phone= "111222333", RoleId = 1},
+                new User { Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Email = "doktor@medical.pl", PasswordHash = "doktor123", FirstName = "Jan", LastName = "Kowalski", Phone = "222333444", RoleId = 2 },
+                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "pacjent123", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 }
+                );
+
+            modelBuilder.Entity<Doctor>().HasData(
+                new Doctor { Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"), UserId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), LicenseNumber = "LEK123456", SpecializationId = Guid.Parse("11111111-1111-1111-1111-111111111111") }
+            );
+
+            modelBuilder.Entity<Patient>().HasData(
+                new Patient { Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), UserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Pesel = "99010112345", BirthDate = new DateTime(1999, 1, 1) }
+            );
+
+            modelBuilder.Entity<AppointmentStatus>().HasData(
+                new AppointmentStatus { Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"), Name = "Zaplanowana" },
+                new AppointmentStatus { Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"), Name = "Zakończona" },
+                new AppointmentStatus { Id = Guid.Parse("12345678-1234-1234-1234-123456789012"), Name = "Anulowana" }
+            );
         }
     }
 }
