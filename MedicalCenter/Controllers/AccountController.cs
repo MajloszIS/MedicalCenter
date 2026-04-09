@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using BCrypt.Net;
 
 namespace MedicalCenter.Controllers
 {
@@ -33,9 +34,15 @@ namespace MedicalCenter.Controllers
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == Email);
 
-            if (user == null || user.PasswordHash != Password)
+            if (user == null)
             {
-                ViewBag.Error = "Nieprawidłowy email lub hasło";
+                ViewBag.Error = "Nieprawidłowy email";
+                return View();
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash))
+            {
+                ViewBag.Error = "Nieprawidłowe hasło";
                 return View();
             }
             else
@@ -53,6 +60,14 @@ namespace MedicalCenter.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Register()
@@ -73,6 +88,7 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(Password);
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
@@ -80,7 +96,7 @@ namespace MedicalCenter.Controllers
                     FirstName = FirstName,
                     LastName = LastName,
                     Phone = Phone,
-                    PasswordHash = Password,
+                    PasswordHash = passwordHash,
                     RoleId = 3
                 };
 
