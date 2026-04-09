@@ -2,7 +2,15 @@
 
 <h2>Lekarze</h2>
 
-<table>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Telefon</th>
+            <th>Specjalizacja</th>
+        </tr>
+    </thead>
     @foreach (var item in Model)
     {
         <tr>
