@@ -1,0 +1,15 @@
+﻿@model List<MedicalCenter.Models.Patient>
+
+<h2>Twoi pacjenci</h2>
+
+<table>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.User.LastName</td>
+            <td>@item.User.FirstName</td>
+            <td>@item.User.Phone</td>
+            <td>@item.Pesel</td>
+        </tr>
+    }
+</table>

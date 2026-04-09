@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>Zarejestruj Się </h2>
+
+<form asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label>Email</label>
+        <input type="email" name="Email" required />
+    </div>
+
+    <div>
+        <label>Hasło</label>
+        <input type="password" name="Password" required />
+    </div>
+    <div>
+        <label>Imię</label>
+        <input type="text" name="FirstName" required />
+    </div>
+
+    <div>
+        <label>Nazwisko</label>
+        <input type="text" name="LastName" required />
+    </div>
+    <div>
+        <label>Pesel</label>
+        <input type="number" name="Pesel" required />
+    </div>
+
+    <div>
+        <label>Number Telefonu</label>
+        <input type="number" name="Phone" required />
+    </div>
+    <div>
+        <label>Data urodzin</label>
+        <input type="date" name="BirthDate" required />
+    </div>
+
+
+    <div>
+        @if (ViewBag.Error != null)
+        {
+            <span>@ViewBag.Error</span>
+        }
+    </div>
+    <button type="submit">Zarejestruj</button>
+</form>
+
+<a href="/Patients">Powrót</a>
