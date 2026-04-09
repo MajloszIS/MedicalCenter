@@ -55,12 +55,54 @@ namespace MedicalCenter.Controllers
             }
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Register(string Email, string FirstName, string LastName, string Phone, string Password, DateTime BirthDate, string Pesel)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email); 
+            if (existingUser != null)
+            {
+                ViewBag.Error = "Konto z tym Email już istnieje";
+                return View();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Email = Email,
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    Phone = Phone,
+                    PasswordHash = Password,
+                    RoleId = 3
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                var patient = new Patient
+                {
+                    Id = Guid.NewGuid(),
+                    BirthDate = BirthDate,
+                    Pesel = Pesel
+                };
+
+                patient.UserId = user.Id;
+
+                _context.Patients.Add(patient);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
         }
     }
 }
