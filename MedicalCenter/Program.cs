@@ -1,6 +1,7 @@
 using MedicalCenter.Data;
-using Microsoft.EntityFrameworkCore;
+using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ var connectionString = builder.Configuration.GetConnectionString("MedicalDB");
 // dodanie Entity Framework
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// dodanie repozytorium
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

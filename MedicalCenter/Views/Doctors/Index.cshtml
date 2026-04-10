@@ -1,4 +1,4 @@
-﻿@model List<MedicalCenter.Models.Doctor>
+﻿@model List<MedicalCenter.DTOs.DoctorDto>
 
 <h2>Lekarze</h2>
 
@@ -14,10 +14,10 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.User.FirstName</td>
-            <td>@item.User.LastName</td>
-            <td>@item.User.Phone</td>
-            <td>@item.Specialization.Name</td>
+            <td>@item.FirstName</td>
+            <td>@item.LastName</td>
+            <td>@item.Phone</td>
+            <td>@item.SpecializationName</td>
             <td>
                 <form asp-action="Create" asp-controller="Appointment" method="post">
                     @Html.AntiForgeryToken()

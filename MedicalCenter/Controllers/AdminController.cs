@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,21 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Doctors()
         {
-            return View(await _context.Doctors
-                .Include(d => d.User)
+            var doctors = await _context.Doctors
+                .Include(a => a.User)
                 .Include(d => d.Specialization)
-                .ToListAsync());
+                .ToListAsync();
+
+            var doctorDtos = doctors.Select(d => new DoctorDto
+            {
+                Id = d.Id,
+                FirstName = d.User.FirstName,
+                LastName = d.User.LastName,
+                Phone = d.User.Phone,
+                SpecializationName = d.Specialization.Name
+            }).ToList();
+
+            return View(doctorDtos);
         }
 
         public IActionResult Create()
@@ -37,9 +49,9 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string Email, string FirstName, string LastName, string Phone, string Password, string LicenseNumber, string SpecializationName)
+        public async Task<IActionResult> Create(AdminCreateDoctorDto dto)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (existingUser != null)
             {
                 ViewBag.Error = "Konto z tym Email już istnieje";
@@ -48,14 +60,14 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(Password);
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Email = Email,
-                    FirstName = FirstName,
-                    LastName = LastName,
-                    Phone = Phone,
+                    Email = dto.Email,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    Phone = dto.Phone,
                     PasswordHash = passwordHash,
                     RoleId = 2
                 };
@@ -63,7 +75,7 @@ namespace MedicalCenter.Controllers
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                var specialization = await _context.Specializations.FirstOrDefaultAsync(s => s.Name == SpecializationName);
+                var specialization = await _context.Specializations.FirstOrDefaultAsync(s => s.Name == dto.SpecializationName);
                 if (specialization == null)
                 {
                     ViewBag.Error = "Nie znaleziono takiej specjalizacji";
@@ -73,7 +85,7 @@ namespace MedicalCenter.Controllers
                 var doctor = new Doctor
                 {
                     Id = Guid.NewGuid(),
-                    LicenseNumber = LicenseNumber,
+                    LicenseNumber = dto.LicenseNumber,
                     SpecializationId = specialization.Id,
                     UserId = user.Id
                 };
@@ -119,9 +131,20 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Patients()
         {
-            return View(await _context.Patients
+            var patients = await _context.Patients
                 .Include(d => d.User)
-                .ToListAsync());
+                .ToListAsync();
+
+            var patientDto = patients.Select(p => new PatientDto
+            {
+                Id = p.Id,
+                FirstName = p.User.FirstName,
+                LastName = p.User.LastName,
+                Phone = p.User.Phone,
+                Pesel = p.Pesel
+            }).ToList();
+
+            return View(patientDto);
         }
     }
 }
