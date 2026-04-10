@@ -1,11 +1,12 @@
-﻿using MedicalCenter.Data;
+﻿using BCrypt.Net;
+using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using BCrypt.Net;
 
 namespace MedicalCenter.Controllers
 {
@@ -30,9 +31,9 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string Email, string Password)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == Email);
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (user == null)
             {
@@ -40,7 +41,7 @@ namespace MedicalCenter.Controllers
                 return View();
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 ViewBag.Error = "Nieprawidłowe hasło";
                 return View();
@@ -77,9 +78,9 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string Email, string FirstName, string LastName, string Phone, string Password, DateTime BirthDate, string Pesel)
+        public async Task<IActionResult> Register(PatientRegisterDto dto)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email); 
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email); 
             if (existingUser != null)
             {
                 ViewBag.Error = "Konto z tym Email już istnieje";
@@ -88,14 +89,14 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(Password);
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Email = Email,
-                    FirstName = FirstName,
-                    LastName = LastName,
-                    Phone = Phone,
+                    Email = dto.Email,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    Phone = dto.Phone,
                     PasswordHash = passwordHash,
                     RoleId = 3
                 };
@@ -106,8 +107,8 @@ namespace MedicalCenter.Controllers
                 var patient = new Patient
                 {
                     Id = Guid.NewGuid(),
-                    BirthDate = BirthDate,
-                    Pesel = Pesel
+                    BirthDate = dto.BirthDate,
+                    Pesel = dto.Pesel
                 };
 
                 patient.UserId = user.Id;
