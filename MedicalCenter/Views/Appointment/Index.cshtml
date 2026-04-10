@@ -1,4 +1,4 @@
-﻿@model List<MedicalCenter.Models.Appointment>
+﻿@model List<MedicalCenter.DTOs.AppointmentDto>
 
 <h2>Wizyty</h2>
 
@@ -6,11 +6,11 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.Doctor.User.LastName</td>
-            <td>@item.Doctor.User.FirstName</td>
-            <td>@item.Doctor.Specialization.Name</td>
+            <td>@item.Doctor.LastName</td>
+            <td>@item.Doctor.FirstName</td>
+            <td>@item.Doctor.SpecializationName</td>
             <td>@item.AppointmentDate</td>
-            <td>@item.Status.Name</td>
+            <td>@item.StatusName</td>
         </tr>
     }
 </table>

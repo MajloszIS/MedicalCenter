@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace MedicalCenter.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
 
-            return View(await _context.Appointments
+            var appointments = await _context.Appointments
                 .Include(a => a.Status)
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor)
@@ -31,7 +32,24 @@ namespace MedicalCenter.Controllers
                 .Include(a => a.Doctor)
                     .ThenInclude(d => d.Specialization)
                 .Where(a => a.PatientId == patient.Id)
-                .ToListAsync());
+                .ToListAsync();
+
+            var appointmentDto = appointments.Select(a => new AppointmentDto
+            {
+                Id = a.Id,
+                Doctor = new DoctorDto
+                {
+                    Id = a.Doctor.Id,
+                    FirstName = a.Doctor.User.FirstName,
+                    LastName = a.Doctor.User.LastName,
+                    Phone = a.Doctor.User.Phone,
+                    SpecializationName = a.Doctor.Specialization.Name
+                },
+                AppointmentDate = a.AppointmentDate,
+                StatusName = a.Status.Name
+            }).ToList();
+
+            return View(appointmentDto);
         }
 
         public IActionResult Create()

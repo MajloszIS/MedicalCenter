@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,21 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Doctors()
         {
-            return View(await _context.Doctors
-                .Include(d => d.User)
+            var doctors = await _context.Doctors
+                .Include(a => a.User)
                 .Include(d => d.Specialization)
-                .ToListAsync());
+                .ToListAsync();
+
+            var doctorDtos = doctors.Select(d => new DoctorDto
+            {
+                Id = d.Id,
+                FirstName = d.User.FirstName,
+                LastName = d.User.LastName,
+                Phone = d.User.Phone,
+                SpecializationName = d.Specialization.Name
+            }).ToList();
+
+            return View(doctorDtos);
         }
 
         public IActionResult Create()
@@ -119,9 +131,20 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Patients()
         {
-            return View(await _context.Patients
+            var patients = await _context.Patients
                 .Include(d => d.User)
-                .ToListAsync());
+                .ToListAsync();
+
+            var patientDto = patients.Select(p => new PatientDto
+            {
+                Id = p.Id,
+                FirstName = p.User.FirstName,
+                LastName = p.User.LastName,
+                Phone = p.User.Phone,
+                Pesel = p.Pesel
+            }).ToList();
+
+            return View(patientDto);
         }
     }
 }

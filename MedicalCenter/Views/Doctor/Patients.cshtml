@@ -1,4 +1,4 @@
-﻿@model List<MedicalCenter.Models.Patient>
+﻿@model List<MedicalCenter.DTOs.PatientDto>
 
 <h2>Twoi pacjenci</h2>
 
@@ -6,9 +6,9 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.User.LastName</td>
-            <td>@item.User.FirstName</td>
-            <td>@item.User.Phone</td>
+            <td>@item.LastName</td>
+            <td>@item.FirstName</td>
+            <td>@item.Phone</td>
             <td>@item.Pesel</td>
         </tr>
     }
