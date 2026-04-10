@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Create Doctor";
 }
 
 <h2>Zarejestruj Się </h2>
 
-<form asp-action="Register" method="post">
+<form asp-action="Create" asp-controller="Admin" method="post">
     @Html.AntiForgeryToken()
 
     <div>
@@ -26,8 +26,8 @@
         <input type="text" name="LastName" required />
     </div>
     <div>
-        <label>Pesel</label>
-        <input type="number" name="Pesel" required />
+        <label>Number licencji</label>
+        <input type="number" name="LicenseNumber" required />
     </div>
 
     <div>
@@ -35,8 +35,8 @@
         <input type="number" name="Phone" required />
     </div>
     <div>
-        <label>Data urodzin</label>
-        <input type="date" name="BirthDate" required />
+        <label>Specializacja</label>
+        <input type="text" name="SpecializationName" required />
     </div>
 
 
