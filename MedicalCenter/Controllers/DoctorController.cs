@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -13,27 +14,21 @@ namespace MedicalCenter.Controllers
     [Authorize]
     public class DoctorController : Controller
     {
-        private readonly AppDbContext _context;
-
-        public DoctorController(AppDbContext context)
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        public DoctorController(IDoctorRepository doctorRepository, IAppointmentRepository appointmentRepository)
         {
-            _context = context;
+            _doctorRepository = doctorRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.UserId == Guid.Parse(userId));
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(Guid.Parse(userId));
 
-            var appointments = await _context.Appointments
-                .Include(a => a.Status)
-                .Include(a => a.Patient)
-                    .ThenInclude(p => p.User)
-                .Include(a => a.Doctor)
-                    .ThenInclude(d => d.Specialization)
-                .Where(a => a.DoctorId == doctor.Id)
-                .ToListAsync();
+            var appointments = await _appointmentRepository.GetAppointmentsByDoctorIdAsync(doctor.Id);
 
             var appointmentDto = appointments.Select(a => new AppointmentDto
             {
@@ -57,15 +52,9 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> Patients()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.UserId == Guid.Parse(userId));
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(Guid.Parse(userId));
 
-            var patients = await _context.Appointments
-                .Include(a => a.Patient)
-                    .ThenInclude(p => p.User)
-                .Where(a => a.DoctorId == doctor.Id)
-                .Select(a => a.Patient)
-                .Distinct()
-                .ToListAsync();
+            var patients = await _appointmentRepository.GetPatientsByDoctorIdAsync(doctor.Id);
 
             var patientDto = patients.Select(p => new PatientDto
             {
