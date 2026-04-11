@@ -13,13 +13,17 @@ namespace MedicalCenter.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly AppDbContext _context;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ISpecializationsRepository _specializationsRepository;
+        private readonly IPatientRepository _patientRepository; 
 
-        public AdminController(AppDbContext context, IDoctorRepository doctorRepository)
+        public AdminController(IDoctorRepository doctorRepository, IUserRepository userRepository, ISpecializationsRepository specializationsRepository, IPatientRepository patientRepository)
         {
-            _context = context;
             _doctorRepository = doctorRepository;
+            _userRepository = userRepository;
+            _specializationsRepository = specializationsRepository;
+            _patientRepository = patientRepository;
         }
         public IActionResult Index()
         {
@@ -51,7 +55,7 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AdminCreateDoctorDto dto)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            var existingUser = await _userRepository.GetUserByEmailAsync(dto.Email);
             if (existingUser != null)
             {
                 ViewBag.Error = "Konto z tym Email już istnieje";
@@ -72,10 +76,10 @@ namespace MedicalCenter.Controllers
                     RoleId = 2
                 };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                await _userRepository.CreateUserAsync(user);
 
-                var specialization = await _context.Specializations.FirstOrDefaultAsync(s => s.Name == dto.SpecializationName);
+                // Pobierz specjalizację na podstawie nazwy
+                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName);
                 if (specialization == null)
                 {
                     ViewBag.Error = "Nie znaleziono takiej specjalizacji";
@@ -92,8 +96,7 @@ namespace MedicalCenter.Controllers
 
                 doctor.UserId = user.Id;
 
-                _context.Doctors.Add(doctor);
-                await _context.SaveChangesAsync();
+                await _doctorRepository.CreateDoctorAsync(doctor);
 
                 return RedirectToAction("Doctors", "Admin");
             }
@@ -112,18 +115,15 @@ namespace MedicalCenter.Controllers
         {
             var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId);
 
-
             if (doctor != null)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == doctor.UserId);
+                var user = await _userRepository.GetUserByIdAsync(doctor.UserId);
 
-                _context.Doctors.Remove(doctor);
-                await _context.SaveChangesAsync();
+                await _doctorRepository.DeleteDoctorAsync(doctor.Id);
 
                 if (user != null)
                 {
-                    _context.Users.Remove(user);
-                    await _context.SaveChangesAsync();
+                    await _userRepository.DeleteUserAsync(user.Id);
                 }
             }
 
@@ -132,9 +132,7 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Patients()
         {
-            var patients = await _context.Patients
-                .Include(d => d.User)
-                .ToListAsync();
+            var patients = await _patientRepository.GetAllPatientsAsync();
 
             var patientDto = patients.Select(p => new PatientDto
             {

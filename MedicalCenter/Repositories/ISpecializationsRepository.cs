@@ -9,5 +9,6 @@ namespace MedicalCenter.Repositories
         public Task CreateSpecializationAsync(Specialization specialization);
         public Task UpdateSpecializationAsync(Specialization specialization);
         public Task DeleteSpecializationAsync(Guid id);
+        public Task<Specialization> GetSpecializationByNameAsync(string name);
     }
 }

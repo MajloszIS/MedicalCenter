@@ -38,5 +38,9 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<Specialization> GetSpecializationByNameAsync(string name)
+        {
+            return await _context.Specializations.FirstOrDefaultAsync(s => s.Name == name);
+        }
     }
 }

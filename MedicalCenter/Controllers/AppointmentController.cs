@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,28 +12,22 @@ namespace MedicalCenter.Controllers
     [Authorize]
     public class AppointmentController : Controller
     {
-        private readonly AppDbContext _context;
-
-        public AppointmentController(AppDbContext context)
+        private readonly IPatientRepository _patientRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        public AppointmentController(IPatientRepository patientRepository, IAppointmentRepository appointmentRepository)
         {
-            _context = context;
+            _patientRepository = patientRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
+            var patient = await _patientRepository.GetPatientByUserIdAsync(Guid.Parse(userId));
 
-            var appointments = await _context.Appointments
-                .Include(a => a.Status)
-                .Include(a => a.Doctor)
-                .Include(a => a.Doctor)
-                    .ThenInclude(d => d.User)
-                .Include(a => a.Doctor)
-                    .ThenInclude(d => d.Specialization)
-                .Where(a => a.PatientId == patient.Id)
-                .ToListAsync();
+            var appointments = await _appointmentRepository.GetAppointmentsByPatientIdAsync(patient.Id);
+                
 
             var appointmentDto = appointments.Select(a => new AppointmentDto
             {
@@ -64,7 +59,7 @@ namespace MedicalCenter.Controllers
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
+                var patient = await _patientRepository.GetPatientByUserIdAsync(Guid.Parse(userId));
                 var appointment = new Appointment {
                     PatientId = patient.Id, 
                     DoctorId = DoctorId,
@@ -72,8 +67,7 @@ namespace MedicalCenter.Controllers
                     AppointmentDate = DateTime.Now
                 };
                
-                _context.Appointments.Add(appointment);
-                await _context.SaveChangesAsync();
+                await _appointmentRepository.CreateAppointmentAsync(appointment);
 
                 return RedirectToAction(nameof(Index));
             }

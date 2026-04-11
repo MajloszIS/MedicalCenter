@@ -9,5 +9,6 @@ namespace MedicalCenter.Repositories
         public Task CreatePatientAsync(Patient patient);
         public Task UpdatePatientAsync(Patient patient);
         public Task DeletePatientAsync (Guid id);
+        public Task<Patient> GetPatientByUserIdAsync(Guid userId);
     }
 }

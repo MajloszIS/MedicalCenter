@@ -2,6 +2,7 @@
 using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace MedicalCenter.Controllers
     public class AccountController : Controller
     {
 
-        private readonly AppDbContext _context;
-        public AccountController(AppDbContext context)
+        private readonly IUserRepository _userRepository;
+        private readonly IPatientRepository _patientRepository;
+        public AccountController(IUserRepository userRepository, IPatientRepository patientRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
+            _patientRepository = patientRepository;
         }
 
         public IActionResult Index()
@@ -33,7 +36,7 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == dto.Email);
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email);
 
             if (user == null)
             {
@@ -80,7 +83,7 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(PatientRegisterDto dto)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email); 
+            var existingUser = await _userRepository.GetUserByEmailAsync(dto.Email);
             if (existingUser != null)
             {
                 ViewBag.Error = "Konto z tym Email już istnieje";
@@ -101,8 +104,7 @@ namespace MedicalCenter.Controllers
                     RoleId = 3
                 };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                await _userRepository.CreateUserAsync(user);
 
                 var patient = new Patient
                 {
@@ -113,8 +115,7 @@ namespace MedicalCenter.Controllers
 
                 patient.UserId = user.Id;
 
-                _context.Patients.Add(patient);
-                await _context.SaveChangesAsync();
+                await _patientRepository.CreatePatientAsync(patient);
 
                 return RedirectToAction("Index", "Home");
             }

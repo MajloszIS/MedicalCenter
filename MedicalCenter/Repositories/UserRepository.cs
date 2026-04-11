@@ -1,4 +1,5 @@
-﻿using MedicalCenter.Data;
+﻿using Humanizer;
+using MedicalCenter.Data;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,15 @@ namespace MedicalCenter.Repositories
         {
             return _context.Users.SingleOrDefaultAsync(u => u.Id == id);  
         }
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+        public async Task<User> GetUserByEmailWithRoleAsync(string email)
+        {
+            return await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public Task CreateUserAsync(User user)
         {     
             _context.Users.Add(user);

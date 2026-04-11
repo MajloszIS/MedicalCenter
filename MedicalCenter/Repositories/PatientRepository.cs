@@ -14,7 +14,7 @@ namespace MedicalCenter.Repositories
 
         public Task<List<Patient>> GetAllPatientsAsync()
         {     
-            return _context.Patients.ToListAsync(); 
+            return _context.Patients.Include(p => p.User).ToListAsync(); 
         }
         public Task<Patient> GetPatientByIdAsync(Guid id)
         {     
@@ -38,6 +38,10 @@ namespace MedicalCenter.Repositories
                 _context.Patients.Remove(patient);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<Patient> GetPatientByUserIdAsync(Guid userId)
+        {
+            return await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
         }
 
     }

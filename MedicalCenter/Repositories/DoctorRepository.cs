@@ -42,5 +42,9 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<Doctor> GetDoctorByUserIdAsync(Guid userId)
+        {
+            return await _context.Doctors.FirstOrDefaultAsync(d => d.UserId == userId);
+        }
     }
 }
