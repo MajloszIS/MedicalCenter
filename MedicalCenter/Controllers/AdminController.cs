@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace MedicalCenter.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IDoctorRepository _doctorRepository;
 
-        public AdminController(AppDbContext context)
+        public AdminController(AppDbContext context, IDoctorRepository doctorRepository)
         {
             _context = context;
+            _doctorRepository = doctorRepository;
         }
         public IActionResult Index()
         {
@@ -25,10 +28,7 @@ namespace MedicalCenter.Controllers
 
         public async Task<IActionResult> Doctors()
         {
-            var doctors = await _context.Doctors
-                .Include(a => a.User)
-                .Include(d => d.Specialization)
-                .ToListAsync();
+            var doctors = await _doctorRepository.GetAllDoctorsAsync();
 
             var doctorDtos = doctors.Select(d => new DoctorDto
             {
@@ -110,7 +110,8 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid DoctorId)
         {
-            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == DoctorId);
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId);
+
 
             if (doctor != null)
             {

@@ -33,15 +33,14 @@ namespace MedicalCenter.Repositories
             _context.Doctors.Update(doctor);
             return _context.SaveChangesAsync();
         }
-        public Task DeleteDoctorAsync(Guid id)
+        public async Task DeleteDoctorAsync(Guid id)
         {
             var doctor = _context.Doctors.FirstOrDefault(d => d.Id == id);
             if (doctor != null)
             {
                 _context.Doctors.Remove(doctor);
-                return _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
-            return Task.CompletedTask;
         }
     }
 }
