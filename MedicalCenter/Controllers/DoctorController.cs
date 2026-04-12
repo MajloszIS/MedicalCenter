@@ -2,6 +2,7 @@
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -14,58 +15,33 @@ namespace MedicalCenter.Controllers
     [Authorize]
     public class DoctorController : Controller
     {
-        private readonly IDoctorRepository _doctorRepository;
-        private readonly IAppointmentRepository _appointmentRepository;
-        public DoctorController(IDoctorRepository doctorRepository, IAppointmentRepository appointmentRepository)
+        private readonly IDoctorService _doctorService;
+        private readonly IAppointmentService _appointmentService;
+        public DoctorController(IDoctorService doctorService, IAppointmentService appointmentService)
         {
-            _doctorRepository = doctorRepository;
-            _appointmentRepository = appointmentRepository;
+            _doctorService = doctorService;
+            _appointmentService = appointmentService;
         }
 
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(Guid.Parse(userId));
+            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+            var appointments = _appointmentService.GetAppointmentsByDoctorIdAsync(doctor.Id);
 
-            var appointments = await _appointmentRepository.GetAppointmentsByDoctorIdAsync(doctor.Id);
-
-            var appointmentDto = appointments.Select(a => new AppointmentDto
-            {
-                Id = a.Id,
-                Patient = new PatientDto
-                {
-                    Id = a.Patient.Id,
-                    FirstName = a.Patient.User.FirstName,
-                    LastName = a.Patient.User.LastName,
-                    Phone = a.Patient.User.Phone,
-                    Pesel = a.Patient.Pesel
-                },
-                AppointmentDate = a.AppointmentDate,
-                StatusName = a.Status.Name
-            }).ToList();
-
-            return View(appointmentDto);
+            return View(appointments);
         }
 
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Patients()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(Guid.Parse(userId));
+            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
 
-            var patients = await _appointmentRepository.GetPatientsByDoctorIdAsync(doctor.Id);
+            var patients = await _appointmentService.GetPatientsByDoctorIdAsync(doctor.Id);
 
-            var patientDto = patients.Select(p => new PatientDto
-            {
-                Id = p.Id,
-                FirstName = p.User.FirstName,
-                LastName = p.User.LastName,
-                Phone = p.User.Phone,
-                Pesel = p.Pesel
-            }).ToList();
-
-            return View(patientDto);
+            return View(patients);
         }
     }
 }
