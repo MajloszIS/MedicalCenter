@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using MedicalCenter.Data;
+﻿using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
@@ -8,18 +7,19 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
     public class AccountController : Controller
     {
 
-        private readonly IUserRepository _userRepository;
-        private readonly IPatientRepository _patientRepository;
-        public AccountController(IUserRepository userRepository, IPatientRepository patientRepository)
+        private readonly IUserService _userService;
+        private readonly IPatientService _patientService;
+        public AccountController(IUserService userService, IPatientService patientService)
         {
-            _userRepository = userRepository;
-            _patientRepository = patientRepository;
+            _userService = userService;
+            _patientService = patientService;
         }
 
         public IActionResult Index()
@@ -36,27 +36,21 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email);
+            var result = await _userService.LoginAsync(dto);
 
-            if (user == null)
+            if (result == null)
             {
-                ViewBag.Error = "Nieprawidłowy email";
-                return View();
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            {
-                ViewBag.Error = "Nieprawidłowe hasło";
+                ViewBag.Error = "Nieprawidłowy email lub hasło";
                 return View();
             }
             else
             {
-                var identity = new ClaimsIdentity(new[]
+                var identity = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                    new Claim(ClaimTypes.Role, user.Role.Name)
+                    new (ClaimTypes.NameIdentifier, result.UserId.ToString()),
+                    new (ClaimTypes.Email, result.Email),
+                    new Claim(ClaimTypes.Name, $"{result.FullName}"),
+                    new (ClaimTypes.Role, result.RoleName)
                 }, "login");
 
                 var principal = new ClaimsPrincipal(identity);
@@ -83,8 +77,7 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(PatientRegisterDto dto)
         {
-            var existingUser = await _userRepository.GetUserByEmailAsync(dto.Email);
-            if (existingUser != null)
+            if (await _userService.IsUserWithThisEmailExists(dto.Email))
             {
                 ViewBag.Error = "Konto z tym Email już istnieje";
                 return View();
@@ -92,31 +85,7 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-                var user = new User
-                {
-                    Id = Guid.NewGuid(),
-                    Email = dto.Email,
-                    FirstName = dto.FirstName,
-                    LastName = dto.LastName,
-                    Phone = dto.Phone,
-                    PasswordHash = passwordHash,
-                    RoleId = 3
-                };
-
-                await _userRepository.CreateUserAsync(user);
-
-                var patient = new Patient
-                {
-                    Id = Guid.NewGuid(),
-                    BirthDate = dto.BirthDate,
-                    Pesel = dto.Pesel
-                };
-
-                patient.UserId = user.Id;
-
-                await _patientRepository.CreatePatientAsync(patient);
-
+                await _patientService.RegisterAsync(dto);
                 return RedirectToAction("Index", "Home");
             }
 

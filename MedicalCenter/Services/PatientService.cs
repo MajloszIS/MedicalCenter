@@ -1,0 +1,78 @@
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
+using MedicalCenter.Repositories;
+using System.Security.Claims;
+
+
+namespace MedicalCenter.Services
+{
+    public class PatientService : IPatientService
+    {
+        private readonly IPatientRepository _patientRepository;
+        private readonly IUserRepository _userRepository;
+
+        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository)
+        {
+            _patientRepository = patientRepository;
+            _userRepository = userRepository;
+        }
+
+        public async Task<List<PatientDto>> GetAllPatientsAsync()
+        {
+            var patients = await _patientRepository.GetAllPatientsAsync();
+            var patientDtos = patients.Select(p => new PatientDto
+            {
+                Id = p.Id,
+                FirstName = p.User.FirstName,
+                LastName = p.User.LastName,
+                Phone = p.User.Phone,
+                Pesel = p.Pesel
+            }).ToList();
+
+            return patientDtos; 
+        }
+
+        public async Task RegisterAsync(PatientRegisterDto dto)
+        {
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Phone = dto.Phone,
+                PasswordHash = passwordHash,
+                RoleId = 3
+            };
+
+            await _userRepository.CreateUserAsync(user);
+
+            var patient = new Patient
+            {
+                Id = Guid.NewGuid(),
+                BirthDate = dto.BirthDate,
+                Pesel = dto.Pesel
+            };
+
+            patient.UserId = user.Id;
+
+            await _patientRepository.CreatePatientAsync(patient);
+        }
+        public async Task<PatientDto> GetPatientByUserIdAsync(Guid userId)
+        {
+            var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
+
+            var patientDto = new PatientDto
+            {
+                Id = patient.Id,
+                FirstName = patient.User.FirstName,
+                LastName = patient.User.LastName,
+                Phone = patient.User.Phone,
+                Pesel = patient.Pesel
+            };
+            
+            return patientDto;
+        }
+    }
+}

@@ -41,7 +41,7 @@ namespace MedicalCenter.Repositories
         }
         public async Task<Patient> GetPatientByUserIdAsync(Guid userId)
         {
-            return await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            return await _context.Patients.Include(p => p.User).FirstOrDefaultAsync(p => p.UserId == userId);
         }
 
     }

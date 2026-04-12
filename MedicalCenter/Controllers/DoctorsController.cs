@@ -5,33 +5,25 @@ using MedicalCenter.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
     public class DoctorsController : Controller
     {
-        private readonly IDoctorRepository _doctorRepository;
+        private readonly IDoctorService _doctorService;
 
-        public DoctorsController(IDoctorRepository doctorRepository)
+        public DoctorsController(IDoctorService doctorService)
         {
-            _doctorRepository = doctorRepository;
+            _doctorService = doctorService;
         }
 
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Index()
         {
-            var doctors = await _doctorRepository.GetAllDoctorsAsync();
+            var doctors = await _doctorService.GetAllDoctorsAsync();
 
-            var doctorDto = doctors.Select(d => new DoctorDto
-            {
-                Id = d.Id,
-                FirstName = d.User.FirstName,
-                LastName = d.User.LastName,
-                Phone = d.User.Phone,
-                SpecializationName = d.Specialization.Name
-            }).ToList();
-
-            return View(doctorDto);
+            return View(doctors);
         }
     }
 }
