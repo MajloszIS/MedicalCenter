@@ -23,6 +23,7 @@ namespace MedicalCenter.Controllers
         {
             _doctorService = doctorService;
             _userService = userService;
+            _patientService = patientService;
         }
         public IActionResult Index()
         {
