@@ -28,7 +28,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
-            var appointments = _appointmentService.GetAppointmentsByDoctorIdAsync(doctor.Id);
+            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctor.Id);
 
             return View(appointments);
         }

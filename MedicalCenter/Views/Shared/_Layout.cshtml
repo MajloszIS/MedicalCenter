@@ -69,6 +69,23 @@
                             </li>
                         }
                     </ul>
+                    @if (User.IsInRole("Patient"))
+                    {
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Lekarze</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Wizyty</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Medicines" asp-action="Index">Apteka</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Cart" asp-action="Index">Koszyk</a>
+                                </li>
+                            </ul>
+                    }
 
                 </div>
             </div>
