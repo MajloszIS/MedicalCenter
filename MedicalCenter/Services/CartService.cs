@@ -12,27 +12,41 @@ namespace MedicalCenter.Services
         {
             _context = context;
         }
+        public async Task<Cart> GetCartAsync(Guid patientId)
+        {
+            return await _context.Carts
+                .Include(c => c.Items)
+                    .ThenInclude(i => i.Medicine)
+                .FirstOrDefaultAsync(c => c.PatientId == patientId);
+        }
 
         public async Task AddToCartAsync(Guid patientId, Guid medicineId, int quantity)
         {
-            var cart = await _context.Carts
-                .Include(c => c.Items)
-                .FirstOrDefaultAsync(c => c.PatientId == patientId);
+            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.PatientId == patientId);
 
             if (cart == null)
             {
-                cart = new Cart { PatientId = patientId, Items = new List<CartItem>() };
-                _context.Carts.Add(cart);
+                cart = new Cart { PatientId = patientId };
+                await _context.Carts.AddAsync(cart);
+                await _context.SaveChangesAsync();
             }
 
-            var existingItem = cart.Items.FirstOrDefault(i => i.MedicineId == medicineId);
+            var existingItem = await _context.CartItems
+                .FirstOrDefaultAsync(i => i.CartId == cart.Id && i.MedicineId == medicineId);
+
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
             }
             else
             {
-                cart.Items.Add(new CartItem { MedicineId = medicineId, Quantity = quantity });
+                var newItem = new CartItem
+                {
+                    CartId = cart.Id,
+                    MedicineId = medicineId,
+                    Quantity = quantity
+                };
+                await _context.CartItems.AddAsync(newItem);
             }
 
             await _context.SaveChangesAsync();
@@ -50,7 +64,7 @@ namespace MedicalCenter.Services
             var order = new Order
             {
                 PatientId = patientId,
-                StatusId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                StatusId = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111"),
                 TotalPrice = cart.Items.Sum(i => i.Quantity * i.Medicine.Price),
                 Items = cart.Items.Select(ci => new OrderItem
                 {

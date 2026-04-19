@@ -17,6 +17,20 @@ namespace MedicalCenter.Controllers
             _patientService = patientService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdString == null) return Unauthorized();
+            var userId = Guid.Parse(userIdString);
+
+            var patient = await _patientService.GetPatientByUserIdAsync(userId);
+            if (patient == null) return NotFound();
+
+            var cart = await _cartService.GetCartAsync(patient.Id);
+
+            return View(cart);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()

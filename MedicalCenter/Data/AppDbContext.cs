@@ -91,6 +91,26 @@ namespace MedicalCenter.Data
                 new AppointmentStatus { Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"), Name = "Zakończona" },
                 new AppointmentStatus { Id = Guid.Parse("12345678-1234-1234-1234-123456789012"), Name = "Anulowana" }
             );
+
+            modelBuilder.Entity<OrderStatus>().HasData(
+                new OrderStatus { Id = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111"), Name = "Nowe" },
+                new OrderStatus { Id = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"), Name = "W realizacji" },
+                new OrderStatus { Id = Guid.Parse("bbbbbbbb-3333-3333-3333-333333333333"), Name = "Wysłane" },
+                new OrderStatus { Id = Guid.Parse("bbbbbbbb-4444-4444-4444-444444444444"), Name = "Zakończone" }
+            );
+
+            modelBuilder.Entity<MedicineCategory>().HasData(
+                new MedicineCategory { Id = Guid.Parse("cccccccc-1111-1111-1111-111111111111"), Name = "Leki przeciwbólowe" },
+                new MedicineCategory { Id = Guid.Parse("cccccccc-2222-2222-2222-222222222222"), Name = "Syrop" },
+                new MedicineCategory { Id = Guid.Parse("cccccccc-3333-3333-3333-333333333333"), Name = "Leki" }
+            );
+
+            modelBuilder.Entity<Medicine>().HasData(
+                new Medicine { Id = Guid.Parse("dddddddd-1111-1111-1111-111111111111"), Name = "Apap Extra", Price = 15.50m, CategoryId = Guid.Parse("cccccccc-1111-1111-1111-111111111111") },
+                new Medicine { Id = Guid.Parse("dddddddd-2222-2222-2222-222222222222"), Name = "Ibuprom Max", Price = 12.99m, CategoryId = Guid.Parse("cccccccc-1111-1111-1111-111111111111") },
+                new Medicine { Id = Guid.Parse("dddddddd-3333-3333-3333-333333333333"), Name = "Rutinoscorbin", Price = 9.00m, CategoryId = Guid.Parse("cccccccc-3333-3333-3333-333333333333") },
+                new Medicine { Id = Guid.Parse("dddddddd-4444-4444-4444-444444444444"), Name = "Syrop na kaszel", Price = 21.30m, CategoryId = Guid.Parse("cccccccc-2222-2222-2222-222222222222") }
+            );
         }
     }
 }
