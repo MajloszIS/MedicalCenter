@@ -1,52 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Rejestracja Pacjenta";
 }
 
-<h2>Zarejestruj Się </h2>
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="medical-card text-center mb-4">
+            <h2 class="page-title border-0 mb-1">
+                <i class="fa-solid fa-user-plus text-primary me-2"></i>Dołącz do Centrum Medycznego
+            </h2>
+            <p class="text-muted">Załóż konto pacjenta, aby zarządzać swoimi wizytami i receptami.</p>
+        </div>
 
-<form asp-action="Register" method="post">
-    @Html.AntiForgeryToken()
+        <form asp-action="Register" method="post" class="medical-card p-4">
+            @Html.AntiForgeryToken()
 
-    <div>
-        <label>Email</label>
-        <input type="email" name="Email" required />
-    </div>
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <h5 class="text-primary border-bottom pb-2"><i class="fa-solid fa-lock me-2"></i>Dane konta</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Adres Email</label>
+                            <input type="email" name="Email" class="form-control" placeholder="przyklad@poczta.pl" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Hasło</label>
+                            <input type="password" name="Password" class="form-control" placeholder="Minimum 6 znaków" required />
+                        </div>
+                    </div>
+                </div>
 
-    <div>
-        <label>Hasło</label>
-        <input type="password" name="Password" required />
-    </div>
-    <div>
-        <label>Imię</label>
-        <input type="text" name="FirstName" required />
-    </div>
+                <div class="col-md-12 mb-2">
+                    <h5 class="text-primary border-bottom pb-2"><i class="fa-solid fa-address-card me-2"></i>Informacje osobowe</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Imię</label>
+                            <input type="text" name="FirstName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nazwisko</label>
+                            <input type="text" name="LastName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">PESEL</label>
+                            <input type="text" name="Pesel" class="form-control" maxlength="11" pattern="[0-9]{11}" placeholder="11 cyfr" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Numer telefonu</label>
+                            <input type="tel" name="Phone" class="form-control" placeholder="np. 123456789" required />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Data urodzenia</label>
+                            <input type="date" name="BirthDate" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <div>
-        <label>Nazwisko</label>
-        <input type="text" name="LastName" required />
-    </div>
-    <div>
-        <label>Pesel</label>
-        <input type="number" name="Pesel" required />
-    </div>
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger py-2 text-center">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>@ViewBag.Error
+                </div>
+            }
 
-    <div>
-        <label>Number Telefonu</label>
-        <input type="number" name="Phone" required />
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-medical btn-lg fw-bold">Stwórz konto pacjenta</button>
+                <a href="/Home" class="btn btn-link text-muted">Anuluj i wróć</a>
+            </div>
+        </form>
     </div>
-    <div>
-        <label>Data urodzin</label>
-        <input type="date" name="BirthDate" required />
-    </div>
-
-
-    <div>
-        @if (ViewBag.Error != null)
-        {
-            <span>@ViewBag.Error</span>
-        }
-    </div>
-    <button type="submit">Zarejestruj</button>
-</form>
-
-<a href="/Home">Powrót</a>
+</div>

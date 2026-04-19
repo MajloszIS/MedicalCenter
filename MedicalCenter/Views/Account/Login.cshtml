@@ -1,28 +1,44 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Logowanie";
 }
 
-<h2>Zaloguj Się </h2>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="medical-card text-center mb-4">
+            <h2 class="page-title border-0 mb-1"><i class="fa-solid fa-user-lock text-primary me-2"></i>Zaloguj Się</h2>
+            <p class="text-muted">Wprowadź swoje dane, aby uzyskać dostęp do konta.</p>
+        </div>
 
-<form asp-action="Login" method="post">
-    @Html.AntiForgeryToken()
+        <div class="medical-card">
+            <form asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
 
-    <div>
-        <label>Email</label>
-        <input type="email" name="Email" required />
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Adres Email</label>
+                    <input type="email" name="Email" class="form-control form-control-lg" placeholder="np. jan.kowalski@med.pl" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Hasło</label>
+                    <input type="password" name="Password" class="form-control form-control-lg" placeholder="Wpisz hasło" required />
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger py-2 mb-3 text-center">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-medical btn-lg fw-bold">Zaloguj się</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4 border-top pt-3">
+                <span class="text-muted">Nie masz jeszcze konta?</span>
+                <a asp-action="Register" class="text-primary fw-bold text-decoration-none">Zarejestruj się</a>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label>Hasło</label>
-        <input type="password" name="Password" required />
-    </div>
-    <div>
-        @if (ViewBag.Error != null)
-        {
-            <span>@ViewBag.Error</span>
-        } 
-    </div>
-    <button type="submit">Zaloguj</button>
-</form>
-
-<a href="/Patients">Powrót</a>
+</div>
