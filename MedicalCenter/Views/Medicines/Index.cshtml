@@ -1,0 +1,62 @@
+﻿@model IEnumerable<MedicalCenter.DTOs.MedicineDto>
+
+@{
+    ViewData["Title"] = "Apteka - Lista Leków";
+}
+
+<div class="container mt-4">
+    <h2>Dostępne leki</h2>
+    <hr />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nazwa leku</th>
+                    <th>Kategoria</th>
+                    <th>Cena za sztukę</th>
+                    <th class="text-center">Zakup</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Brak leków w aptece.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@item.Name</td>
+                            <td><span class="badge bg-secondary">@item.CategoryName</span></td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td class="text-center">
+                                <form asp-controller="Medicines" asp-action="AddToCart" method="post" class="d-flex justify-content-center align-items-center">
+                                    <input type="hidden" name="medicineId" value="@item.Id" />
+
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        <input type="number" name="quantity" value="1" min="1" max="50" class="form-control text-center" />
+                                        <button type="submit" class="btn btn-success">
+                                            Dodaj do koszyka
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
