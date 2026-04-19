@@ -1,27 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona Główna";
 }
 
-<!-- Hero section -->
-<div class="...">
+<div class="row align-items-center py-5 mb-5">
+    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+        <h1 class="display-4 fw-bold text-dark mb-3">Twoje Zdrowie,<br><span class="text-primary">Nasza Troska</span></h1>
+        <p class="lead text-muted mb-4">Nowoczesne Centrum Medyczne. Umów wizytę online w kilka sekund, zarządzaj e-receptami i miej dostęp do historii leczenia w jednym, bezpiecznym miejscu.</p>
+
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-medical btn-lg px-4 me-md-2 fw-bold shadow-sm">Zarejestruj się</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4 fw-bold shadow-sm">Zaloguj do systemu</a>
+            </div>
+        }
+        else
+        {
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                @if (User.IsInRole("Patient"))
+                {
+                    <a asp-controller="Appointment" asp-action="Index" class="btn btn-medical btn-lg px-4 fw-bold shadow-sm">Przejdź do moich wizyt</a>
+                }
+                else if (User.IsInRole("Doctor"))
+                {
+                    <a asp-controller="Doctor" asp-action="Index" class="btn btn-medical btn-lg px-4 fw-bold shadow-sm">Otwórz Panel Lekarza</a>
+                }
+                else
+                {
+                    <a asp-controller="Admin" asp-action="Index" class="btn btn-dark btn-lg px-4 fw-bold shadow-sm">Panel Administracyjny</a>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-lg-6">
+        <div class="medical-card text-center p-5 border-0" style="background: linear-gradient(135deg, var(--medical-primary), #00d2ff); color: white;">
+            <i class="fa-solid fa-heart-pulse mb-3" style="font-size: 5rem;"></i>
+            <h3 class="fw-bold">System e-Zdrowie 2.0</h3>
+            <p class="mb-0 text-white-50">Zintegrowany system rezerwacji, dokumentacji medycznej i obsługi leków.</p>
+        </div>
+    </div>
 </div>
 
-<!-- Przyciski login/register -->
-<div class="...">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Zaloguj się</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Zarejestruj się</a>
-        </li>
-    </ul>
-</div>
-
-<!-- Lekarze -->
-<div class="...">
-</div>
-
-<!-- Kontakt -->
-<div class="...">
+<div class="row g-4 py-4 row-cols-1 row-cols-lg-3 border-top mt-5">
+    <div class="col d-flex align-items-start">
+        <div class="icon-square flex-shrink-0 me-3">
+            <i class="fa-solid fa-user-doctor text-primary" style="font-size: 2.5rem;"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold">Najlepsi specjaliści</h4>
+            <p class="text-muted">Nasz zespół składa się z doświadczonych lekarzy, gotowych pomóc Ci w każdej sytuacji zdrowotnej.</p>
+        </div>
+    </div>
+    <div class="col d-flex align-items-start">
+        <div class="icon-square flex-shrink-0 me-3">
+            <i class="fa-regular fa-calendar-check text-primary" style="font-size: 2.5rem;"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold">Szybkie rezerwacje</h4>
+            <p class="text-muted">Umów wizytę bez wychodzenia z domu. Przeglądaj dostępne terminy i wybierz ten, który najbardziej Ci odpowiada.</p>
+        </div>
+    </div>
+    <div class="col d-flex align-items-start">
+        <div class="icon-square flex-shrink-0 me-3">
+            <i class="fa-solid fa-truck-medical text-primary" style="font-size: 2.5rem;"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold">Moduł Logistyczny</h4>
+            <p class="text-muted">Odbieraj e-recepty i zamawiaj leki bezpośrednio z poziomu aplikacji z opcją dostawy kurierskiej.</p>
+        </div>
+    </div>
 </div>
