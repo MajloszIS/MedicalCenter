@@ -30,6 +30,24 @@ namespace MedicalCenter.Services
 
             return doctorDtos;
         }
+        public async Task<DoctorDto> GetDoctorByIdAsync(Guid id)
+        {
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(id);
+            if (doctor == null)
+            {
+                return null;
+            }
+            var doctorDto = new DoctorDto
+            {
+                Id = doctor.Id,
+                FirstName = doctor.User.FirstName,
+                LastName = doctor.User.LastName,
+                Phone = doctor.User.Phone,
+                SpecializationName = doctor.Specialization.Name
+            };
+            return doctorDto;
+        }
+
         public async Task<DoctorDto> GetDoctorByUserIdAsync(Guid userId)
         {
             var doctor = await _doctorRepository.GetDoctorByUserIdAsync(userId);

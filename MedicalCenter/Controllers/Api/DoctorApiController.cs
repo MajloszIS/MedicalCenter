@@ -1,5 +1,7 @@
-﻿using MedicalCenter.Services;
+﻿using MedicalCenter.Models;
+using MedicalCenter.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace MedicalCenter.Controllers.Api
 {
@@ -20,6 +22,18 @@ namespace MedicalCenter.Controllers.Api
             var doctors = await _doctorService.GetAllDoctorsAsync();
 
             return Ok(doctors);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDoctorById(Guid id)
+        {
+            var doctor = await _doctorService.GetDoctorByIdAsync(id);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(doctor);
         }
     }
 }
