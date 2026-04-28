@@ -22,6 +22,15 @@ namespace MedicalCenter.Controllers
             _patientService = patientService;
         }
 
+        public IActionResult HashTest()
+{
+    return Content(
+        BCrypt.Net.BCrypt.HashPassword("admin123") + "\n" +
+        BCrypt.Net.BCrypt.HashPassword("doktor123") + "\n" +
+        BCrypt.Net.BCrypt.HashPassword("pacjent123")
+    );
+}
+
         public IActionResult Index()
         {
             return View();

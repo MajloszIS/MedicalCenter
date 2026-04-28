@@ -73,9 +73,9 @@ namespace MedicalCenter.Data
             );
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), Email = "admin@medical.pl", PasswordHash = "admin123", FirstName = "Adam", LastName= "Nowak", Phone= "111222333", RoleId = 1},
-                new User { Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Email = "doktor@medical.pl", PasswordHash = "doktor123", FirstName = "Jan", LastName = "Kowalski", Phone = "222333444", RoleId = 2 },
-                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "pacjent123", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 }
+                new User { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), Email = "admin@medical.pl", PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e", FirstName = "Adam", LastName= "Nowak", Phone= "111222333", RoleId = 1},
+                new User { Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Email = "doktor@medical.pl", PasswordHash = "$2a$11$VmozT24fOt40zBIdkcNYFeO6z0sVfe2GdFOzyoSKVgSATzjNZSia6", FirstName = "Jan", LastName = "Kowalski", Phone = "222333444", RoleId = 2 },
+                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "$2a$11$SjBITGayq8gTCE4JLjt4becH4zr32rn5cixIlaqdJtSCvYwd1O/QC", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 }
                 );
 
             modelBuilder.Entity<Doctor>().HasData(
