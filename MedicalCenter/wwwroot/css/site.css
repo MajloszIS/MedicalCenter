@@ -1,4 +1,4 @@
-/* Zmienne CSS okreœlaj¹ce g³ówn¹ paletê kolorów */
+/* Zmienne CSS - paleta kolorÃ³w */
 :root {
     --medical-primary: #0056b3;
     --medical-secondary: #e9ecef;
@@ -18,7 +18,7 @@ main {
     flex: 1;
 }
 
-/* Stylizowanie kart dla formularzy i istotnych treœci */
+/* Stylizowanie kart dla formularzy i istotnych tresci */
 .medical-card {
     background: #fff;
     border-radius: 12px;
@@ -28,7 +28,7 @@ main {
     margin-bottom: 20px;
 }
 
-/* Nowoczesne tabele - zastêpujemy Twoje stare style dla table */
+/* WÅ‚asne tabele */
 .table-custom {
     background: #fff;
     border-radius: 10px;
@@ -46,7 +46,7 @@ main {
         padding: 12px 15px;
     }
 
-/* Nag³ówki stron */
+/* NagÅ‚Ã³wki stron */
 .page-title {
     color: #2c3e50;
     margin-bottom: 2rem;
@@ -55,7 +55,7 @@ main {
     padding-bottom: 10px;
 }
 
-/* Stylowanie przycisków formularzy */
+/* Stylowanie przyciskow formularzy */
 .btn-medical {
     background-color: var(--medical-primary);
     color: white;

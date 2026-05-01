@@ -27,15 +27,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.IsInRole("Patient"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Lekarze</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Moje Wizyty</a>
-                            </li>
-                        }
+                        
 
                         @if (User.IsInRole("Doctor"))
                         {
@@ -49,16 +41,7 @@
                     </ul>
 
                     <ul class="navbar-nav">
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Zaloguj</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-primary ms-2" asp-controller="Account" asp-action="Register">Rejestracja</a>
-                            </li>
-                        }
-                        else
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center">
                                 <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
