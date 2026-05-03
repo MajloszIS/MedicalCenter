@@ -70,13 +70,15 @@ namespace MedicalCenter.Services
 
             return appointmentDto;
         }
-        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate)
+        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string notes)
         {
             var appointment = new Appointment
             {
                 PatientId = patientId,
                 DoctorId = doctorId,
-                StatusId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                Description = description,
+                Notes = notes,
+                StatusId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
                 AppointmentDate = appointmentDate
             };
 

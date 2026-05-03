@@ -38,14 +38,14 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Guid DoctorId)
+        public async Task<IActionResult> Create(Guid DoctorId, string Description, string Notes)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
 
-                await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, DateTime.Now);
+                await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, DateTime.Now, Description, Notes);
 
                 return RedirectToAction(nameof(Index));
             }
