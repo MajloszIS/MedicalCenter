@@ -53,9 +53,12 @@ else
                             <span class="badge @statusClass">@item.StatusName</span>
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-outline-secondary" title="Szczegóły">
-                                <i class="fa-solid fa-circle-info"></i>
-                            </button>
+                            <a asp-action="Details" asp-controller="Appointment"
+                               asp-route-AppointmentId="@item.Id" class="btn btn-medical w-100 fw-bold">
+                                <button class="btn btn-sm btn-outline-secondary" title="Szczegóły">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </button>
+                            </a>
                         </td>
                     </tr>
                 }

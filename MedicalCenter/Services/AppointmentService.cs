@@ -86,5 +86,39 @@ namespace MedicalCenter.Services
 
             await _appointmentRepository.CreateAppointmentAsync(appointment);
         }
+
+        public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            var appointmentDto = new AppointmentDto
+            {
+                Id = appointment.Id,
+                Doctor = new DoctorDto
+                {
+                    Id = appointment.Doctor.Id,
+                    FirstName = appointment.Doctor.User.FirstName,
+                    LastName = appointment.Doctor.User.LastName,
+                    Phone = appointment.Doctor.User.Phone,
+                    SpecializationName = appointment.Doctor.Specialization.Name
+                },
+                Patient = new PatientDto
+                {
+                    Id = appointment.Patient.Id,
+                    FirstName = appointment.Patient.User.FirstName,
+                    LastName = appointment.Patient.User.LastName,
+                    Phone = appointment.Patient.User.Phone,
+                    Pesel = appointment.Patient.Pesel
+                },
+                AppointmentDate = appointment.AppointmentDate,
+                StatusName = appointment.Status.Name,
+                Description = appointment.Description,
+                Notes = appointment.Notes ?? "Brak notatek"
+            };
+            return appointmentDto;
+        }
     }
 }

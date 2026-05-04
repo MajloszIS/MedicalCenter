@@ -54,5 +54,11 @@ namespace MedicalCenter.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Details(Guid AppointmentId)
+        {
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(AppointmentId);
+            return View(appointment);
+        }
     }
 }

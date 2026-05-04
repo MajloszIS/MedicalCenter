@@ -1,0 +1,34 @@
+﻿@model MedicalCenter.DTOs.AppointmentDto
+
+<h2>Wizyta</h2>
+
+<div>
+	<h1>Lekarz</h1>
+	<p>
+		@Model.Doctor.FirstName @Model.Doctor.LastName
+	</p>
+	<p>
+		Specjalizacja: @Model.Doctor.SpecializationName
+	</p>
+</div>
+
+<div>
+	<h1>Wizyta</h1>
+	<p>
+		@Model.Description
+	</p>
+	<p>
+		Godzina: @Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")
+	</p>
+	<p>
+		Status: @Model.StatusName
+	</p>
+</div>
+
+<div>
+	<h1>Notatki</h1>
+	<p>
+		@Model.Notes
+	</p>
+	
+</div>
