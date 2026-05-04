@@ -38,13 +38,11 @@
                 </div>
 
                 <div class="mt-4 pt-3 border-top text-center">
-                    <form asp-action="Create" asp-controller="Appointment" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="DoctorId" value="@item.Id" />
-                        <button type="submit" class="btn btn-medical w-100 fw-bold">
-                            <i class="fa-regular fa-calendar-plus me-2"></i>Umów wizytę
-                        </button>
-                    </form>
+                    <a asp-action="Create" asp-controller="Appointment"
+                           asp-route-DoctorId="@item.Id"
+                           class="btn btn-medical w-100 fw-bold">
+                        <i class="fa-regular fa-calendar-plus me-2"></i>Umów wizytę
+                    </a>
                 </div>
             </div>
         </div>
