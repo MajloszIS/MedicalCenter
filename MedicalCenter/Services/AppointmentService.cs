@@ -2,6 +2,8 @@
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 
 namespace MedicalCenter.Services
@@ -70,15 +72,15 @@ namespace MedicalCenter.Services
 
             return appointmentDto;
         }
-        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string notes)
+        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string? notes)
         {
             var appointment = new Appointment
             {
                 PatientId = patientId,
                 DoctorId = doctorId,
                 Description = description,
-                Notes = notes,
-                StatusId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                Notes = notes ?? string.Empty,
+                StatusId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
                 AppointmentDate = appointmentDate
             };
 

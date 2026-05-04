@@ -31,21 +31,23 @@ namespace MedicalCenter.Controllers
             return View(appointments);
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Create(Guid DoctorId)
         {
+            ViewBag.DoctorId = DoctorId;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Guid DoctorId, string Description, string Notes)
+        public async Task<IActionResult> Create(Guid DoctorId, DateTime appointmentDate, string Description, string? Notes)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
 
-                await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, DateTime.Now, Description, Notes);
+                await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, appointmentDate, Description, Notes);
 
                 return RedirectToAction(nameof(Index));
             }
