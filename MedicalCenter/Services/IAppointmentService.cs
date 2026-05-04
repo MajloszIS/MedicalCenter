@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Services
 {
@@ -9,5 +10,6 @@ namespace MedicalCenter.Services
         public Task<List<AppointmentDto>> GetAppointmentsByPatientIdAsync(Guid patientId);
         public Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string? notes);
         public Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId);
+        public Task CancelAppointmentAsync(Guid appointmentId);
     }
 }

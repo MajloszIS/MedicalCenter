@@ -60,5 +60,13 @@ namespace MedicalCenter.Controllers
             var appointment = await _appointmentService.GetAppointmentByIdAsync(AppointmentId);
             return View(appointment);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancel(Guid AppointmentId)
+        {
+            await _appointmentService.CancelAppointmentAsync(AppointmentId);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

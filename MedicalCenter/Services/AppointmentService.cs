@@ -120,5 +120,15 @@ namespace MedicalCenter.Services
             };
             return appointmentDto;
         }
+        public async Task CancelAppointmentAsync(Guid appointmentId)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            appointment.StatusId = Guid.Parse("12345678-1234-1234-1234-123456789012");
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+        }
     }
 }
