@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Stripe;
+using Stripe.Checkout;
 
 namespace MedicalCenter.Controllers
 {
@@ -31,6 +33,7 @@ namespace MedicalCenter.Controllers
 
             return View(cart);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()
@@ -42,11 +45,73 @@ namespace MedicalCenter.Controllers
             var patient = await _patientService.GetPatientByUserIdAsync(userId);
             if (patient == null) return NotFound();
 
+            var cart = await _cartService.GetCartAsync(patient.Id);
+            if (cart == null || !cart.Items.Any()) return RedirectToAction("Index");
+
+            var domain = "https://localhost:7100";
+
+            var lineItems = new List<SessionLineItemOptions>();
+            foreach (var item in cart.Items)
+            {
+                lineItems.Add(new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Medicine.Price * 100),
+                        Currency = "pln",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Medicine.Name,
+                        },
+                    },
+                    Quantity = item.Quantity,
+                });
+            }
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card", "blik", "p24" },
+                LineItems = lineItems,
+                Mode = "payment",
+                SuccessUrl = domain + "/Cart/OrderSuccess",
+                CancelUrl = domain + "/Cart/OrderCancel",
+            };
+            var service = new SessionService();
+            Session session = service.Create(options);
+
+
             await _cartService.CreateOrderFromCartAsync(patient.Id);
+            Response.Headers.Add("Location", session.Url);
 
-            TempData["SuccessMessage"] = "Zamówienie zostało złożone pomyślnie!";
+            return new StatusCodeResult(303);
+        }
+        [HttpGet]
+        public IActionResult OrderSuccess(string sessionId)
+        {
+            TempData["SuccessMessage"] = "Płatność zaakceptowana! Twoje zamówienie jest w drodze.";
+            return View();
+        }
 
-            return RedirectToAction("Index", "Medicines");
+        [HttpGet]
+        public IActionResult OrderCancel()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveItem(Guid medicineId)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdString == null) return Unauthorized();
+            var userId = Guid.Parse(userIdString);
+
+            var patient = await _patientService.GetPatientByUserIdAsync(userId);
+            if (patient == null) return NotFound();
+
+            await _cartService.RemoveFromCartAsync(patient.Id, medicineId);
+
+            TempData["SuccessMessage"] = "Przedmiot został usunięty z koszyka.";
+            return RedirectToAction("Index");
         }
     }
 }

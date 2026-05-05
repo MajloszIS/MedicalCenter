@@ -7,5 +7,6 @@ namespace MedicalCenter.Services
         Task<Cart> GetCartAsync(Guid patientId);
         Task AddToCartAsync(Guid patientId, Guid medicineId, int quantity);
         Task CreateOrderFromCartAsync(Guid patientId);
+        Task RemoveFromCartAsync(Guid patientId, Guid medicineId);
     }
 }

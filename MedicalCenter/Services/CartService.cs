@@ -78,5 +78,19 @@ namespace MedicalCenter.Services
             _context.CartItems.RemoveRange(cart.Items);
             await _context.SaveChangesAsync();
         }
+        public async Task RemoveFromCartAsync(Guid patientId, Guid medicineId)
+        {
+            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.PatientId == patientId);
+            if (cart == null) return;
+
+            var itemToRemove = await _context.CartItems
+                .FirstOrDefaultAsync(i => i.CartId == cart.Id && i.MedicineId == medicineId);
+
+            if (itemToRemove != null)
+            {
+                _context.CartItems.Remove(itemToRemove);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
