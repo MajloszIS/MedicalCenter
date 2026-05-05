@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260428211834_UpdateSeeds")]
+    partial class UpdateSeeds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +63,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Appointment", b =>
@@ -72,16 +75,8 @@ namespace MedicalCenter.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
@@ -97,7 +92,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.AppointmentStatus", b =>
@@ -113,7 +108,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppointmentStatuses", (string)null);
+                    b.ToTable("AppointmentStatuses");
 
                     b.HasData(
                         new
@@ -146,7 +141,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.CartItem", b =>
@@ -170,7 +165,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("MedicineId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Courier", b =>
@@ -186,7 +181,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Couriers", (string)null);
+                    b.ToTable("Couriers");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Delivery", b =>
@@ -217,7 +212,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Deliveries", (string)null);
+                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.DeliveryStatus", b =>
@@ -233,7 +228,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryStatuses", (string)null);
+                    b.ToTable("DeliveryStatuses");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Department", b =>
@@ -249,7 +244,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Diagnosis", b =>
@@ -270,7 +265,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("MedicalRecordId");
 
-                    b.ToTable("Diagnoses", (string)null);
+                    b.ToTable("Diagnoses");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Doctor", b =>
@@ -297,7 +292,7 @@ namespace MedicalCenter.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
 
                     b.HasData(
                         new
@@ -327,7 +322,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorDepartments", (string)null);
+                    b.ToTable("DoctorDepartments");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.MedicalRecord", b =>
@@ -351,7 +346,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("MedicalRecords", (string)null);
+                    b.ToTable("MedicalRecords");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Medicine", b =>
@@ -375,7 +370,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Medicines", (string)null);
+                    b.ToTable("Medicines");
 
                     b.HasData(
                         new
@@ -421,7 +416,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicineCategories", (string)null);
+                    b.ToTable("MedicineCategories");
 
                     b.HasData(
                         new
@@ -462,7 +457,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.OrderItem", b =>
@@ -486,7 +481,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.OrderStatus", b =>
@@ -502,7 +497,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderStatuses", (string)null);
+                    b.ToTable("OrderStatuses");
 
                     b.HasData(
                         new
@@ -549,7 +544,7 @@ namespace MedicalCenter.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
 
                     b.HasData(
                         new
@@ -579,7 +574,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("MedicalRecordId");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.PrescriptionItem", b =>
@@ -603,7 +598,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("PrescriptionItems", (string)null);
+                    b.ToTable("PrescriptionItems");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Review", b =>
@@ -635,7 +630,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.Role", b =>
@@ -652,7 +647,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
 
                     b.HasData(
                         new
@@ -690,7 +685,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
 
                     b.HasData(
                         new
@@ -723,7 +718,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("Treatments", (string)null);
+                    b.ToTable("Treatments");
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.User", b =>
@@ -763,7 +758,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new

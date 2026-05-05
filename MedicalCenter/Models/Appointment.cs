@@ -21,6 +21,10 @@ namespace MedicalCenter.Models
         [DataType(DataType.DateTime)]
         public DateTime AppointmentDate { get; set; }
 
+        public string Description { get; set; }
+
+        public string Notes { get; set; }
+
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
         public AppointmentStatus Status { get; set; }

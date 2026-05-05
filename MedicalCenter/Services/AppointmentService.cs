@@ -2,6 +2,8 @@
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 
 namespace MedicalCenter.Services
@@ -70,17 +72,63 @@ namespace MedicalCenter.Services
 
             return appointmentDto;
         }
-        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate)
+        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string? notes)
         {
             var appointment = new Appointment
             {
                 PatientId = patientId,
                 DoctorId = doctorId,
+                Description = description,
+                Notes = notes ?? string.Empty,
                 StatusId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
                 AppointmentDate = appointmentDate
             };
 
             await _appointmentRepository.CreateAppointmentAsync(appointment);
+        }
+
+        public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            var appointmentDto = new AppointmentDto
+            {
+                Id = appointment.Id,
+                Doctor = new DoctorDto
+                {
+                    Id = appointment.Doctor.Id,
+                    FirstName = appointment.Doctor.User.FirstName,
+                    LastName = appointment.Doctor.User.LastName,
+                    Phone = appointment.Doctor.User.Phone,
+                    SpecializationName = appointment.Doctor.Specialization.Name
+                },
+                Patient = new PatientDto
+                {
+                    Id = appointment.Patient.Id,
+                    FirstName = appointment.Patient.User.FirstName,
+                    LastName = appointment.Patient.User.LastName,
+                    Phone = appointment.Patient.User.Phone,
+                    Pesel = appointment.Patient.Pesel
+                },
+                AppointmentDate = appointment.AppointmentDate,
+                StatusName = appointment.Status.Name,
+                Description = appointment.Description,
+                Notes = appointment.Notes ?? "Brak notatek"
+            };
+            return appointmentDto;
+        }
+        public async Task CancelAppointmentAsync(Guid appointmentId)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            appointment.StatusId = Guid.Parse("12345678-1234-1234-1234-123456789012");
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
     }
 }

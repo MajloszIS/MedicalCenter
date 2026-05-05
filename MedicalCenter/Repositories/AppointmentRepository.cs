@@ -25,7 +25,11 @@ namespace MedicalCenter.Repositories
         {
             return _context.Appointments
                 .Include(a => a.Patient)
+                    .ThenInclude(p => p.User)
                 .Include(a => a.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.Specialization)
                 .Include(a => a.Status)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }

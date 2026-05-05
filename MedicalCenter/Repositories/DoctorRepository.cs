@@ -21,7 +21,7 @@ namespace MedicalCenter.Repositories
         }
         public Task<Doctor> GetDoctorByIdAsync(Guid id)
         {
-            return _context.Doctors.FirstOrDefaultAsync(d => d.Id == id);
+            return _context.Doctors.Include(d => d.User).Include(d => d.Specialization).FirstOrDefaultAsync(d => d.Id == id);
         }
         public Task CreateDoctorAsync(Doctor doctor)
         {

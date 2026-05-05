@@ -1,30 +1,65 @@
 ﻿@model List<MedicalCenter.DTOs.DoctorDto>
 
-<h2>Lekarze</h2>
+@{
+    ViewData["Title"] = "Nasi Specjaliści";
+}
 
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Telefon</th>
-            <th>Specjalizacja</th>
-        </tr>
-    </thead>
+<div class="row mb-4 align-items-end">
+    <div class="col-md-8">
+        <h2 class="page-title mb-0"><i class="fa-solid fa-user-md me-2"></i>Znajdź Specjalistę</h2>
+        <p class="text-muted">Wybierz lekarza i umów się na dogodny termin.</p>
+    </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+            <input type="text" id="doctorSearch" class="form-control border-start-0" placeholder="Szukaj specjalizacji lub nazwiska...">
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.FirstName</td>
-            <td>@item.LastName</td>
-            <td>@item.Phone</td>
-            <td>@item.SpecializationName</td>
-            <td>
-                <form asp-action="Create" asp-controller="Appointment" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="DoctorId" value="@item.Id" />
-                    <button type="submit">Umów wizytę</button>
-                </form>
-            </td>
-        </tr>
+        <div class="col-md-6 col-lg-4 doctor-item">
+            <div class="medical-card h-100 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">@item.FirstName @item.LastName</h5>
+                        <span class="badge bg-info text-dark">@item.SpecializationName</span>
+                    </div>
+                </div>
+
+                <div class="flex-grow-1 border-top pt-3">
+                    <p class="small text-muted mb-2"><i class="fa-solid fa-phone me-2"></i>Kontakt: @item.Phone</p>
+                    <p class="small text-muted mb-0"><i class="fa-solid fa-clock me-2"></i>Dostępność: Pon-Pt (8:00 - 16:00)</p>
+                </div>
+
+                <div class="mt-4 pt-3 border-top text-center">
+                    <a asp-action="Create" asp-controller="Appointment"
+                           asp-route-DoctorId="@item.Id"
+                           class="btn btn-medical w-100 fw-bold">
+                        <i class="fa-regular fa-calendar-plus me-2"></i>Umów wizytę
+                    </a>
+                </div>
+            </div>
+        </div>
     }
-</table>
+</div>
+
+@section Scripts {
+    <script>
+        // Proste filtrowanie lekarzy w czasie rzeczywistym
+        document.getElementById('doctorSearch').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let cards = document.querySelectorAll('.doctor-item');
+
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                card.style.display = text.includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+}
