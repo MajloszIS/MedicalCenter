@@ -18,5 +18,6 @@ namespace MedicalCenter.Models
         public Doctor Doctor { get; set; }
 
         public List<Diagnosis> Diagnoses { get; set; }
+        public List<Prescription> Prescriptions { get; set; }
     }
 }
