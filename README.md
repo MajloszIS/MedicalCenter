@@ -10,6 +10,7 @@ Aplikacja webowa centrum medycznego zbudowana w ASP.NET Core MVC z wykorzystanie
 - **SQL Server** — baza danych (LocalDB na Windows, Docker na macOS)
 - **BCrypt.Net-Next 4.1.0** — hashowanie haseł
 - **Swashbuckle.AspNetCore 10.1.7** — dokumentacja API (Swagger)
+- **Bootstrap 5** — framework CSS
 ## Architektura
  
 Aplikacja wykorzystuje architekturę warstwową:
@@ -33,6 +34,7 @@ Controllers → Services → Repositories → Database
 - Przeglądanie listy lekarzy ze specjalizacjami
 - Umawianie wizyt u lekarzy
 - Przeglądanie własnych wizyt
+- Anulowanie wizyt
 ### Panel lekarza
 - Przeglądanie własnych wizyt
 - Przeglądanie listy swoich pacjentów
@@ -47,7 +49,7 @@ Controllers → Services → Repositories → Database
  
 - .NET 9.0 SDK
 - SQL Server (LocalDB na Windows lub Docker na macOS/Linux)
- 
+- Git
 
 ## 🖥️ Demo
 ![demo](./images/HomeView.png)
@@ -56,6 +58,36 @@ Controllers → Services → Repositories → Database
 ![demo](./images/AdminHomeView.png)
 
 - Repository: https://github.com/MajloszIS/MedicalCenter
+
+---
+
+## Instalacja i konfiguracja
+ 
+### Windows
+ 
+1. Zainstaluj [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+2. Sklonuj repozytorium:
+```bash
+git clone https://github.com/MajloszIS/MedicalCenter
+cd MedicalCenter
+```
+ 
+3. Przejdź do folderu projektu:
+```bash
+cd MedicalCenter
+```
+ 
+4. Zastosuj migracje (LocalDB jest domyślnie dostępny na Windows):
+```bash
+dotnet ef database update
+```
+ 
+5. Uruchom aplikację:
+```bash
+dotnet run
+```
+ 
+6. Otwórz przeglądarkę pod adresem `https://localhost:<port>`
 
 ---
 
