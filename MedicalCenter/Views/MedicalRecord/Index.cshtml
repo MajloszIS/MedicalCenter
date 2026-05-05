@@ -1,0 +1,37 @@
+﻿@model MedicalCenter.DTOs.MedicalRecordDto
+
+<h2>Wizyta</h2>
+
+<div>
+	<h1>Diagnozy</h1>
+	@foreach (var diagnosis in Model.Diagnoses)
+	{
+		<p>@diagnosis.Description</p>
+
+		<h2>Leczenie</h2>
+		@foreach (var treatments in diagnosis.Treatments)
+		{
+			<p>@treatments.Description</p>
+		}
+	}
+
+</div>
+
+<div>
+	<h1>Recepty</h1>
+	@foreach (var prescription in Model.Prescriptions)
+	{
+		
+		<h2>Leki</h2>
+		@foreach (var item in prescription.Items)
+		{
+
+			<p>Ilość : @item.Quantity</p>
+			<p>Lek : @item.Medicine</p>
+		}
+	}
+
+</div>
+</div>
+
+	
