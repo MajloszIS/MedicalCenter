@@ -1,17 +1,41 @@
 ﻿@model MedicalCenter.DTOs.MedicalRecordDto
 
-<h2>Wizyta</h2>
+<h2>Karta Medyczna</h2>
 
 <div>
 	<h1>Diagnozy</h1>
-	@foreach (var diagnosis in Model.Diagnoses)
-	{
-		<p>@diagnosis.Description</p>
+	<div>
+		<form asp-action="AddDiagnosis" asp-controller="MedicalRecord" method="post">
+			@Html.AntiForgeryToken()
 
-		<h2>Leczenie</h2>
-		@foreach (var treatments in diagnosis.Treatments)
+			<input type="hidden" name="medicalRecordId" value="@Model.Id" />
+			<input type="hidden" name="patientId" value="@Model.PatientId" />
+
+			<div>
+				<label>Opis</label>
+				<textarea name="description" required></textarea>
+			</div>
+
+			<div>
+				@if (ViewBag.Error != null)
+				{
+					<span>@ViewBag.Error</span>
+				}
+			</div>
+			<button type="submit">Dodaj</button>
+		</form>
+	</div>
+	@if(Model.Diagnoses != null && Model.Diagnoses.Any())
+	{
+		@foreach (var diagnosis in Model.Diagnoses)
 		{
-			<p>@treatments.Description</p>
+			<p>@diagnosis.Description</p>
+
+			<h2>Leczenie</h2>
+			@foreach (var treatments in diagnosis.Treatments)
+			{
+				<p>@treatments.Description</p>
+			}
 		}
 	}
 
@@ -19,19 +43,23 @@
 
 <div>
 	<h1>Recepty</h1>
-	@foreach (var prescription in Model.Prescriptions)
+	@if (Model.Prescriptions != null && Model.Prescriptions.Any())
 	{
-		
-		<h2>Leki</h2>
-		@foreach (var item in prescription.Items)
+		@foreach (var prescription in Model.Prescriptions)
 		{
-
-			<p>Ilość : @item.Quantity</p>
-			<p>Lek : @item.Medicine</p>
+			@if (prescription.Items != null && prescription.Items.Any())
+			{
+				<h2>Leki</h2>
+				@foreach (var item in prescription.Items)
+				{
+					<p>Ilość : @item.Quantity</p>
+					<p>Lek : @item.Medicine</p>
+				}
+			}
 		}
 	}
 
 </div>
-</div>
+
 
 	

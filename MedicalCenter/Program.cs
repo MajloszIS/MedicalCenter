@@ -24,6 +24,7 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<ISpecializationsRepository, SpecializationsRepository>();
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
+builder.Services.AddScoped<IDiagnosisRepository, DiagnosisRepository>();
 
 // dodanie serwisu
 builder.Services.AddScoped<IUserService, UserService>();
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IDiagnosisService, DiagnosisService>();
 
 // dodanie swaggera 
 builder.Services.AddEndpointsApiExplorer();
