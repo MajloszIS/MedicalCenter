@@ -50,22 +50,26 @@
 			<input type="hidden" name="medicalRecordId" value="@Model.Id" />
 			<input type="hidden" name="patientId" value="@Model.PatientId" />
 
-			<div id="medicines-container">
-				@if (ViewBag.Medicines != null)
+			<div>
+				<label>Wybierz lek:</label>
+				<select id="medicineSelect">
+					@foreach (var medicine in ViewBag.Medicines)
 					{
-						@foreach (var medicine in ViewBag.Medicines)
-						{
-						<div class="medicine-item">
-							<label>Lek</label>
-							<input type="text" name="medicine.Name" value="@medicine.Name" required />
-							<label>Ilość</label>
-						
-						</div>
-						}	
+						<option value="@medicine.Id" data-name="@medicine.Name">@medicine.Name</option>
 					}
+				</select>
+
+				<label>Ilość:</label>
+				<input type="number" id="quantityInput" min="1" value="1" />
+
+				<button type="button" onclick="addMedicine()">+ Dodaj lek</button>
 			</div>
 
-			<button type="button" onclick="addMedicine()">+ Dodaj lek</button>
+		
+
+			<div id="selected-medicines">
+				<!-- tu będą wybrane leki -->
+			</div>
 
 			<div>
 				@if (ViewBag.Error != null)
@@ -89,7 +93,7 @@
 					@foreach (var item in prescription.Items)
 					{
 						<p>Ilość : @item.Quantity</p>
-						<p>Lek : @item.Medicine</p>
+						<p>Lek : @item.Medicine.Name</p>
 					}
 				}
 			}
@@ -97,3 +101,36 @@
 	</div>
 
 </div>
+
+
+
+@section Scripts {
+	<script>
+		let itemCount = 0;
+
+		function addMedicine() {
+			const select = document.getElementById('medicineSelect');
+			const quantity = document.getElementById('quantityInput').value;
+			const medicineId = select.value;
+			const medicineName = select.options[select.selectedIndex].dataset.name;
+
+			if (!medicineId || quantity < 1) return;
+
+			const container = document.getElementById('selected-medicines');
+			const div = document.createElement('div');
+			div.id = `item-${itemCount}`;
+			div.innerHTML = `
+				<span>${medicineName} — ilość: ${quantity}</span>
+				<input type="hidden" name="medicineIds" value="${medicineId}" />
+				<input type="hidden" name="quantities" value="${quantity}" />
+				<button type="button" onclick="removeItem('item-${itemCount}')">Usuń</button>
+			`;
+			container.appendChild(div);
+			itemCount++;
+		}
+
+		function removeItem(id) {
+			document.getElementById(id).remove();
+		}
+	</script>
+}

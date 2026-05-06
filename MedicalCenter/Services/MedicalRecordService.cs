@@ -43,7 +43,13 @@ namespace MedicalCenter.Services
                         Id = i.Id,
                         PrescriptionId = i.PrescriptionId,
                         MedicineId = i.MedicineId,
-                        Quantity = i.Quantity
+                        Quantity = i.Quantity,
+                        Medicine = i.Medicine != null ? new MedicineDto
+                        {
+                            Id = i.Medicine.Id,
+                            Name = i.Medicine.Name,
+                            Price = i.Medicine.Price
+                        } : null
                     }).ToList()
                 }).ToList()
             };

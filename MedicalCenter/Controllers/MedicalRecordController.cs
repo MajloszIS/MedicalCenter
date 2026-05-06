@@ -74,9 +74,18 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId, List<Guid> medicineIds, List<int> quantities)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+
+            foreach (var id in medicineIds)
+            {
+                Console.WriteLine($"MedicineId: {id}");
+            }
+
             var prescriptionDto = new PrescriptionDto
             {
                 MedicalRecordId = medicalRecordId,
+                DoctorId = doctor.Id,
                 Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index] }).ToList()
             };
             await _prescriptionService.CreatePrescription(prescriptionDto);

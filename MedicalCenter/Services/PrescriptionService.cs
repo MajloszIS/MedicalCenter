@@ -44,6 +44,7 @@ namespace MedicalCenter.Services
                 Items = prescriptionDto.Items.Select(i => new PrescriptionItem
                 {
                     Id = i.Id,
+                    MedicineId = i.MedicineId,
                     PrescriptionId = i.PrescriptionId,
                     Quantity = i.Quantity,
                 }).ToList()
