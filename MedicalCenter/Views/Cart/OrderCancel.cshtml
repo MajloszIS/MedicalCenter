@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Płatność anulowana";
+}
+
+<div>
+    <div style="max-width: 600px; border-radius: 15px;">
+
+        <h2>Płatność została przerwana</h2>
+
+        <p>Zrezygnowałeś z płatności lub wystąpił błąd w Twoim banku.</p>
+        <p>
+            Żadne środki <strong>nie zostały</strong> pobrane z Twojego konta. Twoje zamówienie wciąż czeka w koszyku, więc możesz spróbować zapłacić ponownie.
+        </p>
+
+        <hr>
+
+        <div>
+            <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-warning">
+                Wróć do mojego koszyka
+            </a>
+        </div>
+    </div>
+</div>

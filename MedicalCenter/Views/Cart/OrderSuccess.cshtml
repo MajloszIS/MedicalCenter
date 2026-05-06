@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Płatność zakończona sukcesem";
+}
+
+<div>
+    <div style="max-width: 600px; border-radius: 15px;">
+
+        <h2>Dziękujemy za zamówienie!</h2>
+
+        <p>Twoja płatność została pomyślnie przetworzona.</p>
+        <p>
+            Leki zostały przekazane do realizacji. Wkrótce skompletujemy Twoje zamówienie.
+        </p>
+
+        <hr>
+
+        <div>
+            <a asp-controller="Medicines" asp-action="Index" class="btn btn-outline-primary">
+                Wróć do apteki
+            </a>
+        </div>
+    </div>
+</div>
