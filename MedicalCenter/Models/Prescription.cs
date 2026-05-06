@@ -13,6 +13,6 @@ namespace MedicalCenter.Models
         public MedicalRecord MedicalRecord { get; set; }
         public Doctor Doctor { get; set; }
 
-        public List<PrescriptionItem> Items { get; set; }
+        public List<PrescriptionItem> Items { get; set; } = new List<PrescriptionItem>();
     }
 }

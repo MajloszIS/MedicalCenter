@@ -11,12 +11,16 @@ namespace MedicalCenter.Controllers
         private readonly IMedicalRecordService _medicalRecordService;
         private readonly IDoctorService _doctorService;
         private readonly IDiagnosisService _diagnosisService;
+        private readonly IMedicineService _medicineService;
+        private readonly IPrescriptionService _prescriptionService;
 
-        public MedicalRecordController(IMedicalRecordService medicalRecordService, IDoctorService doctorService, IDiagnosisService diagnosisService)
+        public MedicalRecordController(IMedicalRecordService medicalRecordService, IDoctorService doctorService, IDiagnosisService diagnosisService, IMedicineService medicineService, IPrescriptionService prescriptionService)
         {
             _medicalRecordService = medicalRecordService;
             _doctorService = doctorService;
             _diagnosisService = diagnosisService;
+            _medicineService = medicineService;
+            _prescriptionService = prescriptionService;
         }
 
         [Authorize(Roles = "Doctor")]
@@ -26,6 +30,9 @@ namespace MedicalCenter.Controllers
             var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
 
             var medicalRecord = await _medicalRecordService.GetOrCreateAsync(doctor.Id, patientId);
+
+            var medicines = await _medicineService.GetAvailableMedicinesAsync();
+            ViewBag.Medicines = medicines;
 
             return View(medicalRecord);
         }
@@ -49,6 +56,30 @@ namespace MedicalCenter.Controllers
                 MedicalRecordId = medicalRecordId
             };
             await _diagnosisService.CreateDiagnosisAsync(diagnosisDto);
+
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
+
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId)
+        {
+            ViewBag.MedicalRecordId = medicalRecordId;
+            ViewBag.PatientId = patientId; 
+
+            return View();
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId, List<Guid> medicineIds, List<int> quantities)
+        {
+            var prescriptionDto = new PrescriptionDto
+            {
+                MedicalRecordId = medicalRecordId,
+                Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index] }).ToList()
+            };
+            await _prescriptionService.CreatePrescription(prescriptionDto);
 
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
