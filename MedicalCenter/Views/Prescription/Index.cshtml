@@ -1,0 +1,15 @@
+﻿@model List<MedicalCenter.DTOs.PrescriptionDto>
+
+<h2>Recepty</h2>
+
+<table>
+    @foreach (var prescription in Model)
+    {
+        <p>Recepta</p>
+
+        @foreach (var item in prescription.Items)
+        {
+            <p>@item.Medicine.Name - @item.Quantity</p>
+        }
+    }
+</table>
