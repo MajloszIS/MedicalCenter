@@ -43,6 +43,5 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Patients.Include(p => p.User).FirstOrDefaultAsync(p => p.UserId == userId);
         }
-
     }
 }

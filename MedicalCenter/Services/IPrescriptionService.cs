@@ -8,5 +8,6 @@ namespace MedicalCenter.Services
         public Task CreatePrescription(PrescriptionDto prescriptionDto);
         public Task UpdatePrescription(PrescriptionDto prescriptionDto);
         public Task DeletePrescription(Guid id);
+        public Task<List<PrescriptionDto>> GetPrescriptionsByPatientIdAsync(Guid patientId);
     }
 }

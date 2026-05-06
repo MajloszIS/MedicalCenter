@@ -36,5 +36,15 @@ namespace MedicalCenter.Repositories
             _context.Prescriptions.Remove(prescription);
             await _context.SaveChangesAsync();
         }
+        public Task<List<Prescription>> GetPrescriptionsByPatientIdAsync(Guid patientId)
+        {
+            return _context.Prescriptions
+                .Include(p => p.MedicalRecord)
+                .Include(p => p.Doctor)
+                .Include(p => p.Items)
+                    .ThenInclude(i => i.Medicine)
+                .Where(p => p.MedicalRecord.PatientId == patientId)
+                .ToListAsync();
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace MedicalCenter.Repositories
         public Task CreatePrescriptionAsync(Prescription prescription);
         public Task UpdatePrescriptionAsync(Prescription prescription);
         public Task DeletePrescriptionAsync(Prescription prescription);
+        public Task<List<Prescription>> GetPrescriptionsByPatientIdAsync(Guid patientId);
+
     }
 }

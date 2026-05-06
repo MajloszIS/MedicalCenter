@@ -78,5 +78,28 @@ namespace MedicalCenter.Services
                 await _prescriptionRepository.DeletePrescriptionAsync(prescription);
             }
         }
+        public async Task<List<PrescriptionDto>> GetPrescriptionsByPatientIdAsync(Guid patientId)
+        {
+            var prescriptions = await _prescriptionRepository.GetPrescriptionsByPatientIdAsync(patientId);
+            return prescriptions.Select(p => new PrescriptionDto
+            {
+                Id = p.Id,
+                MedicalRecordId = p.MedicalRecordId,
+                DoctorId = p.DoctorId,
+                Items = p.Items.Select(i => new PrescriptionItemDto
+                {
+                    Id = i.Id,
+                    PrescriptionId = i.PrescriptionId,
+                    Quantity = i.Quantity,
+                    Medicine = new MedicineDto
+                    {
+                        Id = i.Medicine.Id,
+                        Name = i.Medicine.Name,
+                        Price = i.Medicine.Price
+                    }
+                }).ToList()
+            }).ToList();
+        }
+
     }
 }
