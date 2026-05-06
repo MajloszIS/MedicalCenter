@@ -42,24 +42,58 @@
 </div>
 
 <div>
-	<h1>Recepty</h1>
-	@if (Model.Prescriptions != null && Model.Prescriptions.Any())
-	{
-		@foreach (var prescription in Model.Prescriptions)
-		{
-			@if (prescription.Items != null && prescription.Items.Any())
-			{
-				<h2>Leki</h2>
-				@foreach (var item in prescription.Items)
+	<div>
+		<h1>Dodaj nową Receptę</h1>
+		<form asp-action="AddPrescription" asp-controller="MedicalRecord" method="post">
+			@Html.AntiForgeryToken()
+
+			<input type="hidden" name="medicalRecordId" value="@Model.Id" />
+			<input type="hidden" name="patientId" value="@Model.PatientId" />
+
+			<div id="medicines-container">
+				@if (ViewBag.Medicines != null)
+					{
+						@foreach (var medicine in ViewBag.Medicines)
+						{
+						<div class="medicine-item">
+							<label>Lek</label>
+							<input type="text" name="medicine.Name" value="@medicine.Name" required />
+							<label>Ilość</label>
+						
+						</div>
+						}	
+					}
+			</div>
+
+			<button type="button" onclick="addMedicine()">+ Dodaj lek</button>
+
+			<div>
+				@if (ViewBag.Error != null)
 				{
-					<p>Ilość : @item.Quantity</p>
-					<p>Lek : @item.Medicine</p>
+					<span>@ViewBag.Error</span>
+				}
+			</div>
+			<button type="submit">Dodaj</button>
+		</form>
+	</div>
+
+	<div>
+		<h1>Recepty</h1>
+		@if (Model.Prescriptions != null && Model.Prescriptions.Any())
+		{
+			@foreach (var prescription in Model.Prescriptions)
+			{
+				@if (prescription.Items != null && prescription.Items.Any())
+				{
+					<h2>Leki</h2>
+					@foreach (var item in prescription.Items)
+					{
+						<p>Ilość : @item.Quantity</p>
+						<p>Lek : @item.Medicine</p>
+					}
 				}
 			}
 		}
-	}
+	</div>
 
 </div>
-
-
-	

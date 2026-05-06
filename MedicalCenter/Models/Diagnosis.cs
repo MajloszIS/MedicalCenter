@@ -15,6 +15,6 @@ namespace MedicalCenter.Models
 
         public MedicalRecord MedicalRecord { get; set; }
 
-        public List<Treatment> Treatments { get; set; }
+        public List<Treatment> Treatments { get; set; } = new List<Treatment>();
     }
 }
