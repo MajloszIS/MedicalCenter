@@ -33,6 +33,8 @@ namespace MedicalCenter.Models
         [ForeignKey("Role")]
         public int RoleId { get; set; }
 
+        public string? ProfilePicturePath { get; set; }
+
         public Role Role { get; set; }
 
         public Doctor Doctor { get; set; }

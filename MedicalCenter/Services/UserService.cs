@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 
 namespace MedicalCenter.Services
@@ -45,6 +46,15 @@ namespace MedicalCenter.Services
             };
 
             return result;
+        }
+
+        public async Task UpdateProfilePictureAsync(Guid userId, string pictureFilePath)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return;
+
+            user.ProfilePicturePath = pictureFilePath;
+            await _userRepository.UpdateUserAsync(user);
         }
     }
 }

@@ -86,7 +86,8 @@ namespace MedicalCenter.Services
                 Phone = user.Phone,
                 Email = user.Email,
                 Pesel = patient.Pesel,
-                BirthDate = patient.BirthDate
+                BirthDate = patient.BirthDate,
+                ProfilePicturePath = user.ProfilePicturePath
             };
             return patientProfileDto;
         }

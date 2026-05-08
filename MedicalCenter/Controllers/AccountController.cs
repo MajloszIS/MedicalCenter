@@ -132,5 +132,47 @@ namespace MedicalCenter.Controllers
 
             return View(doctorProfile);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
+        {
+            if (profilePicture == null || profilePicture.Length == 0)
+            {
+                ViewBag.Error = "Nie wybrano pliku";
+                return RedirectToAction("Profile");
+            }
+
+            // sprawdzenie rozszerzen
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var extension = Path.GetExtension(profilePicture.FileName).ToLower();
+            if (!allowedExtensions.Contains(extension))
+            {
+                ViewBag.Error = "Dozwolone tylko JPG i PNG";
+                return RedirectToAction("Profile");
+            }
+
+            // unikalna nazwa pliku
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var uploadsFolder = Path.Combine("wwwroot", "images", "profiles");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            // zapisz plik
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await profilePicture.CopyToAsync(stream);
+            }
+
+            // zapisz ścieżkę w bazie
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _userService.UpdateProfilePictureAsync(Guid.Parse(userId), $"/images/profiles/{fileName}");
+
+            return RedirectToAction("PatientProfile");
+        }
     }
 }
