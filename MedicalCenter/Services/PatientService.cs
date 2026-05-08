@@ -29,7 +29,7 @@ namespace MedicalCenter.Services
                 Pesel = p.Pesel
             }).ToList();
 
-            return patientDtos; 
+            return patientDtos;
         }
 
         public async Task RegisterAsync(PatientRegisterDto dto)
@@ -71,8 +71,24 @@ namespace MedicalCenter.Services
                 Phone = patient.User.Phone,
                 Pesel = patient.Pesel
             };
-            
+
             return patientDto;
+        }
+
+        public async Task<UpdatePatientProfileDto> GetPatientProfileAsync(Guid id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
+            var patientProfileDto = new UpdatePatientProfileDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.Phone,
+                Email = user.Email,
+                Pesel = patient.Pesel,
+                BirthDate = patient.BirthDate
+            };
+            return patientProfileDto;
         }
     }
 }

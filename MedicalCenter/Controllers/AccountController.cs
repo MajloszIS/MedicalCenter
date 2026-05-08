@@ -91,5 +91,39 @@ namespace MedicalCenter.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Profile()
+        {
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (User.IsInRole("Patient"))
+                return RedirectToAction("PatientProfile");
+            else if (User.IsInRole("Doctor"))
+                return RedirectToAction("DoctorProfile");
+            else
+                return RedirectToAction("Register");
+        }
+
+        public async Task<IActionResult> PatientProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+                
+            var patientProfile = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
+
+            return View(patientProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PatientProfile(string newPassword) 
+        {
+          
+            return View();
+        }
+
+        public IActionResult DoctorProfile()
+        {
+            return View();
+        }
     }
 }

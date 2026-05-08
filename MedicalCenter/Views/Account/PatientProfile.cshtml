@@ -1,0 +1,24 @@
+﻿@model MedicalCenter.DTOs.UpdatePatientProfileDto;
+
+@{
+    ViewData["Title"] = $"Witaj {Model.FirstName} {Model.LastName}";
+}
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <p>@Model.FirstName @Model.LastName</p>
+            <p>@Model.Email</p>
+            <p>@Model.Phone</p>
+            
+            <p>@Model.Pesel</p>
+            <p>@Model.BirthDate</p>
+        </div>
+
+        <div class="col-lg-5">
+            
+        </div>
+    </div>
+</div>
+
+

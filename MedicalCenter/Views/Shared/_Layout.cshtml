@@ -44,7 +44,9 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center">
-                                <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">
+                                    <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
+                                </a>
                                 <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-outline-danger btn-sm">Wyloguj</button>
