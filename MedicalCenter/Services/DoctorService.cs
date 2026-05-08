@@ -112,5 +112,24 @@ namespace MedicalCenter.Services
                 }
             }
         }
+        public async Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id);
+            if (doctor == null)
+            {
+                return null;
+            }
+            var doctorProfileDto = new UpdateDoctorProfileDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.Phone,
+                Email = user.Email,
+                LicenseNumber = doctor.LicenseNumber,
+                SpecializationName = doctor.Specialization.Name
+            };
+            return doctorProfileDto;
+        }
     }
 }

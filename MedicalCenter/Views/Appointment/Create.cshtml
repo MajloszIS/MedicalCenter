@@ -1,31 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Umów Wizytę";
+﻿@model MedicalCenter.DTOs.DoctorDto;
+
+@{
+    ViewData["Title"] = $"Umów Wizytę u {Model.FirstName} {Model.LastName}";
 }
 
-<h2>Umów Wizytę </h2>
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="medical-card">
+                <h4 class="page-title">Wybierz termin</h4>
+                <form asp-action="Create" asp-controller="Appointment" method="post">
+                    @Html.AntiForgeryToken()
 
-<form asp-action="Create" asp-controller="Appointment" method="post">
-    @Html.AntiForgeryToken()
+                    <input type="hidden" name="DoctorId" value="@Model.Id" />
 
-    <input type="hidden" name="DoctorId" value="@ViewBag.DoctorId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Data i godzina wizyty</label>
+                        <label class="form-label fw-semibold">Data i godzina wizyty</label>
+                        <input type="text" id="appointmentDate" name="appointmentDate"
+                               class="form-control" required placeholder="Wybierz datę i godzinę..." />
+                    </div>
 
-    <div>
-        <label>Data</label>
-        <input type="datetime-local" name="appointmentDate" required />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Opis wizyty <span class="text-muted">(opcjonalnie)</span></label>
+                        <textarea name="Description" class="form-control" rows="4" placeholder="Opisz powód wizyty..."></textarea>
+                    </div>
+                    <div>
+                        @if (ViewBag.Error != null)
+                        {
+                            <span>@ViewBag.Error</span>
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
+                        <i class="fa-regular fa-calendar-check me-2"></i>Potwierdź wizytę
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="medical-card">
+                <div class="text-center mb-3">
+                    <i class="fa-solid fa-user-doctor text-primary" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="fw-bold text-center">Dr @Model.FirstName @Model.LastName</h5>
+                <p class="text-center text-primary mb-3">@Model.SpecializationName</p>
+                <hr>
+                <p><i class="fa-solid fa-phone me-2 text-primary"></i>@Model.Phone</p>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div>
-        <label>Opis</label>
-        <textarea name="Description" required></textarea>
-    </div>
-
-    <div>
-        @if (ViewBag.Error != null)
-        {
-            <span>@ViewBag.Error</span>
-        }
-    </div>
-    <button type="submit">Potwierdz</button>
-</form>
-
-<a href="/Home">Powrót</a>
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#appointmentDate", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        minDate: "today",
+        minTime: "08:00",
+        maxTime: "16:00",
+        time_24hr: true
+        });
+    </script>
+}
