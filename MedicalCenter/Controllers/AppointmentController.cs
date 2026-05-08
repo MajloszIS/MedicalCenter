@@ -15,10 +15,12 @@ namespace MedicalCenter.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly IAppointmentService _appointmentService;
-        public AppointmentController(IPatientService patientService, IAppointmentService appointmentService)
+        private readonly IDoctorService _doctorService;
+        public AppointmentController(IPatientService patientService, IAppointmentService appointmentService, IDoctorService doctorService)
         {
             _patientService = patientService;
             _appointmentService = appointmentService;
+            _doctorService = doctorService;
         }
 
         [Authorize(Roles = "Patient")]
@@ -32,10 +34,10 @@ namespace MedicalCenter.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(Guid DoctorId)
+        public async Task<IActionResult> Create(Guid DoctorId)
         {
-            ViewBag.DoctorId = DoctorId;
-            return View();
+            var doctor = await _doctorService.GetDoctorByIdAsync(DoctorId);
+            return View(doctor);
         }
 
         [HttpPost]
@@ -52,6 +54,8 @@ namespace MedicalCenter.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var doctor = await _doctorService.GetDoctorByIdAsync(DoctorId);
+            return View(doctor);
             return View();
         }
 
