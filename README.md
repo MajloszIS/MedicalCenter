@@ -45,11 +45,7 @@ Controllers → Services → Repositories → Database
 - Endpointy REST API udokumentowane przez Swagger UI (`/swagger`)
 - Pobieranie listy lekarzy
 - Pobieranie lekarza po ID
-## Wymagania
- 
-- .NET 9.0 SDK
-- SQL Server (LocalDB na Windows lub Docker na macOS/Linux)
-- Git
+
 
 ## 🖥️ Demo
 ![demo](./images/HomeView.png)
@@ -62,32 +58,64 @@ Controllers → Services → Repositories → Database
 ---
 
 ## Instalacja i konfiguracja
+
+## Wymagania
  
-### Windows
- 
-1. Zainstaluj [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-2. Sklonuj repozytorium:
+- .NET 9.0 SDK
+- Git
+- Docker Desktop
+- IDE: Visual Studio / Rider / VS Code
+
+## Pierwsze uruchomienie
+
+1. Sklonuj repo:
 ```bash
-git clone https://github.com/MajloszIS/MedicalCenter
-cd MedicalCenter
+   git clone 
+   cd MedicalCenter
 ```
- 
-3. Przejdź do folderu projektu:
+
+2. Postaw bazę w Dockerze:
 ```bash
-cd MedicalCenter
+   docker compose up -d
 ```
- 
-4. Zastosuj migracje (LocalDB jest domyślnie dostępny na Windows):
+
+3. Puść migracje (utworzą tabele i wstawią dane testowe):
 ```bash
-dotnet ef database update
+   dotnet ef database update --project MedicalCenter
 ```
- 
-5. Uruchom aplikację:
+
+4. Skonfiguruj klucze Stripe (test mode):
 ```bash
-dotnet run
+   cd MedicalCenter
+   dotnet user-secrets set "Stripe:SecretKey" "sk_test_..."
+   dotnet user-secrets set "Stripe:PublishableKey" "pk_test_..."
 ```
- 
+   (Każdy członek zespołu używa własnego konta Stripe — patrz sekcja "Stripe" niżej.)
+
+5. Odpal aplikację:
+```bash
+   dotnet run --project MedicalCenter
+```
+
 6. Otwórz przeglądarkę pod adresem `https://localhost:<port>`
+
+
+## Codzienna praca
+
+- Start bazy: `docker compose up -d`
+- Stop bazy: `docker compose down` (dane zostają)
+- Reset bazy od zera: `docker compose down -v && docker compose up -d && dotnet ef database update --project MedicalCenter`
+
+
+## Stripe (klucze testowe)
+
+Każdy programista używa własnego konta Stripe w trybie testowym.
+
+1. Załóż darmowe konto na https://stripe.com
+2. Tryb "Test mode" → https://dashboard.stripe.com/test/apikeys
+3. Skopiuj `Secret key` (`sk_test_...`) i `Publishable key` (`pk_test_...`)
+4. Wpisz przez `dotnet user-secrets set ...` jak wyżej
+
 
 ---
 
