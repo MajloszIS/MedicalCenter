@@ -16,10 +16,12 @@ namespace MedicalCenter.Controllers
 
         private readonly IUserService _userService;
         private readonly IPatientService _patientService;
-        public AccountController(IUserService userService, IPatientService patientService)
+        private readonly IDoctorService _doctorService;
+        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService)
         {
             _userService = userService;
             _patientService = patientService;
+            _doctorService = doctorService;
         }
 
         public IActionResult Index()
@@ -121,9 +123,14 @@ namespace MedicalCenter.Controllers
             return View();
         }
 
-        public IActionResult DoctorProfile()
+        public async Task<IActionResult> DoctorProfile()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var doctorProfile = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
+
+            return View(doctorProfile);
         }
     }
 }

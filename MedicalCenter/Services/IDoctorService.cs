@@ -9,5 +9,6 @@ namespace MedicalCenter.Services
         public Task <DoctorDto> GetDoctorByUserIdAsync(Guid userId);
         public Task CreateDoctorAsync(AdminCreateDoctorDto dto);
         public Task DeleteDoctorAsync(Guid DoctorId);
+        public Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id);
     }
 }
