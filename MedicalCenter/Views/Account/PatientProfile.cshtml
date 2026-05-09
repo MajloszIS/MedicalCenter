@@ -142,7 +142,30 @@
             </div>
             
             <div class="medical-card mt-4">
-                <!-- zmiana hasła -->
+                <form asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Hasło</label>
+                        <input type="password" name="oldPassword" class="form-control form-control-lg" placeholder="Wpisz hasło" required />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Nowe Hasło</label>
+                        <input type="password" name="newPassword" class="form-control form-control-lg" placeholder="Wpisz nowe hasło" required />
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger py-2 mb-3 text-center">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i> @ViewBag.Error
+                        </div>
+                    }
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-medical btn-lg fw-bold">Zmień hasł</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

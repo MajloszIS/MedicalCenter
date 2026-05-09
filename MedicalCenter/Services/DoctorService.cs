@@ -154,5 +154,15 @@ namespace MedicalCenter.Services
             await _userRepository.UpdateUserAsync(user);
             await _doctorRepository.UpdateDoctorAsync(doctor);
         }
+        public async Task<List<SpecializationDto>> GetAllSpecializationsAsync()
+        {
+            var specializations = await _specializationsRepository.GetAllSpecializationsAsync();
+            var specializationDtos = specializations.Select(s => new SpecializationDto
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+            return specializationDtos;
+        }
     }
 }

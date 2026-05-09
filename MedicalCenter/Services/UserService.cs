@@ -57,12 +57,18 @@ namespace MedicalCenter.Services
             await _userRepository.UpdateUserAsync(user);
         }
 
-        public async Task<bool> CheckPasswordAsync(Guid userId, string password)
+        public async Task<bool> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null) return false;
+            if(!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            {
+                return false;
+            }
 
-            return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            await _userRepository.UpdateUserAsync(user);
+            return true;
         }
     }
 }

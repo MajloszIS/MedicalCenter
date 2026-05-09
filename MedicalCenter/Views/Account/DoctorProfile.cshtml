@@ -106,14 +106,26 @@
                     <!-- Specjalizacja -->
                     <div class="d-flex align-items-center mb-3">
                         <label class="fw-semibold me-2" style="width: 120px;">Specjalizacja</label>
+
                         <span id="specialization-text">@Model.SpecializationName</span>
-                        <input id="specialization-input" name="Specialization" value="@Model.SpecializationName"
-                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+
+                        <select id="specialization-input" name="SpecializationName"
+                                class="form-select form-select-sm ms-2" style="display:none; width:200px;">
+                            @foreach (var spec in ViewBag.Specializations)
+                            {
+                                <option value="@spec.Name"
+                                        selected="@(spec.Name == Model.SpecializationName ? "selected" : null)">
+                                    @spec.Name
+                                </option>
+                            }
+                        </select>
+
                         <button type="button" id="specialization-edit" onclick="enableEdit('specialization')"
                                 class="btn btn-sm btn-link ms-2">
 
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
+
                         <button type="submit" id="specialization-save" class="btn btn-sm btn-success ms-2"
                                 style="display:none;">
                             <i class="fa-solid fa-check"></i>
@@ -143,6 +155,30 @@
             
             <div class="medical-card mt-4">
                 <!-- zmiana hasła -->
+                <form asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Hasło</label>
+                        <input type="password" name="oldPassword" class="form-control form-control-lg" placeholder="Wpisz hasło" required />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Nowe Hasło</label>
+                        <input type="password" name="newPassword" class="form-control form-control-lg" placeholder="Wpisz nowe hasło" required />
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger py-2 mb-3 text-center">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i> @ViewBag.Error
+                        </div>
+                    }
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-medical btn-lg fw-bold">Zmień hasło</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

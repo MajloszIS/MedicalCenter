@@ -147,6 +147,8 @@ namespace MedicalCenter.Controllers
             if (userId == null) return RedirectToAction("Login");
 
             var doctorProfile = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
 
             return View(doctorProfile);
         }
@@ -155,13 +157,13 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateDoctorProfile(UpdateDoctorProfileDto dto)
         {
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login");
             await _doctorService.UpdateDoctorProfileAsync(Guid.Parse(userId), dto);
 
             var updatedUser = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
 
+            // Aktulaizacja claimsów po zmianie danych
             var identity = new ClaimsIdentity(new Claim[]
                 {
                     new (ClaimTypes.NameIdentifier, userId),
@@ -177,12 +179,11 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(string password)
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _userService.CheckPasswordAsync(Guid.Parse(userId), password);
-
+            var result = await _userService.ChangePasswordAsync(Guid.Parse(userId), oldPassword, newPassword);
             return RedirectToAction("Profile");
         }
 
