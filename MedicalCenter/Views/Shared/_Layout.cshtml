@@ -26,53 +26,55 @@
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
-                    <ul class="navbar-nav flex-grow-1">
-                        
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav">
 
-                        @if (User.IsInRole("Doctor"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Index">Widok - Wizyty</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">Pacjenci</a>
-                            </li>
-                        }
-                    </ul>
-
-                    <ul class="navbar-nav">
-                        @if (User.Identity.IsAuthenticated)
-                        {
                             <li class="nav-item d-flex align-items-center">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">
                                     <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
                                 </a>
                                 <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Wyloguj</button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm m-lg-3">Wyloguj</button>
                                 </form>
                             </li>
-                        }
-                    </ul>
+
+                        </ul>
+                    }
+
+                    @if (User.IsInRole("Doctor"))
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                    
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Index">Wizyty</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">Pacjenci</a>
+                            </li>
+                        </ul>
+                    }
+
                     @if (User.IsInRole("Patient"))
                     {
-                            <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Lekarze</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Wizyty</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Prescription" asp-action="Index">Recepty</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Medicines" asp-action="Index">Apteka</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Cart" asp-action="Index">Koszyk</a>
-                                </li>
-                            </ul>
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Lekarze</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Wizyty</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Prescription" asp-action="Index">Recepty</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Medicines" asp-action="Index">Apteka</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Cart" asp-action="Index">Koszyk</a>
+                            </li>
+                        </ul>
                     }
 
                 </div>

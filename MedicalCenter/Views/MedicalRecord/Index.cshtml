@@ -2,107 +2,152 @@
 
 <h2>Karta Medyczna</h2>
 
-<div>
-	<h1>Diagnozy</h1>
-	<div>
-		<form asp-action="AddDiagnosis" asp-controller="MedicalRecord" method="post">
-			@Html.AntiForgeryToken()
+<div class="container py-3">
+    <div class="row g-4">
+        
+        <!-- lewa kolumna -->
+        <div class="col-lg-8">
+            <!-- info o pacjencie -->
+            <div class="medical-card mb-4">
 
-			<input type="hidden" name="medicalRecordId" value="@Model.Id" />
-			<input type="hidden" name="patientId" value="@Model.PatientId" />
+				<h3>
+					<i class="fa-solid fa-user me-2"></i>
+					@Model.Patient.FirstName @Model.Patient.LastName
+				</h3>
 
-			<div>
-				<label>Opis</label>
-				<textarea name="description" required></textarea>
-			</div>
+				<div class="row g-4">
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-phone me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Telefon</p>
+						</div>
+						<p class="fw-semibold">@Model.Patient.Phone</p>
+					</div>
 
-			<div>
-				@if (ViewBag.Error != null)
-				{
-					<span>@ViewBag.Error</span>
-				}
-			</div>
-			<button type="submit">Dodaj</button>
-		</form>
-	</div>
-	@if(Model.Diagnoses != null && Model.Diagnoses.Any())
-	{
-		@foreach (var diagnosis in Model.Diagnoses)
-		{
-			<p>@diagnosis.Description</p>
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-id-card me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Pesel</p>
+						</div>
+						<p class="fw-semibold">@Model.Patient.Pesel</p>
+					</div>
+				</div>
+            </div>
+            <!-- diagnozy -->
+            <div>
+				<div class="medical-card mb-4">
+					<div>
+						<h2 class="mb-3">Dodaj diagnozę</h2>
+						<form asp-action="AddDiagnosis" asp-controller="MedicalRecord" method="post">
+							@Html.AntiForgeryToken()
 
-			<h2>Leczenie</h2>
-			@foreach (var treatments in diagnosis.Treatments)
-			{
-				<p>@treatments.Description</p>
-			}
-		}
-	}
+							<input type="hidden" name="medicalRecordId" value="@Model.Id" />
+							<input type="hidden" name="patientId" value="@Model.PatientId" />
 
-</div>
+							<div class="mb-3">
+								<textarea class="form-control" name="description" placeholder="Dodaj opis diagnozy" required></textarea>
+							</div>
 
-<div>
-	<div>
-		<h1>Dodaj nową Receptę</h1>
-		<form asp-action="AddPrescription" asp-controller="MedicalRecord" method="post">
-			@Html.AntiForgeryToken()
+							<div>
+								@if (ViewBag.Error != null)
+								{
+									<span>@ViewBag.Error</span>
+								}
+							</div>
+							<button class="btn btn-medical" type="submit">Dodaj</button>
+						</form>
+					</div>
+				</div>
+				<div>
+					<h2>Diagnozy</h2>
 
-			<input type="hidden" name="medicalRecordId" value="@Model.Id" />
-			<input type="hidden" name="patientId" value="@Model.PatientId" />
-
-			<div>
-				<label>Wybierz lek:</label>
-				<select id="medicineSelect">
-					@foreach (var medicine in ViewBag.Medicines)
+					@if (Model.Diagnoses != null && Model.Diagnoses.Any())
 					{
-						<option value="@medicine.Id" data-name="@medicine.Name">@medicine.Name</option>
+						<div class="medical-card">
+							<h4>Diagnoza</h4>
+							@foreach (var diagnosis in Model.Diagnoses)
+							{
+								<p>@diagnosis.Description</p>
+
+								<h5>Leczenie</h5>
+								@foreach (var treatments in diagnosis.Treatments)
+								{
+									<p>@treatments.Description</p>
+								}
+							}
+						</div>
 					}
-				</select>
+				</div>
+            </div>
+        </div>
 
-				<label>Ilość:</label>
-				<input type="number" id="quantityInput" min="1" value="1" />
+        <!-- prawa kolumna -->
+        <div class="col-lg-4">
+            <!-- dodaj receptę -->
+            <div class="medical-card mb-4">
+				<div>
+					<h1>Dodaj nową Receptę</h1>
+					<form asp-action="AddPrescription" asp-controller="MedicalRecord" method="post">
+						@Html.AntiForgeryToken()
 
-				<button type="button" onclick="addMedicine()">+ Dodaj lek</button>
-			</div>
+						<input type="hidden" name="medicalRecordId" value="@Model.Id" />
+						<input type="hidden" name="patientId" value="@Model.PatientId" />
+
+						<div>
+							<label>Wybierz lek:</label>
+							<select id="medicineSelect">
+								@foreach (var medicine in ViewBag.Medicines)
+								{
+									<option value="@medicine.Id" data-name="@medicine.Name">@medicine.Name</option>
+								}
+							</select>
+
+							<label>Ilość:</label>
+							<input type="number" id="quantityInput" min="1" value="1" />
+
+							<button type="button" onclick="addMedicine()">+ Dodaj lek</button>
+						</div>
 
 		
 
-			<div id="selected-medicines">
-				<!-- tu będą wybrane leki -->
-			</div>
+						<div id="selected-medicines">
+							<!-- tu będą wybrane leki -->
+						</div>
 
-			<div>
-				@if (ViewBag.Error != null)
+						<div>
+							@if (ViewBag.Error != null)
+							{
+								<span>@ViewBag.Error</span>
+							}
+						</div>
+						<button type="submit">Dodaj</button>
+					</form>
+				</div>
+            </div>
+            <!-- lista recept -->
+            <div class="medical-card">
+				<h1>Recepty</h1>
+				@if (Model.Prescriptions != null && Model.Prescriptions.Any())
 				{
-					<span>@ViewBag.Error</span>
-				}
-			</div>
-			<button type="submit">Dodaj</button>
-		</form>
-	</div>
-
-	<div>
-		<h1>Recepty</h1>
-		@if (Model.Prescriptions != null && Model.Prescriptions.Any())
-		{
-			@foreach (var prescription in Model.Prescriptions)
-			{
-				@if (prescription.Items != null && prescription.Items.Any())
-				{
-					<h2>Leki</h2>
-					@foreach (var item in prescription.Items)
+					@foreach (var prescription in Model.Prescriptions)
 					{
-						<p>Ilość : @item.Quantity</p>
-						<p>Lek : @item.Medicine.Name</p>
+						@if (prescription.Items != null && prescription.Items.Any())
+						{
+							<h2>Leki</h2>
+							@foreach (var item in prescription.Items)
+							{
+								<p>Ilość : @item.Quantity</p>
+								<p>Lek : @item.Medicine.Name</p>
+							}
+						}
 					}
 				}
-			}
-		}
-	</div>
+			</div>
+            </div>
+        </div>
 
+    </div>
 </div>
-
-
 
 @section Scripts {
 	<script>

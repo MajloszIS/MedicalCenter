@@ -7,10 +7,12 @@ namespace MedicalCenter.Services
     public class MedicalRecordService : IMedicalRecordService
     {
         private readonly IMedicalRecordRepository _medicalRecordRepository;
+        private readonly IPatientRepository _patientRepository;
 
-        public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository) 
+        public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository, IPatientRepository patientRepository) 
         {
             _medicalRecordRepository = medicalRecordRepository;
+            _patientRepository = patientRepository;
         }
 
         private MedicalRecordDto MapToDto(MedicalRecord medicalRecord)
@@ -51,13 +53,31 @@ namespace MedicalCenter.Services
                             Price = i.Medicine.Price
                         } : null
                     }).ToList()
-                }).ToList()
+                }).ToList(),
+                Patient = medicalRecord.Patient != null ? new PatientDto
+                {
+                    Id = medicalRecord.Patient.Id,
+                    FirstName = medicalRecord.Patient.User.FirstName,
+                    LastName = medicalRecord.Patient.User.LastName,
+                    Phone = medicalRecord.Patient.User.Phone,
+                    Pesel = medicalRecord.Patient.Pesel
+                } : null
             };
         }
 
         public async Task<MedicalRecordDto> GetOrCreateAsync(Guid doctorId, Guid patientId)
         {
             var medicalRecord = await _medicalRecordRepository.GetByDoctorAndPatientAsync(doctorId, patientId);
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+            var patientDto = new PatientDto
+            {
+                Id = patientId,
+                FirstName = patient.User.FirstName,
+                LastName = patient.User.LastName,
+                Phone = patient.User.Phone,
+                Pesel = patient.Pesel
+            };
+
             if (medicalRecord == null)
             {
                 var newMedicalRecord = new MedicalRecord

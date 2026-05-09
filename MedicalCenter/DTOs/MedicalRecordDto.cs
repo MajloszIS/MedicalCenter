@@ -13,5 +13,8 @@ namespace MedicalCenter.DTOs
 
         public List<DiagnosisDto> Diagnoses { get; set; }
         public List<PrescriptionDto> Prescriptions { get; set; }
+
+        public PatientDto Patient { get; set; }
+
     }
 }
