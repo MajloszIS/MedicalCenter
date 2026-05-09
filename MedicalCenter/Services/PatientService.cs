@@ -85,11 +85,29 @@ namespace MedicalCenter.Services
                 LastName = user.LastName,
                 Phone = user.Phone,
                 Email = user.Email,
+                ProfilePicturePath = user.ProfilePicturePath,
                 Pesel = patient.Pesel,
                 BirthDate = patient.BirthDate,
-                ProfilePicturePath = user.ProfilePicturePath
             };
             return patientProfileDto;
+        }
+
+        public async Task UpdatePatientProfileAsync(Guid id, UpdatePatientProfileDto dto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
+
+            user.FirstName = dto.FirstName ?? user.FirstName;
+            user.LastName = dto.LastName ?? user.LastName;
+            user.Phone = dto.Phone ?? user.Phone;
+            user.Email = dto.Email ?? user.Email;
+            patient.Pesel = dto.Pesel ?? patient.Pesel;
+            if (dto.BirthDate.HasValue)
+                patient.BirthDate = dto.BirthDate.Value;
+
+
+            await _userRepository.UpdateUserAsync(user);
+            await _patientRepository.UpdatePatientAsync(patient);
         }
     }
 }

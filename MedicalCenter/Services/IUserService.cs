@@ -7,5 +7,6 @@ namespace MedicalCenter.Services
         public Task<bool> IsUserWithThisEmailExists(string email);
         public Task<LoginResultDto> LoginAsync(LoginDto dto);
         public Task UpdateProfilePictureAsync(Guid userId, string filePath);
+        public Task<bool> CheckPasswordAsync(Guid userId, string password);
     }
 }

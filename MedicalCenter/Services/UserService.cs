@@ -56,5 +56,13 @@ namespace MedicalCenter.Services
             user.ProfilePicturePath = pictureFilePath;
             await _userRepository.UpdateUserAsync(user);
         }
+
+        public async Task<bool> CheckPasswordAsync(Guid userId, string password)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return false;
+
+            return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        }
     }
 }
