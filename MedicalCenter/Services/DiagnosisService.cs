@@ -38,10 +38,10 @@ namespace MedicalCenter.Services
             {
                 MedicalRecordId = diagnosisDto.MedicalRecordId,
                 Description = diagnosisDto.Description,
-                Treatments = diagnosisDto.Treatments.Select(t => new Treatment
+                Treatments = diagnosisDto.Treatments?.Select(t => new Treatment
                 {
                     Description = t.Description
-                }).ToList()
+                }).ToList() ?? new List<Treatment>()
             };
 
             await _diagnosisRepository.CreateDiagnosisAsync(diagnosis);
