@@ -1,13 +1,16 @@
-﻿using MedicalCenter.Data;
+﻿using Humanizer;
+using MedicalCenter.Data;
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
-using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers
 {
@@ -117,10 +120,25 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PatientProfile(string newPassword) 
+        public async Task<IActionResult> UpdatePatientProfile(UpdatePatientProfileDto dto) 
         {
-          
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+            await _patientService.UpdatePatientProfileAsync(Guid.Parse(userId), dto);
+
+            var updatedUser = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
+
+            var identity = new ClaimsIdentity(new Claim[]
+                {
+                    new (ClaimTypes.NameIdentifier, userId),
+                    new (ClaimTypes.Email, updatedUser.Email),
+                    new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
+                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
+                }, "login");
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return RedirectToAction("PatientProfile");
         }
 
         public async Task<IActionResult> DoctorProfile()
@@ -129,8 +147,44 @@ namespace MedicalCenter.Controllers
             if (userId == null) return RedirectToAction("Login");
 
             var doctorProfile = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
 
             return View(doctorProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDoctorProfile(UpdateDoctorProfileDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+            await _doctorService.UpdateDoctorProfileAsync(Guid.Parse(userId), dto);
+
+            var updatedUser = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
+
+            // Aktulaizacja claimsów po zmianie danych
+            var identity = new ClaimsIdentity(new Claim[]
+                {
+                    new (ClaimTypes.NameIdentifier, userId),
+                    new (ClaimTypes.Email, updatedUser.Email),
+                    new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
+                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
+                }, "login");
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return RedirectToAction("DoctorProfile");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _userService.ChangePasswordAsync(Guid.Parse(userId), oldPassword, newPassword);
+            return RedirectToAction("Profile");
         }
 
         [HttpPost]
@@ -172,7 +226,7 @@ namespace MedicalCenter.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _userService.UpdateProfilePictureAsync(Guid.Parse(userId), $"/images/profiles/{fileName}");
 
-            return RedirectToAction("PatientProfile");
+            return RedirectToAction("Profile");
         }
     }
 }

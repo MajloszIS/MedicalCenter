@@ -5,35 +5,187 @@
 }
 
 <div class="container py-5">
+    <h2 class="page-title">Mój profil</h2>
+    
     <div class="row g-4">
-        <div class="col-lg-7">
-            <p>@Model.FirstName @Model.LastName</p>
-            <p>@Model.Email</p>
-            <p>@Model.Phone</p>
-            
-            <p>@Model.Pesel</p>
-            <p>@Model.BirthDate</p>
+        <div class="col-lg-4">
+            <div class="medical-card text-center">
+                <form asp-action="UploadProfilePicture" asp-controller="Account"
+                      method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="file" name="profilePicture" accept=".jpg,.jpeg,.png" />
+                    <button type="submit" class="btn btn-medical">Zapisz zdjęcie</button>
+                </form>
+
+                @if (Model.ProfilePicturePath != null)
+                {
+                    <img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+                }
+                else
+                {
+                    <i class="fa-solid fa-user-circle" style="font-size: 100px;"></i>
+                }
+            </div>
         </div>
 
-        <div class="col-lg-5">
-            <form asp-action="UploadProfilePicture" asp-controller="Account"
-                  method="post" enctype="multipart/form-data">
-                @Html.AntiForgeryToken()
-                <input type="file" name="profilePicture" accept=".jpg,.jpeg,.png" />
-                <button type="submit" class="btn btn-medical">Zapisz zdjęcie</button>
-            </form>
+        <div class="col-lg-8">
+            <div class="medical-card">
+                <form asp-action="UpdatePatientProfile" asp-controller="Account"
+                      method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
 
-            @if (Model.ProfilePicturePath != null)
-            {
-                <img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
-                     style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
-            }
-            else
-            {
-                <i class="fa-solid fa-user-circle" style="font-size: 100px;"></i>
-            }
+                    <!-- Imie -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Imię</label>
+                        <span id="firstName-text">@Model.FirstName</span>
+                        <input id="firstName-input" name="FirstName" value="@Model.FirstName"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="firstName-edit" onclick="enableEdit('firstName')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="firstName-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                        <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Nazwisko -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Nazwisko</label>
+                        <span id="lastName-text">@Model.LastName</span>
+                        <input id="lastName-input" name="LastName" value="@Model.LastName"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="lastName-edit" onclick="enableEdit('lastName')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="lastName-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Email</label>
+                        <span id="email-text">@Model.Email</span>
+                        <input id="email-input" name="Email" value="@Model.Email"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="email-edit" onclick="enableEdit('email')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="email-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Telefon -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Telefon</label>
+                        <span id="phone-text">@Model.Phone</span>
+                        <input id="phone-input" name="Phone" value="@Model.Phone"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="phone-edit" onclick="enableEdit('phone')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="phone-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Data Urodzenia -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Data Urodzenia</label>
+                        <span id="birthDate-text">@Model.BirthDate</span>
+                        <input id="birthDate-input" name="BirthDate" type="date" value="@Model.BirthDate"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="birthDate-edit" onclick="enableEdit('birthDate')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="birthDate-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Pesel -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Pesel</label>
+                        <span id="pesel-text">@Model.Pesel</span>
+                        <input id="pesel-input" name="Pesel" value="@Model.Pesel"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="pesel-edit" onclick="enableEdit('pesel')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="pesel-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+
+                </form>
+            </div>
+            
+            <div class="medical-card mt-4">
+                <form asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Hasło</label>
+                        <input type="password" name="oldPassword" class="form-control form-control-lg" placeholder="Wpisz hasło" required />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold">Nowe Hasło</label>
+                        <input type="password" name="newPassword" class="form-control form-control-lg" placeholder="Wpisz nowe hasło" required />
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger py-2 mb-3 text-center">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i> @ViewBag.Error
+                        </div>
+                    }
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-medical btn-lg fw-bold">Zmień hasł</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
+
+@section Scripts {
+
+    <script>
+        function enableEdit(fieldId) {
+            const span = document.getElementById(`${fieldId}-text`);
+            const input = document.getElementById(`${fieldId}-input`);
+            const editBtn = document.getElementById(`${fieldId}-edit`);
+            const saveBtn = document.getElementById(`${fieldId}-save`);
+
+            span.style.display = 'none';
+            input.style.display = 'inline';
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline';
+        }
+    </script>
+}
 

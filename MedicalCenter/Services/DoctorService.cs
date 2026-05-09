@@ -126,10 +126,43 @@ namespace MedicalCenter.Services
                 LastName = user.LastName,
                 Phone = user.Phone,
                 Email = user.Email,
+                ProfilePicturePath = user.ProfilePicturePath,
                 LicenseNumber = doctor.LicenseNumber,
                 SpecializationName = doctor.Specialization.Name
             };
             return doctorProfileDto;
+        }
+        public async Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync (id);
+
+            user.FirstName = dto.FirstName ?? user.FirstName;
+            user.LastName = dto.LastName ?? user.LastName;
+            user.Phone = dto.Phone ?? user.Phone;
+            user.Email = dto.Email ?? user.Email;
+            doctor.LicenseNumber = dto.LicenseNumber ?? doctor.LicenseNumber;
+            if (dto.SpecializationName != null)
+            {
+                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName);
+                if (specialization != null)
+                {
+                    doctor.SpecializationId = specialization.Id;
+                }
+            }
+
+            await _userRepository.UpdateUserAsync(user);
+            await _doctorRepository.UpdateDoctorAsync(doctor);
+        }
+        public async Task<List<SpecializationDto>> GetAllSpecializationsAsync()
+        {
+            var specializations = await _specializationsRepository.GetAllSpecializationsAsync();
+            var specializationDtos = specializations.Select(s => new SpecializationDto
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+            return specializationDtos;
         }
     }
 }

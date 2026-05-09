@@ -8,5 +8,6 @@ namespace MedicalCenter.Services
         public Task RegisterAsync(PatientRegisterDto dto);
         public Task<PatientDto> GetPatientByUserIdAsync(Guid userId);
         public Task<UpdatePatientProfileDto> GetPatientProfileAsync(Guid id);
+        public Task UpdatePatientProfileAsync(Guid id, UpdatePatientProfileDto dto);
     }
 }
