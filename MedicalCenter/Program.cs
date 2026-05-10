@@ -27,6 +27,7 @@ builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IDiagnosisRepository, DiagnosisRepository>();
 builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 
 // dodanie serwisu
 builder.Services.AddScoped<IUserService, UserService>();
@@ -38,6 +39,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDiagnosisService, DiagnosisService>();
 builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
+builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 
 // dodanie swaggera 
 builder.Services.AddEndpointsApiExplorer();

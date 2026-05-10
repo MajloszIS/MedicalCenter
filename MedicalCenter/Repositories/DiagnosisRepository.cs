@@ -31,9 +31,10 @@ namespace MedicalCenter.Repositories
         }
         public async Task DeleteDiagnosisAsync(Guid id)
         {
-            var diagnosis = await _context.Diagnoses.FirstOrDefaultAsync(d => d.Id == id);
+            var diagnosis = await _context.Diagnoses.Include(d => d.Treatments).FirstOrDefaultAsync(d => d.Id == id);
             if (diagnosis != null)
             {
+                _context.Treatments.RemoveRange(diagnosis.Treatments);
                 _context.Diagnoses.Remove(diagnosis);
                 await _context.SaveChangesAsync();
             }

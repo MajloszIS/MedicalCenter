@@ -2,7 +2,7 @@
 {
     public class TreatmentDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         public Guid DiagnosisId { get; set; }
 
