@@ -53,6 +53,9 @@ namespace MedicalCenter.Repositories
             return _context.Prescriptions
                 .Include(p => p.MedicalRecord)
                 .Include(p => p.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(p => p.Doctor)
+                    .ThenInclude(d => d.Specialization)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.Medicine)
                 .Where(p => p.MedicalRecord.PatientId == patientId)

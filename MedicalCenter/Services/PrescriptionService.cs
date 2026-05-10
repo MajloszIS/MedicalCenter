@@ -98,6 +98,14 @@ namespace MedicalCenter.Services
                 Id = p.Id,
                 MedicalRecordId = p.MedicalRecordId,
                 DoctorId = p.DoctorId,
+                Doctor = new DoctorDto
+                {
+                    Id = p.Doctor.Id,
+                    FirstName = p.Doctor.User.FirstName,
+                    LastName = p.Doctor.User.LastName,
+                    Phone = p.Doctor.User.Phone,
+                    SpecializationName = p.Doctor.Specialization.Name
+                },
                 Items = p.Items.Select(i => new PrescriptionItemDto
                 {
                     Id = i.Id,
