@@ -10,22 +10,37 @@
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="medical-card text-center">
+
+                <div class="mb-3">
+                    @if (Model.ProfilePicturePath != null)
+                    {
+                        <img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
+                             style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-user-circle" style="font-size: 100px;"></i>
+                    }
+                </div>
+
                 <form asp-action="UploadProfilePicture" asp-controller="Account"
                       method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
-                    <input type="file" name="profilePicture" accept=".jpg,.jpeg,.png" />
+
+                    <input id="profilePicture" class="mb-3" type="file" name="profilePicture" accept=".jpg,.jpeg,.png" style="display:none;" />
+
+                    <button type="button" class="btn btn-outline-primary mb-3"
+                            onclick="document.getElementById('profilePicture').click()">
+                        <i class="fa-solid fa-camera me-1"></i>Zmień zdjęcie
+                    </button>
+
+                    <span id="fileName" class="text-muted ms-2 small">Nie wybrano pliku</span>
+
                     <button type="submit" class="btn btn-medical">Zapisz zdjęcie</button>
+
                 </form>
 
-                @if (Model.ProfilePicturePath != null)
-                {
-                    <img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
-                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
-                }
-                else
-                {
-                    <i class="fa-solid fa-user-circle" style="font-size: 100px;"></i>
-                }
+
             </div>
         </div>
 
@@ -199,6 +214,11 @@
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline';
         }
+
+        document.getElementById('profilePicture').addEventListener('change', function() {
+                const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
+                document.getElementById('fileName').textContent = fileName;
+            });
     </script>
 }
 
