@@ -111,6 +111,12 @@ namespace MedicalCenter.Data
                 new Medicine { Id = Guid.Parse("dddddddd-3333-3333-3333-333333333333"), Name = "Rutinoscorbin", Price = 9.00m, CategoryId = Guid.Parse("cccccccc-3333-3333-3333-333333333333") },
                 new Medicine { Id = Guid.Parse("dddddddd-4444-4444-4444-444444444444"), Name = "Syrop na kaszel", Price = 21.30m, CategoryId = Guid.Parse("cccccccc-2222-2222-2222-222222222222") }
             );
+
+            modelBuilder.Entity<DeliveryStatus>().HasData(
+            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-1111-1111-1111-111111111111"), Name = "Oczekuje na kuriera" },
+            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-2222-2222-2222-222222222222"), Name = "W drodze" },
+            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-3333-3333-3333-333333333333"), Name = "Dostarczono" }
+            );
         }
     }
 }

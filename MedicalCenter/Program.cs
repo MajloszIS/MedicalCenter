@@ -31,6 +31,7 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 
 // dodanie swaggera 
 builder.Services.AddEndpointsApiExplorer();
