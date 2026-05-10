@@ -129,5 +129,25 @@ namespace MedicalCenter.Controllers
 
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
+
+        // Metoda do usuwania recepty
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemovePrescription(Guid prescriptionId, Guid patientId)
+        {
+            await _prescriptionService.DeletePrescription(prescriptionId);
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
+
+        // Metoda do dodawnia leków z recept
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemovePrescriptionItem(Guid itemId, Guid patientId)
+        {
+            await _prescriptionService.DeletePrescriptionItemAsync(itemId);
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
     }
 }

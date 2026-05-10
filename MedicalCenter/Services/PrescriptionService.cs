@@ -78,6 +78,18 @@ namespace MedicalCenter.Services
                 await _prescriptionRepository.DeletePrescriptionAsync(prescription);
             }
         }
+        public async Task DeletePrescriptionItemAsync(Guid prescriptionItemId)
+        {
+            var prescriptionItem = await _prescriptionRepository.GetPrescriptionItemByIdAsync(prescriptionItemId);
+            if (prescriptionItem == null)
+            {
+                throw new Exception("Prescription not found");
+            }
+            else
+            {
+                await _prescriptionRepository.DeletePrescriptionItemAsync(prescriptionItem);
+            }
+        }
         public async Task<List<PrescriptionDto>> GetPrescriptionsByPatientIdAsync(Guid patientId)
         {
             var prescriptions = await _prescriptionRepository.GetPrescriptionsByPatientIdAsync(patientId);

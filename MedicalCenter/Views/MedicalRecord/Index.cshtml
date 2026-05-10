@@ -119,7 +119,7 @@
 
 					<h1>Dodaj nową Receptę</h1>
 					
-					<form asp-action="AddPrescription" asp-controller="MedicalRecord" method="post">
+					<form id="prescription-form" asp-action="AddPrescription" asp-controller="MedicalRecord" method="post">
 						@Html.AntiForgeryToken()
 
 						<input type="hidden" name="medicalRecordId" value="@Model.Id" />
@@ -127,7 +127,7 @@
 
 						<div>
 							<label class="">Wybierz lek:</label>
-							<select id="medicineSelect" class="form-select d-flex gap-2 mb-3">
+							<select id="medicineSelect" class="form-select d-flex gap-2 mb-3" required>
 								@foreach (var medicine in ViewBag.Medicines)
 								{
 									<option value="@medicine.Id" data-name="@medicine.Name">@medicine.Name</option>
@@ -155,6 +155,10 @@
 							}
 						</div>
 
+						<div id="prescription-error" class="alert alert-danger" style="display:none;">
+							Dodaj przynajmniej jeden lek do recepty.
+						</div>
+
 						<button class="btn btn-medical" type="submit">Dodaj</button>
 
 					</form>
@@ -170,9 +174,19 @@
 					<div class="medical-card">
 					@if (prescription.Items != null && prescription.Items.Any())
 					{
-						<div class="d-flex align-items-center mb-3">
-							<i class="fa-solid fa-file-medical text-primary me-2"></i>
-							<h6 class="fw-bold mb-0">Recepta</h6>
+						<div class="d-flex align-items-center justify-content-between mb-3">
+							<div class="d-flex align-items-center">
+								<i class="fa-solid fa-file-medical text-primary me-2"></i>
+								<h6 class="fw-bold mb-0">Recepta</h6>
+							</div>
+								<form asp-action="RemovePrescription" asp-controller="MedicalRecord" method="post">
+									@Html.AntiForgeryToken()
+									<input type="hidden" name="prescriptionId" value="@prescription.Id" />
+									<input type="hidden" name="patientId" value="@Model.PatientId" />
+									<button type="submit" class="btn btn-sm btn-outline-danger">
+										<i class="fa-solid fa-xmark"></i>
+									</button>
+								</form>
 						</div>
 						<hr class="mt-0">
 						@foreach (var item in prescription.Items)
@@ -183,9 +197,14 @@
 									<span class="fw-semibold">@item.Medicine.Name</span>
 									<span class="text-muted ms-2">— @item.Quantity szt.</span>
 								</div>
-								<button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem('item-${itemCount}')">
-									<i class="fa-solid fa-xmark"></i>
-								</button>
+									<form asp-action="RemovePrescriptionItem" asp-controller="MedicalRecord" method="post">
+										@Html.AntiForgeryToken()
+										<input type="hidden" name="itemId" value="@item.Id" />
+										<input type="hidden" name="patientId" value="@Model.PatientId" />
+										<button type="submit" class="btn btn-sm">
+											<i class="fa-solid fa-xmark"></i>
+										</button>
+									</form>
 								<input type="hidden" name="medicineIds" value="@item.MedicineId" />
 								<input type="hidden" name="quantities" value="@item.Quantity" />
 							</div>
@@ -235,5 +254,14 @@
 		function removeItem(id) {
 			document.getElementById(id).remove();
 		}
+
+		document.getElementById('prescription-form').addEventListener('submit', function(e) {
+		const container = document.getElementById('selected-medicines');
+		if (container.children.length === 0) {
+			e.preventDefault();
+			document.getElementById('prescription-error').style.display = 'block';
+		}
+
+		});
 	</script>
 }
