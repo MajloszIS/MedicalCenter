@@ -63,19 +63,47 @@
 
 					@if (Model.Diagnoses != null && Model.Diagnoses.Any())
 					{
-						<div class="medical-card">
-							<h4>Diagnoza</h4>
-							@foreach (var diagnosis in Model.Diagnoses)
-							{
+						@foreach (var diagnosis in Model.Diagnoses)
+						{
+							<div class="medical-card">
+								<div class="d-flex align-items-center mb-1">
+									<i class="fa-solid fa-list-alt me-2 text-primary"></i>
+									<p class="text-muted small mb-0">Opis</p>
+								</div>
 								<p>@diagnosis.Description</p>
+
+								<h6 class="text-muted mt-3">
+									<i class="fa-solid fa-pills me-1"></i>Dodaj leczenie
+								</h6>
+								<form asp-action="AddTreatment" asp-controller="MedicalRecord" method="post">
+									@Html.AntiForgeryToken()
+
+									<input type="hidden" name="diagnosisId" value="@diagnosis.Id" />
+									<input type="hidden" name="patientId" value="@Model.PatientId" />
+
+									<div class="mb-3 col-4">
+										<textarea class="form-control form-control-sm" rows="2" name="description" placeholder="Dodaj opis leczenia" required></textarea>
+									</div>
+
+									<div>
+										@if (ViewBag.Error != null)
+										{
+											<span>@ViewBag.Error</span>
+										}
+									</div>
+									<button class="btn btn-outline-primary btn-sm" type="submit">
+										<i class="fa-solid fa-plus me-1"></i>Dodaj leczenie
+									</button>
+								</form>
+
 
 								<h5>Leczenie</h5>
 								@foreach (var treatments in diagnosis.Treatments)
 								{
 									<p>@treatments.Description</p>
 								}
-							}
-						</div>
+							</div>
+						}
 					}
 				</div>
             </div>
@@ -143,11 +171,10 @@
 					}
 				}
 			</div>
-            </div>
         </div>
-
     </div>
 </div>
+
 
 @section Scripts {
 	<script>

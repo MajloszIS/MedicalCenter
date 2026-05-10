@@ -13,14 +13,24 @@ namespace MedicalCenter.Controllers
         private readonly IDiagnosisService _diagnosisService;
         private readonly IMedicineService _medicineService;
         private readonly IPrescriptionService _prescriptionService;
+        private readonly ITreatmentService _treatmentService;
 
-        public MedicalRecordController(IMedicalRecordService medicalRecordService, IDoctorService doctorService, IDiagnosisService diagnosisService, IMedicineService medicineService, IPrescriptionService prescriptionService)
+        public MedicalRecordController
+            (
+            IMedicalRecordService medicalRecordService, 
+            IDoctorService doctorService, 
+            IDiagnosisService diagnosisService, 
+            IMedicineService medicineService, 
+            IPrescriptionService prescriptionService,
+            ITreatmentService treatmentService
+            )
         {
             _medicalRecordService = medicalRecordService;
             _doctorService = doctorService;
             _diagnosisService = diagnosisService;
             _medicineService = medicineService;
             _prescriptionService = prescriptionService;
+            _treatmentService = treatmentService;
         }
 
         [Authorize(Roles = "Doctor")]
@@ -37,6 +47,8 @@ namespace MedicalCenter.Controllers
             return View(medicalRecord);
         }
 
+
+        // Metoda do dodawania Diagnozy
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddDiagnosis(Guid medicalRecordId, Guid patientId)
         {
@@ -60,6 +72,31 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
 
+        // Metoda do dodawnia leczenia do diagnozy
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> AddTreatment(Guid medicalRecordId, Guid patientId)
+        {
+            ViewBag.MedicalRecordId = medicalRecordId;
+            ViewBag.PatientId = patientId;
+            return View();
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTreatment(Guid diagnosisId, Guid patientId, string description)
+        {
+            var treatmentDto = new TreatmentDto
+            {
+                Description = description,
+                DiagnosisId = diagnosisId   
+            };
+            await _treatmentService.CreateTreatmentAsync(treatmentDto);
+
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
+
+        // Metoda do dodawnia recepty
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId)
         {
