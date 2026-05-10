@@ -86,5 +86,9 @@ namespace MedicalCenter.Repositories
                 .Where(a => a.PatientId == patientId)
                 .ToListAsync();
         }
+        public async Task<List<AppointmentStatus>> GetAllAppointmentStatusAsync()
+        {
+            return await _context.AppointmentStatuses.ToListAsync();
+        }
     }
 }

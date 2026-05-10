@@ -1,48 +1,281 @@
 ﻿@model MedicalCenter.DTOs.AppointmentDto
 
-<h2>Wizyta</h2>
+<div class="row g-4">
+	<div class="col-lg-4">
 
-<div>
-	<h1>Lekarz</h1>
-	<p>
-		@Model.Doctor.FirstName @Model.Doctor.LastName
-	</p>
-	<p>
-		Specjalizacja: @Model.Doctor.SpecializationName
-	</p>
-</div>
+		<!-- Info o pacjencie dla doktora -->
+		@if (User.IsInRole("Doctor"))
+		{
+			<div class="medical-card mb-4">
+				<h3>
+					@if (/*Model.ProfilePicturePath != null*/ false)
+					{
+						//<img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
+						//style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+					}
+					else
+					{
+						<i class="fa-solid fa-user-circle"></i>
+					}
+					@Model.Patient.FirstName @Model.Patient.LastName
+				</h3>
 
-<div>
-	<h1>Wizyta</h1>
-	<p>
-		@Model.Description
-	</p>
-	<p>
-		Godzina: @Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")
-	</p>
-	<p>
-		Status: @Model.StatusName
-	</p>
-</div>
+				<div class="row g-4">
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-phone me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Telefon</p>
+						</div>
+						<p class="fw-semibold">@Model.Patient.Phone</p>
+					</div>
 
-<div>
-	<h1>Notatki</h1>
-	<p>
-		@Model.Notes
-	</p>
-	
-</div>
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-id-card me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Pesel</p>
+						</div>
+						<p class="fw-semibold">@Model.Patient.Pesel</p>
+					</div>
+				</div>
+			</div>
 
-@{
-	if(Model.StatusName != "Anulowana")
-	{
-		<div>
-			<form asp-action="Cancel" asp-controller="Appointment" method="post" class="d-inline">
-				@Html.AntiForgeryToken()
-				<input type="hidden" name="AppointmentId" value="@Model.Id" />
-				<button type="submit" class="btn btn-outline-danger btn-sm">Anuluj</button>
-			</form>
+			<div class="row g-4">
+				<div class="medical-card mb-4">
+					<div>
+						<a asp-action="Index" asp-controller="MedicalRecord"
+							   asp-route-patientId="@Model.Patient.Id" class="btn btn-medical w-100 fw-bold">
+							<i class="fa-solid fa-circle-info me-2"></i> Karta Medyczna
+						</a>
+					</div>
+				</div>
+			</div>
+		}
+
+		<!-- Info o Doktorze dla pacjenta -->
+		@if (User.IsInRole("Patient"))
+		{
+			<div class="medical-card mb-4">
+
+				<h3>
+				
+					@if (/*Model.ProfilePicturePath != null*/ false)
+					{
+						//<img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
+							 //style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+					}
+					else
+					{
+						<i class="fa-solid fa-user-md"></i>
+					}
+					@Model.Doctor.FirstName @Model.Doctor.LastName
+					
+				</h3>
+
+				<div class="row g-4">
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-phone me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Telefon</p>
+						</div>
+						<p class="fw-semibold">@Model.Doctor.Phone</p>
+					</div>
+
+					<div class="col-6">
+						<div class="d-flex align-items-center mb-1">
+							<i class="fa-solid fa-id-card me-2 text-primary"></i>
+							<p class="text-muted small mb-0">Specjalizacja</p>
+						</div>
+						<p class="fw-semibold">@Model.Doctor.SpecializationName</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-4">
+				<div class="medical-card mb-4">
+					@if (Model.StatusName == "Zaplanowana")
+					{
+						<div>
+							<form asp-action="Cancel" asp-controller="Appointment" method="post" class="d-inline">
+								@Html.AntiForgeryToken()
+								<input type="hidden" name="AppointmentId" value="@Model.Id" />
+								<button type="submit" class="btn btn-outline-danger btn-sm">Anuluj</button>
+							</form>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div class="col-lg-8">
+		<div class="medical-card mb-4">
+		
+			<!-- Data i godzina -->
+			@if (Model.StatusName != "Anulowana")
+			{
+				<div class="d-flex align-items-center mb-3">
+					<label class="fw-semibold me-2" style="width: 120px;">Data wizyty</label>
+					<span id="date-text">@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</span>
+					<button type="button" id="date-edit" onclick="enableDateEdit()"
+							class="btn btn-sm btn-link ms-2">
+						<i class="fa-solid fa-pen text-primary"></i>
+					</button>
+				</div>
+
+				<div id="date-form" style="display:none;">
+					<form asp-action="RescheduleAppointment" asp-controller="Appointment" method="post">
+						@Html.AntiForgeryToken()
+						<input type="hidden" name="AppointmentId" value="@Model.Id" />
+						<input type="text" id="newDate" name="newDate"
+							   class="form-control mb-2" placeholder="@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")" />
+						<button type="submit" class="btn btn-medical btn-sm">
+							<i class="fa-solid fa-check me-1"></i>Zapisz
+						</button>
+						<button type="button" onclick="cancelDateEdit()"
+								class="btn btn-outline-secondary btn-sm">
+							Anuluj
+						</button>
+					</form>
+				</div>
+			}
+
+			<!-- Widok Doktora -->
+			@if (User.IsInRole("Doctor"))
+			{
+				<form asp-action="UpdateAppointmentStatus" asp-controller="Appointment"
+					      method="post" enctype="multipart/form-data">
+					<div class="d-flex align-items-center mb-3">
+						<label class="fw-semibold me-2" style="width: 120px;">Status</label>
+
+						<span id="status-text">@Model.StatusName</span>
+
+						<select id="status-input" name="StatusId"
+								class="form-select form-select-sm ms-2" style="display:none; width:200px;">
+							@foreach (var status in ViewBag.Statuses)
+							{
+								<option value="@status.Id"
+										selected="@(status.Name == Model.StatusName ? "selected" : null)">
+									@status.Name
+								</option>
+							}
+						</select>
+						<input type="hidden" name="appointmentId" value="@Model.Id" />
+
+						<button type="button" id="status-edit" onclick="enableEdit('status')"
+								class="btn btn-sm btn-link ms-2">
+
+							<i class="fa-solid fa-pen text-primary"></i>
+						</button>
+
+						<button type="submit" id="status-save" class="btn btn-sm btn-success ms-2"
+								style="display:none;">
+							<i class="fa-solid fa-check"></i>
+						</button>
+					</div>
+				</form>
+
+				<div class="border rounded p-3 bg-light mb-3">
+					<div class="d-flex align-items-center mb-2">
+						<i class="fa-solid fa-note-sticky text-primary me-2"></i>
+						<span class="fw-semibold text-muted small">Opis wizyty</span>
+					</div>
+					<p class="mb-0">@(Model.Description ?? "Brak opisu")</p>
+				</div>
+
+
+				<form asp-action="AddNote" asp-controller="Appointment" method="post">
+					@Html.AntiForgeryToken()
+
+					<input type="hidden" name="appointmentId" value="@Model.Id" />
+
+					<div class="mb-3">
+						<textarea class="form-control" name="note" placeholder="Dodaj notatkę">@Model.Notes</textarea>
+					</div>
+
+					<div>
+						@if (ViewBag.Error != null)
+						{
+							<span>@ViewBag.Error</span>
+						}
+					</div>
+					<button class="btn btn-medical" type="submit">Dodaj</button>
+				</form>
+			}
+
+			<!-- Widok Pacjenta -->
+			@if (User.IsInRole("Patient"))
+			{
+				<div class="d-flex align-items-center mb-3">
+					<label class="fw-semibold me-2" style="width: 120px;">Status</label>
+					<span id="status-text">@Model.StatusName</span>
+				</div>
+
+				<div class="border rounded p-3 bg-light mb-3">
+					<div class="d-flex align-items-center mb-2">
+						<i class="fa-solid fa-note-sticky text-primary me-2"></i>
+						<span class="fw-semibold text-muted small">Notatki lekarza</span>
+					</div>
+					<p class="mb-0">@(Model.Notes ?? "Brak notatek")</p>
+				</div>
+
+				<form asp-action="UpdateAppointmentDescription" asp-controller="Appointment" method="post">
+					@Html.AntiForgeryToken()
+
+					<input type="hidden" name="appointmentId" value="@Model.Id" />
+
+					<div class="mb-3">
+						<textarea class="form-control" name="description" placeholder="Dodaj opis wizyty">@Model.Description</textarea>
+					</div>
+
+					<div>
+						@if (ViewBag.Error != null)
+						{
+							<span>@ViewBag.Error</span>
+						}
+					</div>
+					<button class="btn btn-medical" type="submit">Dodaj</button>
+				</form>
+			}
 		</div>
-	}
+	</div>
+</div>
+
+
+@section Scripts {
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script>
+		function enableEdit(fieldId) {
+			const span = document.getElementById(`${fieldId}-text`);
+			const input = document.getElementById(`${fieldId}-input`);
+			const editBtn = document.getElementById(`${fieldId}-edit`);
+			const saveBtn = document.getElementById(`${fieldId}-save`);
+
+			span.style.display = 'none';
+			input.style.display = 'inline';
+			editBtn.style.display = 'none';
+			saveBtn.style.display = 'inline';
+		}
+
+		function enableDateEdit() {
+			document.getElementById('date-text').style.display = 'none';
+			document.getElementById('date-edit').style.display = 'none';
+			document.getElementById('date-form').style.display = 'block';
+		}
+
+		function cancelDateEdit() {
+			document.getElementById('date-text').style.display = 'inline';
+			document.getElementById('date-edit').style.display = 'inline';
+			document.getElementById('date-form').style.display = 'none';
+		}
+
+
+		flatpickr("#newDate", {
+			enableTime: true,
+			dateFormat: "Y-m-d H:i",
+			minDate: "today",
+			minTime: "08:00",
+			maxTime: "16:00",
+			time_24hr: true
+		});
+	</script>
 }
-	
