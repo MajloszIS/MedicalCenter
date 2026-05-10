@@ -7,10 +7,13 @@ Aplikacja webowa centrum medycznego zbudowana w ASP.NET Core MVC z wykorzystanie
 - **.NET 9.0**
 - **ASP.NET Core MVC**
 - **Entity Framework Core 9.0** — ORM do obsługi bazy danych
-- **SQL Server** — baza danych (LocalDB na Windows, Docker na macOS)
+- **SQL Server** — baza danych w kontenerze Docker (Azure SQL Edge)
 - **BCrypt.Net-Next 4.1.0** — hashowanie haseł
 - **Swashbuckle.AspNetCore 10.1.7** — dokumentacja API (Swagger)
 - **Bootstrap 5** — framework CSS
+- **Font Awesome 6.4.0** — ikony
+- **Stripe** — obsługa płatności online
+- **Flatpickr** — kalendarz do wyboru daty wizyty
 ## Architektura
  
 Aplikacja wykorzystuje architekturę warstwową:
@@ -30,17 +33,27 @@ Controllers → Services → Repositories → Database
 - Logowanie i wylogowanie
 - Autoryzacja oparta na rolach (Admin, Doctor, Patient, Courier)
 - Sesja oparta na ciasteczkach (Cookie Authentication)
+- Hashowanie haseł przez BCrypt
 ### Panel pacjenta
 - Przeglądanie listy lekarzy ze specjalizacjami
-- Umawianie wizyt u lekarzy
-- Przeglądanie własnych wizyt
+- Umawianie wizyt u lekarzy z wyborem daty, godziny i opisu
+- Przeglądanie własnych wizyt i ich szczegółów
 - Anulowanie wizyt
+- Profil użytkownika — edycja danych, zmiana hasła, zdjęcie profilow
 ### Panel lekarza
 - Przeglądanie własnych wizyt
 - Przeglądanie listy swoich pacjentów
+- Karta medyczna pacjenta
+- Dodawanie diagnoz i planów leczenia
+- Wystawianie recept z lekami
+- Profil użytkownika — edycja danych, zmiana hasła, zdjęcie profilowe
 ### Panel admina
 - Dodawanie i usuwanie lekarzy
 - Przeglądanie listy pacjentów
+### Sklep i płatności
+- Przeglądanie leków w aptece
+- Koszyk zakupów
+- Płatności online przez Stripe
 ### API
 - Endpointy REST API udokumentowane przez Swagger UI (`/swagger`)
 - Pobieranie listy lekarzy
@@ -138,8 +151,8 @@ https://localhost:<port>/swagger
  
 - [ ] Rozbudowa API — więcej endpointów dla wizyt i pacjentów
 - [ ] Frontend/CSS — poprawa wyglądu aplikacji
-- [ ] Przesyłanie plików — np. zdjęcie profilowe lekarza
-- [ ] Zewnętrzne API — np. prognoza pogody
+- [x] Przesyłanie plików — zdjęcie profilowe użytkownika
+- [x] Zewnętrzne API — stripe
 - [ ] Generowanie dokumentów PDF — np. recepta
 - [ ] Testy automatyczne — pokrycie głównej logiki aplikacji
 - [ ] Wdrożenie na produkcji
