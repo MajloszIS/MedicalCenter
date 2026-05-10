@@ -6,6 +6,7 @@
 
         public Guid MedicalRecordId { get; set; }
         public Guid DoctorId { get; set; }
+        public DoctorDto Doctor { get; set; }
 
         public List<PrescriptionItemDto> Items { get; set; }
     }
