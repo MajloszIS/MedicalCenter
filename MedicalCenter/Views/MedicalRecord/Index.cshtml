@@ -66,9 +66,20 @@
 						@foreach (var diagnosis in Model.Diagnoses)
 						{
 							<div class="medical-card">
-								<div class="d-flex align-items-center mb-1">
-									<i class="fa-solid fa-list-alt me-2 text-primary"></i>
-									<p class="text-muted small mb-0">Opis</p>
+								<div class="d-flex align-items-center justify-content-between mb-1">
+									<div>
+										<i class="fa-solid fa-list-alt me-2 text-primary"></i>
+										<p class="text-muted small mb-0">Opis</p>
+									</div>
+
+									<form asp-action="RemoveDiagnosis" asp-controller="MedicalRecord" method="post">
+										@Html.AntiForgeryToken()
+										<input type="hidden" name="diagnosisId" value="@diagnosis.Id" />
+										<input type="hidden" name="patientId" value="@Model.PatientId" />
+										<button type="submit" class="btn btn-sm btn-outline-danger">
+											<i class="fa-solid fa-xmark"></i>
+										</button>
+									</form>
 								</div>
 								<p>@diagnosis.Description</p>
 
@@ -100,9 +111,17 @@
 								<h6 class="text-muted mt-3">
 									<i class="fa-solid fa-book-medical me-1"></i>Leczenie
 								</h6>
-								@foreach (var treatments in diagnosis.Treatments)
+								@foreach (var treatment in diagnosis.Treatments)
 								{
-									<p>@treatments.Description</p>
+									<p>@treatment.Description</p>
+									<form asp-action="RemoveTreatment" asp-controller="MedicalRecord" method="post">
+										@Html.AntiForgeryToken()
+										<input type="hidden" name="treatmentId" value="@treatment.Id" />
+										<input type="hidden" name="patientId" value="@Model.PatientId" />
+										<button type="submit" class="btn btn-sm">
+											<i class="fa-solid fa-xmark"></i>
+										</button>
+									</form>
 								}
 							</div>
 						}

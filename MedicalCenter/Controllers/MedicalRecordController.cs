@@ -72,6 +72,16 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
 
+        // Metoda do usuwania Diagnozy
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveDiagnosis(Guid diagnosisId, Guid patientId)
+        {
+            await _diagnosisService.DeleteDiagnosisAsync(diagnosisId);
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
+
         // Metoda do dodawnia leczenia do diagnozy
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddTreatment(Guid medicalRecordId, Guid patientId)
@@ -93,6 +103,16 @@ namespace MedicalCenter.Controllers
             };
             await _treatmentService.CreateTreatmentAsync(treatmentDto);
 
+            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+        }
+
+        // Metoda do usuwania leczenia z diagnozy
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveTreatment(Guid treatmentId, Guid patientId)
+        {
+            await _treatmentService.DeleteTreatmentAsync(treatmentId);
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
 
