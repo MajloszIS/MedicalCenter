@@ -56,11 +56,12 @@ namespace MedicalCenter.Controllers
 
             var doctor = await _doctorService.GetDoctorByIdAsync(DoctorId);
             return View(doctor);
-            return View();
         }
 
         public async Task<IActionResult> Details(Guid AppointmentId)
         {
+            var statuses = await _appointmentService.GetAllAppointmentStatusAsync();
+            ViewBag.Statuses = statuses;
             var appointment = await _appointmentService.GetAppointmentByIdAsync(AppointmentId);
             return View(appointment);
         }
@@ -71,6 +72,47 @@ namespace MedicalCenter.Controllers
         {
             await _appointmentService.CancelAppointmentAsync(AppointmentId);
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddNote(Guid AppointmentId, string note)
+        {
+            await _appointmentService.AddNoteAsync(AppointmentId, note);
+            return RedirectToAction("Details", new { AppointmentId = AppointmentId });
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAppointmentStatus(Guid AppointmentId, Guid statusId)
+        {
+            await _appointmentService.UpdateAppointmentStatusAsync(AppointmentId, statusId);
+            return RedirectToAction("Details", new { AppointmentId = AppointmentId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RescheduleAppointment(Guid AppointmentId, DateTime? newDate)
+        {
+            if (newDate == null || newDate == DateTime.MinValue)
+            {
+                return RedirectToAction("Details", new { AppointmentId = AppointmentId });
+            }
+
+            await _appointmentService.RescheduleAppointmentAsync(AppointmentId, newDate.Value);
+            return RedirectToAction("Details", new { AppointmentId = AppointmentId });
+        }
+
+
+        [Authorize(Roles = "Patient")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAppointmentDescription(Guid AppointmentId, string description)
+        {
+            await _appointmentService.UpdateAppointmentDescriptionAsync(AppointmentId, description);
+            return RedirectToAction("Details", new { AppointmentId = AppointmentId });
         }
     }
 }

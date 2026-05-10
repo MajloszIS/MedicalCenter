@@ -130,5 +130,56 @@ namespace MedicalCenter.Services
             appointment.StatusId = Guid.Parse("12345678-1234-1234-1234-123456789012");
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
+        public async Task AddNoteAsync(Guid appointmentId, string note)
+        { 
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            appointment.Notes = note;
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+        }
+        public async Task<List<AppointmentStatusDto>> GetAllAppointmentStatusAsync()
+        {
+            var statuses = await _appointmentRepository.GetAllAppointmentStatusAsync();
+            return statuses.Select(s => new AppointmentStatusDto
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+        }
+        public async Task UpdateAppointmentStatusAsync(Guid appointmentId, Guid statusId)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            
+            appointment.StatusId = statusId;
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+        }
+        public async Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            appointment.AppointmentDate = newDate;
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+        }
+        public async Task UpdateAppointmentDescriptionAsync(Guid appointmentId, string description)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found");
+            }
+            appointment.Description = description;
+            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+        }
+
     }
 }
