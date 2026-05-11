@@ -13,9 +13,9 @@ namespace MedicalCenter.Models
         [StringLength(100)]
         public string Email { get; set; }
 
-        [Required]
+
         [StringLength(255, MinimumLength = 6)]
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
@@ -28,7 +28,7 @@ namespace MedicalCenter.Models
         public string LastName { get; set; }
 
         [Phone]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [ForeignKey("Role")]
         public int RoleId { get; set; }

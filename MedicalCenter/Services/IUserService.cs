@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace MedicalCenter.Services
 {
@@ -8,5 +9,6 @@ namespace MedicalCenter.Services
         public Task<LoginResultDto> LoginAsync(LoginDto dto);
         public Task UpdateProfilePictureAsync(Guid userId, string filePath);
         public Task<bool> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
+        public Task<UserWithRoleDto> GetUserByEmailWithRoleAsync(string email);
     }
 }

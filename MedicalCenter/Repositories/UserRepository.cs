@@ -27,7 +27,7 @@ namespace MedicalCenter.Repositories
         }
         public async Task<User> GetUserByEmailWithRoleAsync(string email)
         {
-            return await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.Include(u => u.Role).Include(u => u.Patient).FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public Task CreateUserAsync(User user)

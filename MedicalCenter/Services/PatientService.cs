@@ -1,6 +1,8 @@
-﻿using MedicalCenter.DTOs;
+﻿using Humanizer;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 
 
@@ -59,6 +61,26 @@ namespace MedicalCenter.Services
 
             await _patientRepository.CreatePatientAsync(patient);
         }
+        public async Task RegisterGoogleUserAsync(string email, string firstName, string lastName)
+        {
+            var user = new User
+            {
+                Email = email,
+                FirstName = firstName ?? "Użytkownik",
+                LastName = lastName ?? "Google",
+                PasswordHash = null, // Google user doesn't have a password
+                RoleId = 3
+            };
+
+            await _userRepository.CreateUserAsync(user);
+
+            var patient = new Patient
+            {
+                UserId= user.Id
+            };
+
+            await _patientRepository.CreatePatientAsync(patient);
+        }
         public async Task<PatientDto> GetPatientByUserIdAsync(Guid userId)
         {
             var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
@@ -74,7 +96,31 @@ namespace MedicalCenter.Services
 
             return patientDto;
         }
+        public async Task<PatientDto> GetUserByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
 
+            var patient = await _patientRepository.GetPatientByUserIdAsync(user.Id);
+            if (patient == null)
+            {
+                return null;
+            }
+
+            var patientDto = new PatientDto
+            {
+                Id = patient.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.Phone,
+                Pesel = patient.Pesel
+            };
+
+            return patientDto;
+        }
         public async Task<UpdatePatientProfileDto> GetPatientProfileAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);

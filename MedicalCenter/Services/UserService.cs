@@ -2,6 +2,7 @@
 using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace MedicalCenter.Services
 {
@@ -69,6 +70,25 @@ namespace MedicalCenter.Services
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             await _userRepository.UpdateUserAsync(user);
             return true;
+        }
+        public async Task<UserWithRoleDto> GetUserByEmailWithRoleAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = new UserWithRoleDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                RoleName = user.Role.Name
+            };
+
+            return result;
         }
     }
 }
