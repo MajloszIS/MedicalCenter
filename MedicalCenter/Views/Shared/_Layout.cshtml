@@ -56,6 +56,15 @@
                         </ul>
                     }
 
+                    @if (User.IsInRole("Courier"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark fw-bold text-success" asp-area="" asp-controller="Courier" asp-action="Index">
+                                <i class="fa-solid fa-truck-fast me-1"></i> Panel Kuriera
+                            </a>
+                        </li>
+                    }
+
                     @if (User.IsInRole("Patient"))
                     {
                         <ul class="navbar-nav flex-grow-1">
