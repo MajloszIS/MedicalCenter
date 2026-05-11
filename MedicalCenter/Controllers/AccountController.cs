@@ -105,9 +105,14 @@ namespace MedicalCenter.Controllers
             else if (User.IsInRole("Doctor"))
                 return RedirectToAction("DoctorProfile");
             else
-                return RedirectToAction("Register");
+            {
+                await Logout();
+                return RedirectToAction("Register", "Account");
+            }               
         }
 
+
+        // Akcje dla profilu pacjenta
         public async Task<IActionResult> PatientProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -141,6 +146,7 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("PatientProfile");
         }
 
+        // Akcje dla profilu lekarza
         public async Task<IActionResult> DoctorProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -177,6 +183,8 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("DoctorProfile");
         }
 
+
+        // Akcje dostępne dla wszystkich ról
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
