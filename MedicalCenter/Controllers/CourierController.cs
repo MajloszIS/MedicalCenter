@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {
-    // [Authorize(Roles = "Courier")]
+    [Authorize(Roles = "Courier")]
     public class CourierController : Controller
     {
         private readonly IDeliveryService _deliveryService;
