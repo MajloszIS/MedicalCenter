@@ -11,7 +11,7 @@ namespace MedicalCenter.Models
         public Guid CourierId { get; set; }
 
         public Guid StatusId { get; set; }
-        public OrderStatus Status { get; set; }
+        public DeliveryStatus Status { get; set; }
 
         public Order Order { get; set; }
         public Courier Courier { get; set; }
