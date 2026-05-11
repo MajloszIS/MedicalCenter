@@ -132,7 +132,7 @@ namespace MedicalCenter.Services
                 Phone = user.Phone,
                 Email = user.Email,
                 ProfilePicturePath = user.ProfilePicturePath,
-                Pesel = patient.Pesel,
+                Pesel = patient.Pesel ?? string.Empty,
                 BirthDate = patient.BirthDate,
             };
             return patientProfileDto;
