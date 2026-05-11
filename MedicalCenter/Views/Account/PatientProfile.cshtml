@@ -137,7 +137,12 @@
                     <!-- Pesel -->
                     <div class="d-flex align-items-center mb-3">
                         <label class="fw-semibold me-2" style="width: 120px;">Pesel</label>
-                        <span id="pesel-text">@Model.Pesel</span>
+                        <span id="pesel-text">
+                            @if (string.IsNullOrEmpty(Model.Pesel)) 
+                            { <text>brak numeru Pesel</text> } 
+                            else 
+                            { <text>@Model.Pesel</text> }
+                        </span>
                         <input id="pesel-input" name="Pesel" value="@Model.Pesel"
                                class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
                         <button type="button" id="pesel-edit" onclick="enableEdit('pesel')"

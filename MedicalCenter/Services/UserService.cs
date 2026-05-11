@@ -33,6 +33,11 @@ namespace MedicalCenter.Services
                 return null;
             }
 
+            if (user.PasswordHash == null)
+            {
+                return null; // konto Google - nie można logować przez formularz
+            }
+
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 return null;
