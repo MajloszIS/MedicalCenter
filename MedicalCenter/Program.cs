@@ -48,6 +48,7 @@ builder.Services.AddSwaggerGen();
 // dodanie stripe'a
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+// dodanie autoryzacji (cookies)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -55,6 +56,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/Login"; // redirect gdy brak uprawnień
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    })
+// dodanie Google Authentication
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        options.CallbackPath = "/signin-google";
     });
 
 var app = builder.Build();

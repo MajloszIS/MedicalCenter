@@ -105,14 +105,19 @@ namespace MedicalCenter.Controllers
             else if (User.IsInRole("Doctor"))
                 return RedirectToAction("DoctorProfile");
             else
-                return RedirectToAction("Register");
+            {
+                await Logout();
+                return RedirectToAction("Register", "Account");
+            }
         }
 
+
+        // Akcje dla profilu pacjenta
         public async Task<IActionResult> PatientProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login");
-                
+
             var patientProfile = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
 
             return View(patientProfile);
@@ -120,7 +125,7 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePatientProfile(UpdatePatientProfileDto dto) 
+        public async Task<IActionResult> UpdatePatientProfile(UpdatePatientProfileDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login");
@@ -141,6 +146,7 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("PatientProfile");
         }
 
+        // Akcje dla profilu lekarza
         public async Task<IActionResult> DoctorProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -177,6 +183,8 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("DoctorProfile");
         }
 
+
+        // Akcje dostępne dla wszystkich ról
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
@@ -227,6 +235,51 @@ namespace MedicalCenter.Controllers
             await _userService.UpdateProfilePictureAsync(Guid.Parse(userId), $"/images/profiles/{fileName}");
 
             return RedirectToAction("Profile");
+        }
+
+        // Logowanie się przez Google
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = "/Account/GoogleCallback"
+            };
+            return Challenge(properties, "Google");
+        }
+
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var result = await HttpContext.AuthenticateAsync("Google");
+            if (!result.Succeeded) return RedirectToAction("Login");
+
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
+
+            // sprawdź czy user już istnieje
+            var user = await _userService.IsUserWithThisEmailExists(email);
+
+            if (!user)
+            {
+                // utwórz nowego usera bez hasła
+                await _patientService.RegisterGoogleUserAsync(email, firstName, lastName);
+            }
+
+            // zaloguj przez cookie
+            var userWithRole = await _userService.GetUserByEmailWithRoleAsync(email);
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.NameIdentifier, userWithRole.Id.ToString()),
+                new (ClaimTypes.Email, userWithRole.Email),
+                new (ClaimTypes.Name, $"{userWithRole.FirstName} {userWithRole.LastName}"),
+                new (ClaimTypes.Role, userWithRole.RoleName)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
