@@ -75,7 +75,8 @@ namespace MedicalCenter.Data
             modelBuilder.Entity<User>().HasData(
                 new User { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), Email = "admin@medical.pl", PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e", FirstName = "Adam", LastName= "Nowak", Phone= "111222333", RoleId = 1},
                 new User { Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Email = "doktor@medical.pl", PasswordHash = "$2a$11$VmozT24fOt40zBIdkcNYFeO6z0sVfe2GdFOzyoSKVgSATzjNZSia6", FirstName = "Jan", LastName = "Kowalski", Phone = "222333444", RoleId = 2 },
-                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "$2a$11$SjBITGayq8gTCE4JLjt4becH4zr32rn5cixIlaqdJtSCvYwd1O/QC", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 }
+                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "$2a$11$SjBITGayq8gTCE4JLjt4becH4zr32rn5cixIlaqdJtSCvYwd1O/QC", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 },
+                new User { Id = Guid.Parse("ffffffff-1111-1111-1111-111111111111"), Email = "kurier@medical.pl", PasswordHash = "$2a$11$VmozT24fOt40zBIdkcNYFeO6z0sVfe2GdFOzyoSKVgSATzjNZSia6", FirstName = "Szybki", LastName = "Wiesiek", Phone = "999888777", RoleId = 4 }
                 );
 
             modelBuilder.Entity<Doctor>().HasData(
@@ -84,6 +85,10 @@ namespace MedicalCenter.Data
 
             modelBuilder.Entity<Patient>().HasData(
                 new Patient { Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), UserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Pesel = "99010112345", BirthDate = new DateTime(1999, 1, 1) }
+            );
+
+            modelBuilder.Entity<Courier>().HasData(
+                new Courier { Id = Guid.Parse("ffffffff-2222-2222-2222-222222222222"), UserId = Guid.Parse("ffffffff-1111-1111-1111-111111111111") }
             );
 
             modelBuilder.Entity<AppointmentStatus>().HasData(
@@ -113,9 +118,25 @@ namespace MedicalCenter.Data
             );
 
             modelBuilder.Entity<DeliveryStatus>().HasData(
-            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-1111-1111-1111-111111111111"), Name = "Oczekuje na kuriera" },
-            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-2222-2222-2222-222222222222"), Name = "W drodze" },
-            new DeliveryStatus { Id = Guid.Parse("eeeeeeee-3333-3333-3333-333333333333"), Name = "Dostarczono" }
+                new DeliveryStatus { Id = Guid.Parse("eeeeeeee-1111-1111-1111-111111111111"), Name = "Oczekuje na kuriera" },
+                new DeliveryStatus { Id = Guid.Parse("eeeeeeee-2222-2222-2222-222222222222"), Name = "W drodze" },
+                new DeliveryStatus { Id = Guid.Parse("eeeeeeee-3333-3333-3333-333333333333"), Name = "Dostarczono" }
+            );
+            modelBuilder.Entity<Order>().HasData(
+                new Order { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 31.00m, StatusId = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111") },
+                new Order { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 12.99m, StatusId = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222") },
+                new Order { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 9.00m, StatusId = Guid.Parse("bbbbbbbb-4444-4444-4444-444444444444") }
+            );
+
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem { Id = Guid.Parse("66666666-1111-1111-1111-111111111111"), OrderId = Guid.Parse("11111111-1111-1111-1111-111111111111"), MedicineId = Guid.Parse("dddddddd-1111-1111-1111-111111111111"), Quantity = 2 },
+                new OrderItem { Id = Guid.Parse("66666666-2222-2222-2222-222222222222"), OrderId = Guid.Parse("22222222-2222-2222-2222-222222222222"), MedicineId = Guid.Parse("dddddddd-2222-2222-2222-222222222222"), Quantity = 1 },
+                new OrderItem { Id = Guid.Parse("66666666-3333-3333-3333-333333333333"), OrderId = Guid.Parse("33333333-3333-3333-3333-333333333333"), MedicineId = Guid.Parse("dddddddd-3333-3333-3333-333333333333"), Quantity = 1 }
+            );
+
+            modelBuilder.Entity<Delivery>().HasData(
+                new Delivery { Id = Guid.Parse("55555555-1111-1111-1111-111111111111"), OrderId = Guid.Parse("22222222-2222-2222-2222-222222222222"), CourierId = null, StatusId = Guid.Parse("eeeeeeee-1111-1111-1111-111111111111") },
+                new Delivery { Id = Guid.Parse("55555555-2222-2222-2222-222222222222"), OrderId = Guid.Parse("33333333-3333-3333-3333-333333333333"), CourierId = Guid.Parse("ffffffff-2222-2222-2222-222222222222"), StatusId = Guid.Parse("eeeeeeee-3333-3333-3333-333333333333") }
             );
         }
     }

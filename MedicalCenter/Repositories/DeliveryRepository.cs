@@ -39,5 +39,22 @@ namespace MedicalCenter.Repositories
             _context.Deliveries.Update(delivery);
             return _context.SaveChangesAsync();
         }
+        public async Task<List<Delivery>> GetUnassignedDeliveriesAsync()
+        {
+            return await _context.Deliveries
+                .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.User)
+                .Include(d => d.Status)
+                .Where(d => d.CourierId == null) // Wyciągamy te, które nie mają jeszcze kuriera
+                .ToListAsync();
+        }
+
+        public async Task<List<Delivery>> GetDeliveriesByCourierIdAsync(Guid courierId)
+        {
+            return await _context.Deliveries
+                .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.User)
+                .Include(d => d.Status)
+                .Where(d => d.CourierId == courierId) // Wyciągamy tylko moje
+                .ToListAsync();
+        }
     }
 }

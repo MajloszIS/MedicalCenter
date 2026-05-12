@@ -6,11 +6,48 @@
 
 <div class="row mb-4 align-items-center">
     <div class="col-md-8">
-        <h2 class="page-title border-0 mb-0"><i class="fa-solid fa-truck-fast text-primary me-2"></i>Moje Trasy</h2>
-        <p class="text-muted">Zarządzaj swoimi dostawami leków do pacjentów.</p>
+        <h2 class="page-title border-0 mb-0"><i class="fa-solid fa-truck-fast text-primary me-2\"></i>Giełda Zleceń i Moje Trasy</h2>
+        <p class="text-muted">Przeglądaj zlecenia i zarządzaj swoimi dostawami leków do pacjentów.</p>
     </div>
 </div>
 
+<h4 class="mb-3 text-secondary"><i class="fa-solid fa-list me-2"></i>Dostępne do przyjęcia</h4>
+@if (((List<MedicalCenter.DTOs.DeliveryDto>)ViewBag.AvailableDeliveries).Count == 0)
+{
+    <div class="alert alert-light border text-center text-muted py-3 mb-5">
+        Brak nowych zleceń. Wszystkie paczki zostały przypisane.
+    </div>
+}
+else
+{
+    <div class="row g-4 mb-5">
+        @foreach (var delivery in ViewBag.AvailableDeliveries)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="medical-card h-100 d-flex flex-column border-top border-4 border-warning">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-secondary text-white px-3 py-2">Nieprzypisane</span>
+                    </div>
+
+                    <h5 class="fw-bold mb-1"><i class="fa-solid fa-user me-2 text-muted"></i>@delivery.PatientFullName</h5>
+                    <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-2"></i>@delivery.DeliveryAddress, @delivery.PostalCode @delivery.City</p>
+
+                    <div class="mt-auto pt-3 border-top">
+                        <form asp-action="Accept" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@delivery.Id" />
+                            <button type="submit" class="btn btn-warning w-100 fw-bold">
+                                <i class="fa-solid fa-hand-holding-box me-1"></i> Przyjmij zlecenie
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<h4 class="mb-3 text-primary"><i class="fa-solid fa-box-open me-2"></i>Moje Trasy</h4>
 @if (!Model.Any())
 {
     <div class="medical-card text-center py-5">
@@ -27,12 +64,14 @@ else
             <div class="col-md-6 col-lg-4">
                 <div class="medical-card h-100 d-flex flex-column border-top border-4 border-primary">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-clock me-1"></i> @delivery.StatusName</span>
-                        <h5 class="text-success fw-bold mb-0">@delivery.TotalPrice.ToString("C")</h5>
+                        @{
+                            var badgeClass = delivery.StatusName == "Dostarczono" ? "bg-success" : "bg-warning text-dark";
+                        }
+                        <span class="badge @badgeClass px-3 py-2">@delivery.StatusName</span>
                     </div>
 
                     <h5 class="fw-bold mb-1"><i class="fa-solid fa-user me-2 text-muted"></i>@delivery.PatientFullName</h5>
-                    <p class="text-muted mb-3"><i class="fa-solid fa-location-dot me-2 text-danger"></i>@delivery.DeliveryAddress, @delivery.PostalCode @delivery.City</p>
+                    <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-2"></i>@delivery.DeliveryAddress, @delivery.PostalCode @delivery.City</p>
 
                     <div class="mt-auto pt-3 border-top d-flex gap-2">
                         <form asp-action="ChangeStatus" method="post" class="w-50">

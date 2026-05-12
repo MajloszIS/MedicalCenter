@@ -8,5 +8,7 @@ namespace MedicalCenter.Repositories
         Task<Delivery> GetDeliveryByIdAsync(Guid id);
         Task<DeliveryStatus> GetStatusByNameAsync(string statusName);
         Task UpdateDeliveryAsync(Delivery delivery);
+        Task<List<Delivery>> GetUnassignedDeliveriesAsync();
+        Task<List<Delivery>> GetDeliveriesByCourierIdAsync(Guid courierId);
     }
 }
