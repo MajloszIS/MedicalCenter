@@ -4,7 +4,7 @@
     ViewData["Title"] = $"Witaj {Model.FirstName} {Model.LastName}";
 }
 
-<div class="container py-5">
+<div class="container py-1">
     <h2 class="page-title">Mój profil</h2>
     
     <div class="row g-4">
@@ -120,7 +120,17 @@
                     <!-- Data Urodzenia -->
                     <div class="d-flex align-items-center mb-3">
                         <label class="fw-semibold me-2" style="width: 120px;">Data Urodzenia</label>
-                        <span id="birthDate-text">@Model.BirthDate</span>
+                        <span id="birthDate-text">
+                            @if (Model.BirthDate == null)
+                            {
+                                <text>brak numeru Daty Urodzenia</text>
+                            }
+                            else
+                            {
+
+                                <text>@Model.BirthDate?.ToString("dd.MM.yyyy")</text>
+                            }
+                        </span>
                         <input id="birthDate-input" name="BirthDate" type="date" value="@Model.BirthDate"
                                class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
                         <button type="button" id="birthDate-edit" onclick="enableEdit('birthDate')"
