@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260512172745_AddCourierSeed")]
+    partial class AddCourierSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +205,7 @@ namespace MedicalCenter.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourierId")
+                    b.Property<Guid>("CourierId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrderId")
@@ -220,21 +223,6 @@ namespace MedicalCenter.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("Deliveries");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("55555555-1111-1111-1111-111111111111"),
-                            OrderId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            StatusId = new Guid("eeeeeeee-1111-1111-1111-111111111111")
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-2222-2222-2222-222222222222"),
-                            CourierId = new Guid("ffffffff-2222-2222-2222-222222222222"),
-                            OrderId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            StatusId = new Guid("eeeeeeee-3333-3333-3333-333333333333")
-                        });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.DeliveryStatus", b =>
@@ -497,29 +485,6 @@ namespace MedicalCenter.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("Orders");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = new Guid("bbbbbbbb-1111-1111-1111-111111111111"),
-                            TotalPrice = 31.00m
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
-                            TotalPrice = 12.99m
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = new Guid("bbbbbbbb-4444-4444-4444-444444444444"),
-                            TotalPrice = 9.00m
-                        });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.OrderItem", b =>
@@ -544,29 +509,6 @@ namespace MedicalCenter.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("66666666-1111-1111-1111-111111111111"),
-                            MedicineId = new Guid("dddddddd-1111-1111-1111-111111111111"),
-                            OrderId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            Id = new Guid("66666666-2222-2222-2222-222222222222"),
-                            MedicineId = new Guid("dddddddd-2222-2222-2222-222222222222"),
-                            OrderId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("66666666-3333-3333-3333-333333333333"),
-                            MedicineId = new Guid("dddddddd-3333-3333-3333-333333333333"),
-                            OrderId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Quantity = 1
-                        });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.OrderStatus", b =>
@@ -972,7 +914,8 @@ namespace MedicalCenter.Migrations
                     b.HasOne("MedicalCenter.Models.Courier", "Courier")
                         .WithMany("Deliveries")
                         .HasForeignKey("CourierId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("MedicalCenter.Models.Order", "Order")
                         .WithMany()
