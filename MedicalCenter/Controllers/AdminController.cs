@@ -30,6 +30,7 @@ namespace MedicalCenter.Controllers
             return View();
         }
 
+        // Lekarze
         public async Task<IActionResult> Doctors()
         {
             var doctorDtos = await _doctorService.GetAllDoctorsAsync();
@@ -37,9 +38,10 @@ namespace MedicalCenter.Controllers
             return View(doctorDtos);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            return View(specializations);
         }
 
         [HttpPost]
@@ -54,33 +56,74 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
+                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}, Spec: {dto.SpecializationName}");
+
                 await _doctorService.CreateDoctorAsync(dto);
 
                 return RedirectToAction("Doctors", "Admin");
             }
-
-            return View();
-        }
-
-        public IActionResult Delete()
-        {
-            return View();
+            else
+            {
+                ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+                var specs = await _doctorService.GetAllSpecializationsAsync();
+                return View(specs);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid DoctorId)
+        public async Task<IActionResult> Delete(Guid doctorId)
         {
-            await _doctorService.DeleteDoctorAsync(DoctorId);
+            await _doctorService.DeleteDoctorAsync(doctorId);
 
             return RedirectToAction("Doctors");
         }
 
+        public async Task<IActionResult> EditDoctor(Guid doctorId)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if (doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
+            if (doctorProfile == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
+
+            return View(doctorProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditDoctor(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if(doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            await _doctorService.UpdateDoctorProfileAsync(doctorUserId ,updateDoctorProfileDto);
+
+            return RedirectToAction("Doctors");
+        }
+
+        // Pacjenci
         public async Task<IActionResult> Patients()
         {
             var patients = await _patientService.GetAllPatientsAsync();
 
             return View(patients);
         }
+
     }
 }

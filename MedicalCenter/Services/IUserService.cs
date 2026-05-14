@@ -10,5 +10,6 @@ namespace MedicalCenter.Services
         public Task UpdateProfilePictureAsync(Guid userId, string filePath);
         public Task<bool> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
         public Task<UserWithRoleDto> GetUserByEmailWithRoleAsync(string email);
+        public Task<Guid> GetUserIdByDoctorIdAsync(Guid doctorId);
     }
 }
