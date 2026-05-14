@@ -9,6 +9,7 @@ namespace MedicalCenter.Repositories
         public Task<User> GetUserByEmailAsync(string email);
         public Task<User> GetUserByEmailWithRoleAsync(string email);
         public Task<User> GetUserByDoctorIdAsync(Guid doctorId);
+        public Task<User> GetUserByPatientIdAsync(Guid patientId);
         public Task CreateUserAsync(User user);
         public Task UpdateUserAsync(User user);
         public Task DeleteUserAsync(Guid id);

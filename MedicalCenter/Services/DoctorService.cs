@@ -104,10 +104,9 @@ namespace MedicalCenter.Services
             {
                 var user = await _userRepository.GetUserByIdAsync(doctor.UserId);
 
-                await _doctorRepository.DeleteDoctorAsync(doctor.Id);
-
                 if (user != null)
                 {
+                    await _doctorRepository.DeleteDoctorAsync(doctor.Id);
                     await _userRepository.DeleteUserAsync(user.Id);
                 }
             }

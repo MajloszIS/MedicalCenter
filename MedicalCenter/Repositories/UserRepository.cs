@@ -34,6 +34,11 @@ namespace MedicalCenter.Repositories
             var user = await _context.Users.Include(u => u.Doctor).FirstOrDefaultAsync(u => u.Doctor.Id == doctorId);
             return user;
         }
+        public async Task<User> GetUserByPatientIdAsync(Guid patientId)
+        {
+            var user = await _context.Users.Include(u => u.Patient).FirstOrDefaultAsync(u => u.Patient.Id == patientId);
+            return user;
+        }
 
         public Task CreateUserAsync(User user)
         {     

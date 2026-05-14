@@ -1,11 +1,11 @@
-﻿@model MedicalCenter.DTOs.UpdateDoctorProfileDto;
+﻿@model MedicalCenter.DTOs.UpdatePatientProfileDto;
 
 @{
-    ViewData["Title"] = $"Edytuj lekarza {Model.FirstName} {Model.LastName}";
+    ViewData["Title"] = $"Edytuj Paacjenta {Model.FirstName} {Model.LastName}";
 }
 
-<div class="container py-5">
-    <h2 class="page-title">Lekarz @Model.FirstName @Model.LastName</h2>
+<div class="container py-1">
+    <h2 class="page-title">Edytuj Pacjenta @Model.FirstName @Model.LastName</h2>
     
     <div class="row g-4">
         <div class="col-lg-4">
@@ -28,11 +28,11 @@
 
         <div class="col-lg-8">
             <div class="medical-card">
-                <form asp-action="EditDoctor" asp-controller="Admin"
+                <form asp-action="EditPatient" asp-controller="Admin"
                       method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
 
-                    <input type="hidden" name="doctorId" value="@ViewBag.DoctorId" />
+                    <input type="hidden" name="patientId" value="@ViewBag.PatientId" />
 
                     <!-- Imie -->
                     <div class="d-flex align-items-center mb-3">
@@ -102,47 +102,55 @@
                         </button>
                     </div>
 
-                    <!-- Specjalizacja -->
+                    <!-- Data Urodzenia -->
                     <div class="d-flex align-items-center mb-3">
-                        <label class="fw-semibold me-2" style="width: 120px;">Specjalizacja</label>
-
-                        <span id="specialization-text">@Model.SpecializationName</span>
-
-                        <select id="specialization-input" name="SpecializationName"
-                                class="form-select form-select-sm ms-2" style="display:none; width:200px;">
-                            @foreach (var spec in ViewBag.Specializations)
+                        <label class="fw-semibold me-2" style="width: 120px;">Data Urodzenia</label>
+                        <span id="birthDate-text">
+                            @if (Model.BirthDate == null)
                             {
-                                <option value="@spec.Name"
-                                        selected="@(spec.Name == Model.SpecializationName ? "selected" : null)">
-                                    @spec.Name
-                                </option>
+                                <text>brak numeru Daty Urodzenia</text>
                             }
-                        </select>
+                            else
+                            {
 
-                        <button type="button" id="specialization-edit" onclick="enableEdit('specialization')"
+                                <text>@Model.BirthDate?.ToString("dd.MM.yyyy")</text>
+                            }
+                        </span>
+                        <input id="birthDate-input" name="BirthDate" type="date" value="@Model.BirthDate"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="birthDate-edit" onclick="enableEdit('birthDate')"
                                 class="btn btn-sm btn-link ms-2">
 
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
-
-                        <button type="submit" id="specialization-save" class="btn btn-sm btn-success ms-2"
+                        <button type="submit" id="birthDate-save" class="btn btn-sm btn-success ms-2"
                                 style="display:none;">
                             <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 
-                    <!-- Numer licencji -->
+                    <!-- Pesel -->
                     <div class="d-flex align-items-center mb-3">
-                        <label class="fw-semibold me-2" style="width: 120px;">Numer licencji</label>
-                        <span id="licenseNumber-text">@Model.LicenseNumber</span>
-                        <input id="licenseNumber-input" name="LicenseNumber" value="@Model.LicenseNumber"
+                        <label class="fw-semibold me-2" style="width: 120px;">Pesel</label>
+                        <span id="pesel-text">
+                            @if (string.IsNullOrEmpty(Model.Pesel))
+                            {
+                                <text>brak numeru Pesel</text>
+                            }
+                            else
+                            {
+
+                                <text>@Model.Pesel</text>
+                            }
+                        </span>
+                        <input id="pesel-input" name="Pesel" value="@Model.Pesel"
                                class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
-                        <button type="button" id="licenseNumber-edit" onclick="enableEdit('licenseNumber')"
+                        <button type="button" id="pesel-edit" onclick="enableEdit('pesel')"
                                 class="btn btn-sm btn-link ms-2">
 
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
-                        <button type="submit" id="licenseNumber-save" class="btn btn-sm btn-success ms-2"
+                        <button type="submit" id="pesel-save" class="btn btn-sm btn-success ms-2"
                                 style="display:none;">
                             <i class="fa-solid fa-check"></i>
                         </button>
@@ -151,7 +159,6 @@
 
                 </form>
             </div>
-            
         </div>
     </div>
 </div>
@@ -173,9 +180,9 @@
         }
 
         document.getElementById('profilePicture').addEventListener('change', function() {
-                const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
-                document.getElementById('fileName').textContent = fileName;
-            });
+            const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
+            document.getElementById('fileName').textContent = fileName;
+        });
     </script>
 }
 

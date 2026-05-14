@@ -64,6 +64,15 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task DeleteAppointmentsByPatientIdAsync(Guid patientId)
+        {
+            var appointments = await _context.Appointments
+                .Where(a => a.PatientId == patientId)
+                .ToListAsync();
+
+            _context.Appointments.RemoveRange(appointments);
+            await _context.SaveChangesAsync();
+        }
         public async Task<List<Patient>> GetPatientsByDoctorIdAsync(Guid doctorId)
         {
             return await _context.Appointments
