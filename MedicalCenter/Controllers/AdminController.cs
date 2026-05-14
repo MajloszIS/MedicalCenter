@@ -136,42 +136,40 @@ namespace MedicalCenter.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditPatient(Guid doctorId)
+        public async Task<IActionResult> EditPatient(Guid patientId)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if (doctorUserId == Guid.Empty)
+            var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
+            if (patientUserId == Guid.Empty)
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z pacjentem.";
+                return RedirectToAction("Patients", "Admin");
             }
 
-            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
-            if (doctorProfile == null)
+            var patientProfile = await _patientService.GetPatientProfileAsync(patientUserId);
+            if (patientProfile == null)
             {
-                TempData["Error"] = "Nie można znaleźć lekarza.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć pacjenta.";
+                return RedirectToAction("Patients", "Admin");
             }
 
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            ViewBag.Specializations = specializations;
-            ViewBag.DoctorId = doctorId;
-            return View(doctorProfile);
+            ViewBag.PatientId = patientId;
+            return View(patientProfile);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPatient(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
+        public async Task<IActionResult> EditPatient(Guid patientId, UpdatePatientProfileDto updatePatientProfileDto)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if (doctorUserId == Guid.Empty)
+            var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
+            if (patientUserId == Guid.Empty)
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z pacjentem.";
+                return RedirectToAction("Patients", "Admin");
             }
 
-            await _doctorService.UpdateDoctorProfileAsync(doctorUserId, updateDoctorProfileDto);
+            await _patientService.UpdatePatientProfileAsync(patientUserId, updatePatientProfileDto);
 
-            return RedirectToAction("Doctors");
+            return RedirectToAction("Patients");
         }
     }
 }

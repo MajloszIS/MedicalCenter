@@ -52,6 +52,12 @@ else
                             </a>
                         </td>
                         <td class="text-center">
+                            <a asp-action="EditPatient" asp-controller="Admin"
+                                   asp-route-patientId="@item.Id" class="fw-bold">
+                                <i class="fa-solid fa-pen me-1"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
                             <form asp-action="DeletePatient" asp-controller="Admin" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="patientId" value="@item.Id" />
