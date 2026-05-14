@@ -95,5 +95,15 @@ namespace MedicalCenter.Services
 
             return result;
         }
+
+        public async Task<Guid> GetUserIdByDoctorIdAsync(Guid doctorId)
+        {
+            var user = await _userRepository.GetUserByDoctorIdAsync(doctorId);
+            if (user == null)
+            {
+                return Guid.Empty;
+            }
+            return user.Id;
+        }
     }
 }
