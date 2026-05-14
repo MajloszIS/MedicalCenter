@@ -47,9 +47,18 @@ else
                         </td>
                         <td class="text-center">
                             <a asp-action="Index" asp-controller="MedicalRecord"
-                               asp-route-patientId="@item.Id" class="btn btn-medical w-100 fw-bold">
+                               asp-route-patientId="@item.Id" class="btn btn-medical w-50 fw-bold">
                                 <i class="fa-solid fa-circle-info me-2"></i> Karta Medyczna
                             </a>
+                        </td>
+                        <td class="text-center">
+                            <form asp-action="DeletePatient" asp-controller="Admin" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="patientId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 }

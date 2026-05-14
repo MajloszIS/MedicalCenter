@@ -10,6 +10,7 @@ namespace MedicalCenter.Repositories
         public Task CreateAppointmentAsync(Appointment appointment);
         public Task UpdateAppointmentAsync(Appointment appointment);
         public Task DeleteAppointmentAsync(Guid id);
+        public Task DeleteAppointmentsByPatientIdAsync(Guid patientId);
         public Task<List<Patient>> GetPatientsByDoctorIdAsync(Guid doctorId);
         public Task<List<Appointment>> GetAppointmentsByPatientIdAsync(Guid patientId);
         public Task<List<AppointmentStatus>> GetAllAppointmentStatusAsync();

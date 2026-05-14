@@ -38,7 +38,7 @@ namespace MedicalCenter.Controllers
             return View(doctorDtos);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateDoctor()
         {
             var specializations = await _doctorService.GetAllSpecializationsAsync();
             return View(specializations);
@@ -46,7 +46,7 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AdminCreateDoctorDto dto)
+        public async Task<IActionResult> CreateDoctor(AdminCreateDoctorDto dto)
         {
             if (await _userService.IsUserWithThisEmailExists(dto.Email))
             {
@@ -72,13 +72,14 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid doctorId)
+        public async Task<IActionResult> DeleteDoctor(Guid doctorId)
         {
             await _doctorService.DeleteDoctorAsync(doctorId);
 
             return RedirectToAction("Doctors");
         }
 
+        [HttpGet]
         public async Task<IActionResult> EditDoctor(Guid doctorId)
         {
             var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
@@ -97,7 +98,7 @@ namespace MedicalCenter.Controllers
 
             var specializations = await _doctorService.GetAllSpecializationsAsync();
             ViewBag.Specializations = specializations;
-
+            ViewBag.DoctorId = doctorId;
             return View(doctorProfile);
         }
 
@@ -125,5 +126,52 @@ namespace MedicalCenter.Controllers
             return View(patients);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePatient(Guid patientId)
+        {
+            await _patientService.DeletePatientAsync(patientId);
+
+            return RedirectToAction("Patients");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditPatient(Guid doctorId)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if (doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
+            if (doctorProfile == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
+            ViewBag.DoctorId = doctorId;
+            return View(doctorProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPatient(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if (doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            await _doctorService.UpdateDoctorProfileAsync(doctorUserId, updateDoctorProfileDto);
+
+            return RedirectToAction("Doctors");
+        }
     }
 }

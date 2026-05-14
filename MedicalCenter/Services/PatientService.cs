@@ -12,11 +12,13 @@ namespace MedicalCenter.Services
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository)
+        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository)
         {
             _patientRepository = patientRepository;
             _userRepository = userRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<List<PatientDto>> GetAllPatientsAsync()
@@ -154,6 +156,21 @@ namespace MedicalCenter.Services
 
             await _userRepository.UpdateUserAsync(user);
             await _patientRepository.UpdatePatientAsync(patient);
+        }
+
+        public async Task DeletePatientAsync(Guid patientId)
+        {
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+            if (patient != null)
+            {
+                var user = await _userRepository.GetUserByIdAsync(patient.UserId);
+                if (user != null)
+                {
+                    await _appointmentRepository.DeleteAppointmentsByPatientIdAsync(patientId);
+                    await _patientRepository.DeletePatientAsync(patientId);
+                    await _userRepository.DeleteUserAsync(patient.UserId);
+                }
+            }
         }
     }
 }

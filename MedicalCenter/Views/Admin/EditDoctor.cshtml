@@ -28,9 +28,11 @@
 
         <div class="col-lg-8">
             <div class="medical-card">
-                <form asp-action="UpdateDoctorProfile" asp-controller="Account"
+                <form asp-action="EditDoctor" asp-controller="Admin"
                       method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="doctorId" value="@ViewBag.DoctorId" />
 
                     <!-- Imie -->
                     <div class="d-flex align-items-center mb-3">
