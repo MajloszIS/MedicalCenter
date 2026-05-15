@@ -45,26 +45,28 @@ else
                         <td>
                             <div class="fw-bold">@item.Pesel</div>
                         </td>
-                        <td class="text-center">
-                            <a asp-action="Index" asp-controller="MedicalRecord"
-                               asp-route-patientId="@item.Id" class="btn btn-medical w-50 fw-bold">
-                                <i class="fa-solid fa-circle-info me-2"></i> Karta Medyczna
-                            </a>
-                        </td>
-                        <td class="text-center">
-                            <a asp-action="EditPatient" asp-controller="Admin"
-                                   asp-route-patientId="@item.Id" class="fw-bold">
-                                <i class="fa-solid fa-pen me-1"></i>
-                            </a>
-                        </td>
-                        <td class="text-center">
-                            <form asp-action="DeletePatient" asp-controller="Admin" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="patientId" value="@item.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </form>
+                        <td class="text-center justify-content-between d-flex">
+                            <div class="fw-bold">
+                                <a asp-action="PatientAppointments" asp-controller="Admin"
+                                       asp-route-patientId="@item.Id" class="fw-bold">
+                                    <i class="fa-solid fa-file-medical me-1"></i>
+                                </a>
+                            </div>
+                            <div class="fw-bold">
+                                <a asp-action="EditPatient" asp-controller="Admin"
+                                       asp-route-patientId="@item.Id" class="fw-bold">
+                                    <i class="fa-solid fa-pen me-1"></i>
+                                </a>
+                            </div>
+                            <div class="fw-bold">
+                                <form asp-action="DeletePatient" asp-controller="Admin" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="patientId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 }

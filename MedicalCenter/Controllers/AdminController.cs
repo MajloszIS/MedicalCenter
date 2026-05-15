@@ -18,12 +18,14 @@ namespace MedicalCenter.Controllers
         private readonly IUserService _userService;
         private readonly IDoctorService _doctorService;
         private readonly IPatientService _patientService;
+        private readonly IAppointmentService _appointmentService;
 
-        public AdminController(IPatientService patientService, IDoctorService doctorService, IUserService userService)
+        public AdminController(IPatientService patientService, IDoctorService doctorService, IUserService userService, IAppointmentService appointmentService)
         {
             _doctorService = doctorService;
             _userService = userService;
             _patientService = patientService;
+            _appointmentService = appointmentService;
         }
         public IActionResult Index()
         {
@@ -118,6 +120,27 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("Doctors");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DoctorAppointments(Guid doctorId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
+            if (appointments == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza lub jego wizyt.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
+            if (doctor == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
+            return View(appointments);
+        }
+
         // Pacjenci
         public async Task<IActionResult> Patients()
         {
@@ -170,6 +193,27 @@ namespace MedicalCenter.Controllers
             await _patientService.UpdatePatientProfileAsync(patientUserId, updatePatientProfileDto);
 
             return RedirectToAction("Patients");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PatientAppointments(Guid patientId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByPatientIdAsync(patientId);
+            if (appointments == null)
+            {
+                TempData["Error"] = "Nie można znaleźć pacjenta lub jego wizyt.";
+                return RedirectToAction("Patients", "Admin");
+            }
+
+            var patient = await _patientService.GetPatientByIdAsync(patientId);
+            if (patient == null)
+            {
+                TempData["Error"] = "Nie można znaleźć pacjenta.";
+                return RedirectToAction("Patients", "Admin");
+            }
+
+            ViewBag.PatientName = $"{patient.FirstName} {patient.LastName}";
+            return View(appointments);
         }
     }
 }

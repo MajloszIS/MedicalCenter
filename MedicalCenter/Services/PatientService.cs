@@ -83,6 +83,21 @@ namespace MedicalCenter.Services
 
             await _patientRepository.CreatePatientAsync(patient);
         }
+
+        public async Task<PatientDto> GetPatientByIdAsync(Guid id)
+        {
+            var patient = await _patientRepository.GetPatientByIdAsync(id); 
+            var patientDto = new PatientDto
+            {
+                Id = patient.Id,
+                FirstName = patient.User.FirstName,
+                LastName = patient.User.LastName,
+                Phone = patient.User.Phone,
+                Pesel = patient.Pesel
+            };
+            return patientDto;
+        }
+
         public async Task<PatientDto> GetPatientByUserIdAsync(Guid userId)
         {
             var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
