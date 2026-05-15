@@ -11,5 +11,6 @@ namespace MedicalCenter.Services
         public Task DeletePrescription(Guid id);
         public Task DeletePrescriptionItemAsync(Guid prescriptionItemId);
         public Task<List<PrescriptionDto>> GetPrescriptionsByPatientIdAsync(Guid patientId);
+        public Task<byte[]> GeneratePrescriptionPdfAsync(Guid prescriptionId);
     }
 }

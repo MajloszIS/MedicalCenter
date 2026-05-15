@@ -18,7 +18,10 @@ namespace MedicalCenter.Repositories
                 .Include(p => p.Items)
                     .ThenInclude(i => i.Medicine)
                 .Include(p => p.MedicalRecord)
+                    .ThenInclude(mr => mr.Patient)
+                        .ThenInclude(p => p.User)
                 .Include(p => p.Doctor)
+                    .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task<PrescriptionItem> GetPrescriptionItemByIdAsync(Guid id)
@@ -48,9 +51,9 @@ namespace MedicalCenter.Repositories
             _context.PrescriptionItems.Remove(prescriptionItem);
             await _context.SaveChangesAsync();
         }
-        public Task<List<Prescription>> GetPrescriptionsByPatientIdAsync(Guid patientId)
+        public async Task<List<Prescription>> GetPrescriptionsByPatientIdAsync(Guid patientId)
         {
-            return _context.Prescriptions
+            return await _context.Prescriptions
                 .Include(p => p.MedicalRecord)
                 .Include(p => p.Doctor)
                     .ThenInclude(d => d.User)

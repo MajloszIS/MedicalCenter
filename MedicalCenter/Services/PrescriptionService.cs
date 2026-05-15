@@ -1,7 +1,11 @@
 ﻿using MedicalCenter.DTOs;
-using MedicalCenter.Repositories;
 using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace MedicalCenter.Services
 {
@@ -119,6 +123,51 @@ namespace MedicalCenter.Services
                     }
                 }).ToList()
             }).ToList();
+        }
+
+        public async Task<byte[]> GeneratePrescriptionPdfAsync(Guid prescriptionId)
+        {
+            var prescription = await _prescriptionRepository.GetByIdAsync(prescriptionId);
+            if (prescription == null)
+                throw new Exception("Prescription not found");
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(14, 20, Unit.Centimetre);
+                    page.Margin(1, Unit.Centimetre);
+                    page.DefaultTextStyle(x => x.FontSize(12));
+
+                    page.Header()
+                        .Text("Recepta")
+                        .FontSize(20).Bold();
+
+                    page.Content().Column(column =>
+                    {
+                        column.Item().LineHorizontal(1).LineColor(Colors.Grey.Medium);
+                        column.Spacing(10);
+                        column.Item().Text($"Pacjent: {prescription.MedicalRecord.Patient.User.FirstName} {prescription.MedicalRecord.Patient.User.LastName}");
+                        column.Item().Text($"Wystawca: Lekarz {prescription.Doctor.User.FirstName} {prescription.Doctor.User.LastName}");
+                        column.Item().Text($"Numer licencji: {prescription.Doctor.LicenseNumber}");
+                        column.Item().LineHorizontal(1).LineColor(Colors.Grey.Medium);
+                        column.Spacing(10);
+                        column.Item().Text($"Numer recepty: {prescription.Id}");
+                        column.Item().Text($"Liczba leków: {prescription.Items.Count}");
+
+                        foreach (var item in prescription.Items)
+                        {
+                            column.Item().Text($"- {item.Medicine.Name}, ilość: {item.Quantity}");
+                        }
+                    });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text("Centrum Medyczne");
+                });
+            });
+
+            return document.GeneratePdf();
         }
 
     }

@@ -29,6 +29,20 @@ namespace MedicalCenter.Controllers
 
             return View(prescriptions);
         }
-        
+
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> DownloadPdf(Guid id)
+        {
+            try
+            {
+                var pdfBytes = await _prescriptionService.GeneratePrescriptionPdfAsync(id);
+                return File(pdfBytes, "application/pdf", $"recepta-{id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

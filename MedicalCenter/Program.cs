@@ -69,6 +69,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.CallbackPath = "/signin-google";
     });
 
+// Generator dokumentów 
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
