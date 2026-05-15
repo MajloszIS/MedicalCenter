@@ -18,12 +18,22 @@ namespace MedicalCenter.Controllers
         private readonly IUserService _userService;
         private readonly IDoctorService _doctorService;
         private readonly IPatientService _patientService;
+        private readonly IAppointmentService _appointmentService;
+        private readonly ICourierService _courierService;
 
-        public AdminController(IPatientService patientService, IDoctorService doctorService, IUserService userService)
+        public AdminController(
+            IPatientService patientService, 
+            IDoctorService doctorService, 
+            IUserService userService, 
+            IAppointmentService appointmentService, 
+            ICourierService courierService)
         {
             _doctorService = doctorService;
             _userService = userService;
             _patientService = patientService;
+            _appointmentService = appointmentService;
+            _courierService = courierService;
+            _courierService = courierService;
         }
         public IActionResult Index()
         {
@@ -118,6 +128,27 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("Doctors");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DoctorAppointments(Guid doctorId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
+            if (appointments == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza lub jego wizyt.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
+            if (doctor == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
+            return View(appointments);
+        }
+
         // Pacjenci
         public async Task<IActionResult> Patients()
         {
@@ -171,5 +202,138 @@ namespace MedicalCenter.Controllers
 
             return RedirectToAction("Patients");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PatientAppointments(Guid patientId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByPatientIdAsync(patientId);
+            if (appointments == null)
+            {
+                TempData["Error"] = "Nie można znaleźć pacjenta lub jego wizyt.";
+                return RedirectToAction("Patients", "Admin");
+            }
+
+            var patient = await _patientService.GetPatientByIdAsync(patientId);
+            if (patient == null)
+            {
+                TempData["Error"] = "Nie można znaleźć pacjenta.";
+                return RedirectToAction("Patients", "Admin");
+            }
+
+            ViewBag.PatientName = $"{patient.FirstName} {patient.LastName}";
+            return View(appointments);
+        }
+
+        // Couriers
+
+        public async Task<IActionResult> Couriers()
+        {
+            var courierDtos = await _courierService.GetAllCourierAsync();
+
+            return View(courierDtos);
+        }
+
+        /*
+        public async Task<IActionResult> CreateCourier()
+        {
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            return View(specializations);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCourier(AdminCreateCourierDto dto)
+        {
+            if (await _userService.IsUserWithThisEmailExists(dto.Email))
+            {
+                ViewBag.Error = "Konto z tym Email już istnieje";
+                return View();
+            }
+
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}, Spec: {dto.SpecializationName}");
+
+                await _doctorService.CreateDoctorAsync(dto);
+
+                return RedirectToAction("Doctors", "Admin");
+            }
+            else
+            {
+                ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+                var specs = await _doctorService.GetAllSpecializationsAsync();
+                return View(specs);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCourier(Guid courierId)
+        {
+            await _doctorService.DeleteDoctorAsync(doctorId);
+
+            return RedirectToAction("Doctors");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditCourier(Guid doctorId)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if (doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
+            if (doctorProfile == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
+            ViewBag.DoctorId = doctorId;
+            return View(doctorProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCourier(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
+        {
+            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+            if (doctorUserId == Guid.Empty)
+            {
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            await _doctorService.UpdateDoctorProfileAsync(doctorUserId, updateDoctorProfileDto);
+
+            return RedirectToAction("Doctors");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CourierDeliveries(Guid courierId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
+            if (appointments == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza lub jego wizyt.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
+            if (doctor == null)
+            {
+                TempData["Error"] = "Nie można znaleźć lekarza.";
+                return RedirectToAction("Doctors", "Admin");
+            }
+
+            ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
+            return View(appointments);
+        }
+        */
     }
 }

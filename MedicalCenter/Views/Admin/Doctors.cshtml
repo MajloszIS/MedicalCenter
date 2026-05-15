@@ -48,20 +48,28 @@ else
                         <td>
                             <div class="fw-bold">@item.SpecializationName</div>
                         </td>
-                        <td class="text-center">
-                            <a asp-action="EditDoctor" asp-controller="Admin"
-                                   asp-route-doctorId="@item.Id" class="fw-bold">
-                                <i class="fa-solid fa-pen me-1"></i>
-                            </a>
-                        </td>
-                        <td class="text-center">
-                            <form asp-action="DeleteDoctor" asp-controller="Admin" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="doctorId" value="@item.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </form>
+                        <td class="text-center justify-content-between d-flex">
+                            <div class="fw-bold">
+                                <a asp-action="DoctorAppointments" asp-controller="Admin"
+                                       asp-route-doctorId="@item.Id" class="fw-bold">
+                                    <i class="fa-solid fa-file-medical me-1"></i>
+                                </a>
+                            </div>
+                            <div class="fw-bold">
+                                <a asp-action="EditDoctor" asp-controller="Admin"
+                                       asp-route-doctorId="@item.Id" class="fw-bold">
+                                    <i class="fa-solid fa-pen me-1"></i>
+                                </a>
+                            </div>
+                            <div class="fw-bold">
+                                <form asp-action="DeleteDoctor" asp-controller="Admin" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="doctorId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 }

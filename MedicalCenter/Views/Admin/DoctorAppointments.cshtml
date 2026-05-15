@@ -1,16 +1,19 @@
 ﻿@model List<MedicalCenter.DTOs.AppointmentDto>
 
 @{
-    ViewData["Title"] = "Moje Wizyty";
+    ViewData["Title"] = $"Wizyty Lekarza {ViewBag.DoctorName}";
 }
 
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="page-title mb-0"><i class="fa-solid fa-user-md me-2"></i>Wizyty Lekarza @ViewBag.DoctorName</h2>
+</div>
 
 @if (!Model.Any())
 {
     <div class="medical-card text-center py-5">
         <i class="fa-solid fa-calendar-xmark text-muted mb-3" style="font-size: 3rem;"></i>
         <h4>Brak zaplanowanych wizyt</h4>
-        <p class="text-muted">Nie masz jeszcze żadnych umówionych wizyt w naszym centrum.</p>
+        <p class="text-muted">Ten lekarz nie ma jeszcze żadnych umówionych wizyt w naszym centrum.</p>
     </div>
 }
 else
@@ -20,10 +23,9 @@ else
             <thead>
                 <tr>
                     <th>Pacjent</th>
-                    <th>Telefon</th> 
+                    <th>Telefon</th>
                     <th>Data i Godzina</th>
                     <th>Status</th>
-                    <th class="text-center">Akcje</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,7 +36,8 @@ else
                             <div class="fw-bold">@item.Patient.FirstName @item.Patient.LastName</div>
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark">@item.Patient.Phone</span></td>
+                            <span class="badge bg-light text-dark">@item.Patient.Phone</span>
+                        </td>
                         <td>
                             <div class="text-primary fw-semibold">
                                 <i class="fa-regular fa-clock me-1"></i> @item.AppointmentDate.ToString("dd.MM.yyyy HH:mm")
@@ -46,12 +49,6 @@ else
                                 item.StatusName == "Odwołana" ? "bg-danger" : "bg-warning text-dark";
                             }
                             <span class="badge @statusClass">@item.StatusName</span>
-                        </td>
-                        <td class="text-center">
-                            <a asp-action="Details" asp-controller="Appointment"
-                               asp-route-AppointmentId="@item.Id" class="btn btn-medical w-100 fw-bold">
-                                <i class="fa-solid fa-circle-info me-2"></i> Szczegóły
-                            </a>
                         </td>
                     </tr>
                 }

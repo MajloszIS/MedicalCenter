@@ -1,19 +1,22 @@
-﻿@model List<MedicalCenter.DTOs.PatientDto>
+﻿@model List<MedicalCenter.DTOs.CourierDto>
 
 @{
-    ViewData["Title"] = "Pacjenci";
+    ViewData["Title"] = "Kurierzy";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="page-title mb-0"><i class="fa-solid fa-list me-2"></i>Pacjenci w Centrum Medycznym</h2>
+    <h2 class="page-title mb-0"><i class="fa-solid fa-truck me-2"></i>Kurierzy</h2>
+    <a asp-controller="Admin" asp-action="CreateCourier" class="btn btn-outline-primary fw-bold">
+        <i class="fa-solid fa-plus me-2"></i>Dodaj Kuriera
+    </a>
 </div>
 
 @if (!Model.Any())
 {
     <div class="medical-card text-center py-5">
         <i class="fa-solid fa-calendar-xmark text-muted mb-3" style="font-size: 3rem;"></i>
-        <h4>Brak pacjentów</h4>
-        <p class="text-muted">Nie masz jeszcze żadnych zarejestrowanych pacjentów.</p>
+        <h4>Brak kurierów</h4>
+        <p class="text-muted">Nie masz jeszcze żadnych zarejestrowanych kurierów.</p>
     </div>
 }
 else
@@ -25,7 +28,6 @@ else
                     <th>Imię</th>
                     <th>Nazwisko</th>
                     <th>Telefon</th>
-                    <th>PESEL</th>
                     <th class="text-center">Akcje</th>
                 </tr>
             </thead>
@@ -42,32 +44,33 @@ else
                         <td>
                             <div class="fw-bold">@item.Phone</div>
                         </td>
-                        <td>
-                            <div class="fw-bold">@item.Pesel</div>
-                        </td>
+
+                        <!--
                         <td class="text-center justify-content-between d-flex">
                             <div class="fw-bold">
-                                <a asp-action="PatientAppointments" asp-controller="Admin"
-                                       asp-route-patientId="@item.Id" class="fw-bold">
+                                <a asp-action="DoctorAppointments" asp-controller="Admin"
+                                       asp-route-doctorId="@item.Id" class="fw-bold">
                                     <i class="fa-solid fa-file-medical me-1"></i>
                                 </a>
                             </div>
                             <div class="fw-bold">
-                                <a asp-action="EditPatient" asp-controller="Admin"
-                                       asp-route-patientId="@item.Id" class="fw-bold">
+                                <a asp-action="EditDoctor" asp-controller="Admin"
+                                       asp-route-doctorId="@item.Id" class="fw-bold">
                                     <i class="fa-solid fa-pen me-1"></i>
                                 </a>
                             </div>
                             <div class="fw-bold">
-                                <form asp-action="DeletePatient" asp-controller="Admin" method="post">
+                                <form asp-action="DeleteDoctor" asp-controller="Admin" method="post">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="patientId" value="@item.Id" />
+                                    <input type="hidden" name="doctorId" value="@item.Id" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </form>
                             </div>
                         </td>
+                        -->
+
                     </tr>
                 }
             </tbody>
