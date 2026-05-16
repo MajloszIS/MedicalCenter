@@ -12,6 +12,7 @@ namespace MedicalCenter.Services
         public Task<UserWithRoleDto> GetUserByEmailWithRoleAsync(string email);
         public Task<Guid> GetUserIdByDoctorIdAsync(Guid doctorId);
         public Task<Guid> GetUserIdByPatientIdAsync(Guid patientId);
+        public LoginResponseDto GenerateJwtToken(LoginResultDto user);
 
     }
 }

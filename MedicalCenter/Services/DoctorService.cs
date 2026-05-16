@@ -134,7 +134,7 @@ namespace MedicalCenter.Services
         public async Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync (id);
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id);
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;
@@ -162,6 +162,19 @@ namespace MedicalCenter.Services
                 Name = s.Name
             }).ToList();
             return specializationDtos;
+        }
+        public async Task<List<DoctorDto>> GetDoctorsBySpecializationAsync(string specializationName)
+        {
+            var doctors = await _doctorRepository.GetDoctorsBySpecializationAsync(specializationName);
+            var doctorDtos = doctors.Select(d => new DoctorDto
+            {
+                Id = d.Id,
+                FirstName = d.User.FirstName,
+                LastName = d.User.LastName,
+                Phone = d.User.Phone,
+                SpecializationName = d.Specialization.Name
+            }).ToList();
+            return doctorDtos;
         }
     }
 }

@@ -3,15 +3,21 @@ using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MedicalCenter.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository) 
+        private readonly IConfiguration _configuration;
+        public UserService(IUserRepository userRepository, IConfiguration configuration) 
         { 
             _userRepository = userRepository;
+            _configuration = configuration;
         }
         public async Task<bool> IsUserWithThisEmailExists(string email)
         {
@@ -113,6 +119,44 @@ namespace MedicalCenter.Services
                 return Guid.Empty;
             }
             return user.Id;
+        }
+        public LoginResponseDto GenerateJwtToken(LoginResultDto user)
+        {
+            var jwtKey = _configuration["Jwt:Key"];
+            var jwtIssuer = _configuration["Jwt:Issuer"];
+            var jwtAudience = _configuration["Jwt:Audience"];
+            var expiryMinutes = int.Parse(_configuration["Jwt:ExpiryMinutes"]);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Role, user.RoleName)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var expires = DateTime.UtcNow.AddMinutes(expiryMinutes);
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: expires,
+                signingCredentials: credentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new LoginResponseDto
+            {
+                Token = tokenString,
+                ExpiresAt = expires,
+                FullName = user.FullName,
+                RoleName = user.RoleName
+            };
         }
     }
 }

@@ -46,5 +46,13 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Doctors.Include(d => d.User).Include(d => d.Specialization).FirstOrDefaultAsync(d => d.UserId == userId);
         }
+        public async Task<List<Doctor>> GetDoctorsBySpecializationAsync(string specializationName)
+        {
+            return await _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Specialization)
+                .Where(d => d.Specialization.Name == specializationName)
+                .ToListAsync();
+        }
     }
 }
