@@ -1,10 +1,12 @@
 ﻿using MedicalCenter.Models;
 using MedicalCenter.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace MedicalCenter.Controllers.Api
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("api/[controller]")]
     public class DoctorApiController : ControllerBase
@@ -24,16 +26,16 @@ namespace MedicalCenter.Controllers.Api
             return Ok(doctors);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDoctorById(Guid id)
+        [HttpGet("specialization/{specializationName}")]
+        public async Task<IActionResult> GetDoctorsBySpecialization(string specializationName)
         {
-            var doctor = await _doctorService.GetDoctorByIdAsync(id);
-            if (doctor == null)
+            var doctors = await _doctorService.GetDoctorsBySpecializationAsync(specializationName);
+            if (doctors == null || !doctors.Any())
             {
                 return NotFound();
             }
 
-            return Ok(doctor);
+            return Ok(doctors);
         }
     }
 }

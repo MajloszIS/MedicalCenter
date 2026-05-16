@@ -1,5 +1,6 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalCenter.Controllers.Api
@@ -15,6 +16,7 @@ namespace MedicalCenter.Controllers.Api
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
