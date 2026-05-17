@@ -233,16 +233,15 @@ namespace MedicalCenter.Controllers
             return View(courierDtos);
         }
 
-        /*
+        
         public async Task<IActionResult> CreateCourier()
         {
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            return View(specializations);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourier(AdminCreateCourierDto dto)
+        public async Task<IActionResult> CreateCourier(AdminCreateDto dto)
         {
             if (await _userService.IsUserWithThisEmailExists(dto.Email))
             {
@@ -252,17 +251,16 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}, Spec: {dto.SpecializationName}");
+                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}");
 
-                await _doctorService.CreateDoctorAsync(dto);
+                await _courierService.CreateCourierAsync(dto);
 
-                return RedirectToAction("Doctors", "Admin");
+                return RedirectToAction("Couriers", "Admin");
             }
             else
             {
                 ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
-                var specs = await _doctorService.GetAllSpecializationsAsync();
-                return View(specs);
+                return View();
             }
         }
 
@@ -270,32 +268,41 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCourier(Guid courierId)
         {
-            await _doctorService.DeleteDoctorAsync(doctorId);
+            if (ModelState.IsValid)
+            {
+                try
+                { 
+                    await _courierService.DeleteCourierAsync(courierId);
+                }
+                catch 
+                {
+                    TempData["Error"] = "Nie można znaleźć kuriera.";
+                    return RedirectToAction("Couriers", "Admin");
+                }
 
-            return RedirectToAction("Doctors");
+            }
+            return RedirectToAction("Couriers", "Admin");
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditCourier(Guid doctorId)
+        public async Task<IActionResult> EditCourier(Guid courierId)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if (doctorUserId == Guid.Empty)
+            var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
+            if (courierUserId == Guid.Empty)
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z kurierem.";
+                return RedirectToAction("Couriers", "Admin");
             }
 
-            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
-            if (doctorProfile == null)
+            var courierProfile = await _courierService.GetCourierProfileAsync(courierUserId);
+            if (courierProfile == null)
             {
-                TempData["Error"] = "Nie można znaleźć lekarza.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć kuriera.";
+                return RedirectToAction("Couriers", "Admin");
             }
 
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            ViewBag.Specializations = specializations;
-            ViewBag.DoctorId = doctorId;
-            return View(doctorProfile);
+            ViewBag.CourierId = courierId;
+            return View(courierProfile);
         }
 
         [HttpPost]
@@ -317,23 +324,7 @@ namespace MedicalCenter.Controllers
         [HttpGet]
         public async Task<IActionResult> CourierDeliveries(Guid courierId)
         {
-            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
-            if (appointments == null)
-            {
-                TempData["Error"] = "Nie można znaleźć lekarza lub jego wizyt.";
-                return RedirectToAction("Doctors", "Admin");
-            }
-
-            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
-            if (doctor == null)
-            {
-                TempData["Error"] = "Nie można znaleźć lekarza.";
-                return RedirectToAction("Doctors", "Admin");
-            }
-
-            ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
-            return View(appointments);
+            return View();
         }
-        */
     }
 }

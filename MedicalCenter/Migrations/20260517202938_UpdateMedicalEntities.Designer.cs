@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517202938_UpdateMedicalEntities")]
+    partial class UpdateMedicalEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +87,8 @@ namespace MedicalCenter.Migrations
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -100,11 +103,9 @@ namespace MedicalCenter.Migrations
 
             modelBuilder.Entity("MedicalCenter.Models.AppointmentStatus", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -118,17 +119,17 @@ namespace MedicalCenter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
                             Name = "Zaplanowana"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("aaaaaaaa-0000-0000-0000-000000000000"),
                             Name = "Zakończona"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("12345678-1234-1234-1234-123456789012"),
                             Name = "Anulowana"
                         });
                 });
@@ -144,8 +145,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId")
-                        .IsUnique();
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Carts");
                 });
@@ -167,10 +167,9 @@ namespace MedicalCenter.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MedicineId");
+                    b.HasIndex("CartId");
 
-                    b.HasIndex("CartId", "MedicineId")
-                        .IsUnique();
+                    b.HasIndex("MedicineId");
 
                     b.ToTable("CartItems");
                 });
@@ -212,21 +211,17 @@ namespace MedicalCenter.Migrations
                     b.Property<Guid?>("CourierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DeliveredAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourierId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("StatusId");
 
@@ -237,24 +232,22 @@ namespace MedicalCenter.Migrations
                         {
                             Id = new Guid("55555555-1111-1111-1111-111111111111"),
                             OrderId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            StatusId = 1
+                            StatusId = new Guid("eeeeeeee-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("55555555-2222-2222-2222-222222222222"),
                             CourierId = new Guid("ffffffff-2222-2222-2222-222222222222"),
                             OrderId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            StatusId = 3
+                            StatusId = new Guid("eeeeeeee-3333-3333-3333-333333333333")
                         });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.DeliveryStatus", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -268,17 +261,17 @@ namespace MedicalCenter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("eeeeeeee-1111-1111-1111-111111111111"),
                             Name = "Oczekuje na kuriera"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("eeeeeeee-2222-2222-2222-222222222222"),
                             Name = "W drodze"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("eeeeeeee-3333-3333-3333-333333333333"),
                             Name = "Dostarczono"
                         });
                 });
@@ -507,17 +500,14 @@ namespace MedicalCenter.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -531,25 +521,22 @@ namespace MedicalCenter.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = 1,
+                            StatusId = new Guid("bbbbbbbb-1111-1111-1111-111111111111"),
                             TotalPrice = 31.00m
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2026, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = 2,
+                            StatusId = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
                             TotalPrice = 12.99m
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2026, 1, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PatientId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            StatusId = 4,
+                            StatusId = new Guid("bbbbbbbb-4444-4444-4444-444444444444"),
                             TotalPrice = 9.00m
                         });
                 });
@@ -569,15 +556,11 @@ namespace MedicalCenter.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(10,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MedicineId");
 
-                    b.HasIndex("OrderId", "MedicineId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
 
@@ -587,34 +570,29 @@ namespace MedicalCenter.Migrations
                             Id = new Guid("66666666-1111-1111-1111-111111111111"),
                             MedicineId = new Guid("dddddddd-1111-1111-1111-111111111111"),
                             OrderId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Quantity = 2,
-                            UnitPrice = 0m
+                            Quantity = 2
                         },
                         new
                         {
                             Id = new Guid("66666666-2222-2222-2222-222222222222"),
                             MedicineId = new Guid("dddddddd-2222-2222-2222-222222222222"),
                             OrderId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Quantity = 1,
-                            UnitPrice = 0m
+                            Quantity = 1
                         },
                         new
                         {
                             Id = new Guid("66666666-3333-3333-3333-333333333333"),
                             MedicineId = new Guid("dddddddd-3333-3333-3333-333333333333"),
                             OrderId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Quantity = 1,
-                            UnitPrice = 0m
+                            Quantity = 1
                         });
                 });
 
             modelBuilder.Entity("MedicalCenter.Models.OrderStatus", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -628,22 +606,22 @@ namespace MedicalCenter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("bbbbbbbb-1111-1111-1111-111111111111"),
                             Name = "Nowe"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
                             Name = "W realizacji"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("bbbbbbbb-3333-3333-3333-333333333333"),
                             Name = "Wysłane"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("bbbbbbbb-4444-4444-4444-444444444444"),
                             Name = "Zakończone"
                         });
                 });
@@ -729,8 +707,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("MedicineId");
 
-                    b.HasIndex("PrescriptionId", "MedicineId")
-                        .IsUnique();
+                    b.HasIndex("PrescriptionId");
 
                     b.ToTable("PrescriptionItems");
                 });
@@ -742,6 +719,7 @@ namespace MedicalCenter.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -761,8 +739,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.HasIndex("PatientId", "DoctorId")
-                        .IsUnique();
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Reviews");
                 });

@@ -10,7 +10,7 @@ namespace MedicalCenter.Models
         public Guid DoctorId { get; set; }
         public Guid DepartmentId { get; set; }
 
-        public Doctor Doctor { get; set; }
-        public Department Department { get; set; }
+        public Doctor Doctor { get; set; } = null!;
+        public Department Department { get; set; } = null!;
     }
 }

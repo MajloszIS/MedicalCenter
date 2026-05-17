@@ -25,6 +25,15 @@ namespace MedicalCenter.Repositories
                 .Include(c => c.Deliveries)
                     .ThenInclude(d => d.Order)
                         .ThenInclude(o => o.Patient)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+        public async Task<Courier> GetCourierByIdWithDeliveriesAsync(Guid id)
+        {
+            return await _context.Couriers
+                .Include(c => c.User)
+                .Include(c => c.Deliveries)
+                    .ThenInclude(d => d.Order)
+                        .ThenInclude(o => o.Patient)
                 .Include(c => c.Deliveries)
                     .ThenInclude(d => d.Order)
                         .ThenInclude(o => o.Status)
