@@ -64,7 +64,7 @@ namespace MedicalCenter.Services
             var order = new Order
             {
                 PatientId = patientId,
-                StatusId = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111"),
+                StatusId = 1,
                 TotalPrice = cart.Items.Sum(i => i.Quantity * i.Medicine.Price),
                 Items = cart.Items.Select(ci => new OrderItem
                 {

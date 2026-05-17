@@ -80,7 +80,7 @@ namespace MedicalCenter.Services
                 DoctorId = doctorId,
                 Description = description ?? string.Empty,
                 Notes = notes ?? string.Empty,
-                StatusId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                StatusId = 1,
                 AppointmentDate = appointmentDate
             };
 
@@ -127,7 +127,7 @@ namespace MedicalCenter.Services
             {
                 throw new Exception("Appointment not found");
             }
-            appointment.StatusId = Guid.Parse("12345678-1234-1234-1234-123456789012");
+            appointment.StatusId = 3;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
         public async Task AddNoteAsync(Guid appointmentId, string note)
@@ -149,7 +149,7 @@ namespace MedicalCenter.Services
                 Name = s.Name
             }).ToList();
         }
-        public async Task UpdateAppointmentStatusAsync(Guid appointmentId, Guid statusId)
+        public async Task UpdateAppointmentStatusAsync(Guid appointmentId, int statusId)
         {
             var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
             if (appointment == null)

@@ -156,9 +156,9 @@ namespace MedicalCenter.Data
             );
 
             modelBuilder.Entity<Order>().HasData(
-                new Order { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 31.00m, StatusId = 1 },
-                new Order { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 12.99m, StatusId = 2 },
-                new Order { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 9.00m, StatusId = 4 }
+                new Order { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 31.00m, StatusId = 1, CreatedAt = new DateTime(2026, 1, 15) },
+                new Order { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 12.99m, StatusId = 2, CreatedAt = new DateTime(2026, 1, 16) },
+                new Order { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 9.00m, StatusId = 4, CreatedAt = new DateTime(2026, 1, 17) }
             );
 
             modelBuilder.Entity<OrderItem>().HasData(

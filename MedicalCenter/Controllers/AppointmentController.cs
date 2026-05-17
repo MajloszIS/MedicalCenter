@@ -151,7 +151,7 @@ namespace MedicalCenter.Controllers
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateAppointmentStatus(Guid AppointmentId, Guid statusId)
+        public async Task<IActionResult> UpdateAppointmentStatus(Guid AppointmentId, int statusId)
         {
             await _appointmentService.UpdateAppointmentStatusAsync(AppointmentId, statusId);
             return RedirectToAction("Details", new { AppointmentId = AppointmentId });
