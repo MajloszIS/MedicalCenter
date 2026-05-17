@@ -48,7 +48,7 @@ namespace MedicalCenter.Controllers
             var cart = await _cartService.GetCartAsync(patient.Id);
             if (cart == null || !cart.Items.Any()) return RedirectToAction("Index");
 
-            var domain = "https://localhost:7100";
+            var domain = "http://localhost:5029";
 
             var lineItems = new List<SessionLineItemOptions>();
             foreach (var item in cart.Items)
