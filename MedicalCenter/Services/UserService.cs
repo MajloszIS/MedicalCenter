@@ -158,5 +158,29 @@ namespace MedicalCenter.Services
                 RoleName = user.RoleName
             };
         }
+        public async Task<UpdateProfileDto> GetUserProfileAsync(Guid userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return null;
+
+            var userProfile = new UpdateProfileDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            };
+
+            return userProfile;
+        }
+        public async Task UpdateProfileAsync(Guid userId, UpdateProfileDto dto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return;
+            user.FirstName = dto.FirstName ?? user.FirstName;
+            user.LastName = dto.LastName ?? user.LastName;
+            user.Phone = dto.Phone ?? user.Phone;
+            user.Email = dto.Email ?? user.Email;
+            await _userRepository.UpdateUserAsync(user);
+        }
     }
 }

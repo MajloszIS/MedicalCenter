@@ -40,6 +40,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();

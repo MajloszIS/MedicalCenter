@@ -104,6 +104,10 @@ namespace MedicalCenter.Controllers
                 return RedirectToAction("PatientProfile");
             else if (User.IsInRole("Doctor"))
                 return RedirectToAction("DoctorProfile");
+            else if (User.IsInRole("Courier"))
+                return RedirectToAction("CourierProfile");
+            else if (User.IsInRole("Admin"))
+                return RedirectToAction("AdminProfile");
             else
             {
                 await Logout();
@@ -181,6 +185,76 @@ namespace MedicalCenter.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return RedirectToAction("DoctorProfile");
+        }
+
+        // Akcje dla profilu Kuriera
+        /*
+        public async Task<IActionResult> CourierProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var courierProfile = await _courierService.GetCourierProfileAsync(Guid.Parse(userId));
+            var specializations = await _doctorService.GetAllSpecializationsAsync();
+            ViewBag.Specializations = specializations;
+
+            return View(adminProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCourierProfile(UpdateProfileDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+            await _courierService.UpdateCourierProfileAsync(Guid.Parse(userId), dto);
+            var updatedUser = await _courierService.GetCourierProfileAsync(Guid.Parse(userId));
+
+            // Aktulaizacja claimsów po zmianie danych
+            var identity = new ClaimsIdentity(new Claim[]
+                {
+                    new (ClaimTypes.NameIdentifier, userId),
+                    new (ClaimTypes.Email, updatedUser.Email),
+                    new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
+                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
+                }, "login");
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return RedirectToAction("DoctorProfile");
+        }*/
+
+        // Akcje dla profilu Admina
+        public async Task<IActionResult> AdminProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var adminProfile = await _userService.GetUserProfileAsync(Guid.Parse(userId));
+            return View(adminProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAdminProfile(UpdateProfileDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+            await _userService.UpdateProfileAsync(Guid.Parse(userId), dto);
+            var updatedUser = await _userService.GetUserProfileAsync(Guid.Parse(userId));
+
+            // Aktulaizacja claimsów po zmianie danych
+            var identity = new ClaimsIdentity(new Claim[]
+                {
+                    new (ClaimTypes.NameIdentifier, userId),
+                    new (ClaimTypes.Email, updatedUser.Email),
+                    new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
+                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
+                }, "login");
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return RedirectToAction("AdminProfile");
         }
 
 
