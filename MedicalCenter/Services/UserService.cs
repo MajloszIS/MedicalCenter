@@ -120,6 +120,15 @@ namespace MedicalCenter.Services
             }
             return user.Id;
         }
+        public async Task<Guid> GetUserIdByCourierIdAsync(Guid courierId)
+        {
+            var user = await _userRepository.GetUserByCourierIdAsync(courierId);
+            if (user == null)
+            {
+                return Guid.Empty;
+            }
+            return user.Id;
+        }
         public LoginResponseDto GenerateJwtToken(LoginResultDto user)
         {
             var jwtKey = _configuration["Jwt:Key"];

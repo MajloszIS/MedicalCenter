@@ -8,8 +8,8 @@ namespace MedicalCenter.Models
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; } = new List<User>();
     }
 }

@@ -8,25 +8,30 @@ namespace MedicalCenter.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
+        [ForeignKey("Patient")]
         public Guid PatientId { get; set; }
 
-        [Required]
+        [ForeignKey("Doctor")]
         public Guid DoctorId { get; set; }
 
-        [Required]
-        public Guid StatusId { get; set; }
+        [ForeignKey("Status")]
+        public int StatusId { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime AppointmentDate { get; set; }
 
-        public string Description { get; set; }
+        [Range(15, 120, ErrorMessage = "Czas trwania od 15 do 120 minut")]
+        public int DurationMinutes { get; set; } = 30;
 
-        public string Notes { get; set; }
+        [StringLength(500)]
+        public string Description { get; set; } = null!;
 
-        public Patient Patient { get; set; }
-        public Doctor Doctor { get; set; }
-        public AppointmentStatus Status { get; set; }
+        [StringLength(1000)]
+        public string? Notes { get; set; }
+
+        public Patient Patient { get; set; } = null!;
+        public Doctor Doctor { get; set; } = null!;
+        public AppointmentStatus Status { get; set; } = null!;
     }
 }

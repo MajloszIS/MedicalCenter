@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalCenter.Models
 {
@@ -7,12 +8,13 @@ namespace MedicalCenter.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [ForeignKey("Diagnosis")]
         public Guid DiagnosisId { get; set; }
 
         [Required]
         [StringLength(500)]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
-        public Diagnosis Diagnosis { get; set; }
+        public Diagnosis Diagnosis { get; set; } = null!;
     }
 }

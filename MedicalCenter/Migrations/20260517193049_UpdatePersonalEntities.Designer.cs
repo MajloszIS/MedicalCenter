@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517193049_UpdatePersonalEntities")]
+    partial class UpdatePersonalEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,18 +71,14 @@ namespace MedicalCenter.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
                     b.Property<string>("Notes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
@@ -300,9 +299,6 @@ namespace MedicalCenter.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime>("DiagnosedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("MedicalRecordId")
                         .HasColumnType("uniqueidentifier");
 
@@ -377,6 +373,9 @@ namespace MedicalCenter.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
@@ -387,8 +386,7 @@ namespace MedicalCenter.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.HasIndex("PatientId", "DoctorId")
-                        .IsUnique();
+                    b.HasIndex("PatientId");
 
                     b.ToTable("MedicalRecords");
                 });
@@ -402,20 +400,13 @@ namespace MedicalCenter.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("StockQuantity")
-                        .HasColumnType("int");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -429,32 +420,28 @@ namespace MedicalCenter.Migrations
                             Id = new Guid("dddddddd-1111-1111-1111-111111111111"),
                             CategoryId = new Guid("cccccccc-1111-1111-1111-111111111111"),
                             Name = "Apap Extra",
-                            Price = 15.50m,
-                            StockQuantity = 0
+                            Price = 15.50m
                         },
                         new
                         {
                             Id = new Guid("dddddddd-2222-2222-2222-222222222222"),
                             CategoryId = new Guid("cccccccc-1111-1111-1111-111111111111"),
                             Name = "Ibuprom Max",
-                            Price = 12.99m,
-                            StockQuantity = 0
+                            Price = 12.99m
                         },
                         new
                         {
                             Id = new Guid("dddddddd-3333-3333-3333-333333333333"),
                             CategoryId = new Guid("cccccccc-3333-3333-3333-333333333333"),
                             Name = "Rutinoscorbin",
-                            Price = 9.00m,
-                            StockQuantity = 0
+                            Price = 9.00m
                         },
                         new
                         {
                             Id = new Guid("dddddddd-4444-4444-4444-444444444444"),
                             CategoryId = new Guid("cccccccc-2222-2222-2222-222222222222"),
                             Name = "Syrop na kaszel",
-                            Price = 21.30m,
-                            StockQuantity = 0
+                            Price = 21.30m
                         });
                 });
 
@@ -669,9 +656,6 @@ namespace MedicalCenter.Migrations
 
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("IssuedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("MedicalRecordId")
                         .HasColumnType("uniqueidentifier");

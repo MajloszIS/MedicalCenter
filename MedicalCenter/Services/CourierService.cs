@@ -73,7 +73,7 @@ namespace MedicalCenter.Services
         }
         public async Task DeleteCourierAsync(Guid CourierId)
         {
-            var courier = _courierRepository.GetCourierByIdAsync(CourierId);
+            var courier = await _courierRepository.GetCourierByIdAsync(CourierId);
             if (courier == null)
             {
                 throw new Exception("Courier not found");
