@@ -1,38 +1,33 @@
-﻿using MedicalCenter.Data;
-using MedicalCenter.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using MedicalCenter.Models;
+using MedicalCenter.Repositories;
 
 namespace MedicalCenter.Services
 {
     public class CartService : ICartService
     {
-        private readonly AppDbContext _context;
-
-        public CartService(AppDbContext context)
+        private readonly ICartRepository _cartRepository;
+        public CartService(ICartRepository cartRepository)
         {
-            _context = context;
+            _cartRepository = cartRepository;
         }
+
         public async Task<Cart> GetCartAsync(Guid patientId)
         {
-            return await _context.Carts
-                .Include(c => c.Items)
-                    .ThenInclude(i => i.Medicine)
-                .FirstOrDefaultAsync(c => c.PatientId == patientId);
+            return await _cartRepository.GetCartWithItemsAsync(patientId);
         }
 
         public async Task AddToCartAsync(Guid patientId, Guid medicineId, int quantity)
         {
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.PatientId == patientId);
+            var cart = await _cartRepository.GetCartAsync(patientId);
 
             if (cart == null)
             {
                 cart = new Cart { PatientId = patientId };
-                await _context.Carts.AddAsync(cart);
-                await _context.SaveChangesAsync();
+                await _cartRepository.AddCartAsync(cart);
+                await _cartRepository.SaveChangesAsync();
             }
 
-            var existingItem = await _context.CartItems
-                .FirstOrDefaultAsync(i => i.CartId == cart.Id && i.MedicineId == medicineId);
+            var existingItem = await _cartRepository.GetCartItemAsync(cart.Id, medicineId);
 
             if (existingItem != null)
             {
@@ -46,18 +41,15 @@ namespace MedicalCenter.Services
                     MedicineId = medicineId,
                     Quantity = quantity
                 };
-                await _context.CartItems.AddAsync(newItem);
+                await _cartRepository.AddCartItemAsync(newItem);
             }
 
-            await _context.SaveChangesAsync();
+            await _cartRepository.SaveChangesAsync();
         }
 
         public async Task CreateOrderFromCartAsync(Guid patientId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.Items)
-                .ThenInclude(i => i.Medicine)
-                .FirstOrDefaultAsync(c => c.PatientId == patientId);
+            var cart = await _cartRepository.GetCartWithItemsAsync(patientId);
 
             if (cart == null || !cart.Items.Any()) return;
 
@@ -73,23 +65,23 @@ namespace MedicalCenter.Services
                 }).ToList()
             };
 
-            _context.Orders.Add(order);
+            await _cartRepository.AddOrderAsync(order);
+            _cartRepository.RemoveCartItems(cart.Items);
 
-            _context.CartItems.RemoveRange(cart.Items);
-            await _context.SaveChangesAsync();
+            await _cartRepository.SaveChangesAsync();
         }
+
         public async Task RemoveFromCartAsync(Guid patientId, Guid medicineId)
         {
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.PatientId == patientId);
+            var cart = await _cartRepository.GetCartAsync(patientId);
             if (cart == null) return;
 
-            var itemToRemove = await _context.CartItems
-                .FirstOrDefaultAsync(i => i.CartId == cart.Id && i.MedicineId == medicineId);
+            var itemToRemove = await _cartRepository.GetCartItemAsync(cart.Id, medicineId);
 
             if (itemToRemove != null)
             {
-                _context.CartItems.Remove(itemToRemove);
-                await _context.SaveChangesAsync();
+                _cartRepository.RemoveCartItem(itemToRemove);
+                await _cartRepository.SaveChangesAsync();
             }
         }
     }
