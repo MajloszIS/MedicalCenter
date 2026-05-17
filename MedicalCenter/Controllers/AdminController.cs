@@ -233,16 +233,15 @@ namespace MedicalCenter.Controllers
             return View(courierDtos);
         }
 
-        /*
+        
         public async Task<IActionResult> CreateCourier()
         {
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            return View(specializations);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourier(AdminCreateCourierDto dto)
+        public async Task<IActionResult> CreateCourier(AdminCreateDto dto)
         {
             if (await _userService.IsUserWithThisEmailExists(dto.Email))
             {
@@ -252,20 +251,20 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}, Spec: {dto.SpecializationName}");
+                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}");
 
-                await _doctorService.CreateDoctorAsync(dto);
+                await _courierService.CreateCourierAsync(dto);
 
-                return RedirectToAction("Doctors", "Admin");
+                return RedirectToAction("Couriers", "Admin");
             }
             else
             {
                 ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
-                var specs = await _doctorService.GetAllSpecializationsAsync();
-                return View(specs);
+                return View();
             }
         }
 
+        /*
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCourier(Guid courierId)
