@@ -16,9 +16,14 @@ namespace MedicalCenter.Repositories
         {     
             return _context.Patients.Include(p => p.User).ToListAsync(); 
         }
-        public Task<Patient> GetPatientByIdAsync(Guid id)
+        public async Task<Patient> GetPatientByIdAsync(Guid id)
         {     
-            return _context.Patients.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id); 
+            var patient = await _context.Patients
+                .Include(p => p.User)
+                .Include(p => p.Address)
+                .FirstOrDefaultAsync(p => p.Id == id); 
+
+            return patient;
         }
         public Task CreatePatientAsync(Patient patient)
         {
@@ -39,9 +44,14 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<Patient> GetPatientByUserIdAsync(Guid userId)
+        public async Task<Patient?> GetPatientByUserIdAsync(Guid userId)
         {
-            return await _context.Patients.Include(p => p.User).FirstOrDefaultAsync(p => p.UserId == userId);
+            var patient = await _context.Patients
+                .Include(p => p.User)
+                .Include(p => p.Address)
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            return patient;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MedicalCenter.Models;
 using MedicalCenter.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
@@ -73,6 +72,7 @@ namespace MedicalCenter.Services
 
             await _cartRepository.SaveChangesAsync();
         }
+
         public async Task ConfirmPaymentAsync(string sessionId)
         {
             var order = await _cartRepository.GetOrderBySessionIdAsync(sessionId);
@@ -81,6 +81,15 @@ namespace MedicalCenter.Services
             {
                 order.StatusId = 2;
 
+                var delivery = new Delivery
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = order.Id,
+                    CourierId = null,
+                    StatusId = 1
+                };
+
+                await _cartRepository.AddDeliveryAsync(delivery);
                 await _cartRepository.SaveChangesAsync();
             }
         }

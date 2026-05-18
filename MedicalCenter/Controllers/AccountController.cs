@@ -20,11 +20,13 @@ namespace MedicalCenter.Controllers
         private readonly IUserService _userService;
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
-        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService)
+        private readonly IAddressService _addressService;
+        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService)
         {
             _userService = userService;
             _patientService = patientService;
             _doctorService = doctorService;
+            _addressService = addressService;
         }
 
         public IActionResult Index()
@@ -146,6 +148,31 @@ namespace MedicalCenter.Controllers
                 }, "login");
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return RedirectToAction("PatientProfile");
+        }
+
+        public async Task<IActionResult> PatientAddress()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
+
+            var patientAddress = await _addressService.GetAddressByPatientIdAsync(patient.Id);
+
+            return View(patientAddress);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdatePatientAddress(AddressDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
+            await _addressService.UpdateAddressAsync(patient.Id, dto);
 
             return RedirectToAction("PatientProfile");
         }

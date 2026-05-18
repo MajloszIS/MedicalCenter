@@ -25,7 +25,6 @@ namespace MedicalCenter.Controllers
             if (string.IsNullOrEmpty(userIdStr)) return Challenge();
             var userId = Guid.Parse(userIdStr);
 
-            // Szukamy ID kuriera na podstawie zalogowanego konta
             var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
             if (courier == null) return NotFound("Nie znaleziono profilu kuriera.");
 
@@ -33,7 +32,6 @@ namespace MedicalCenter.Controllers
             var availableDeliveries = await _deliveryService.GetAvailableDeliveriesAsync();
             var myDeliveries = await _deliveryService.GetMyDeliveriesAsync(courier.Id);
 
-            // Dostępne wysyłamy przez ViewBag, Moje idą w modelu
             ViewBag.AvailableDeliveries = availableDeliveries;
 
             return View(myDeliveries);

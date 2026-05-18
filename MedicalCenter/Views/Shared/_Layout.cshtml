@@ -46,7 +46,7 @@
                     @if (User.IsInRole("Doctor"))
                     {
                         <ul class="navbar-nav flex-grow-1">
-                    
+
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Index">Wizyty</a>
                             </li>
@@ -83,6 +83,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Cart" asp-action="Index">Koszyk</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="Order" asp-action="MyOrders">Moje Zamówienia</a>
+                            </li>
                         </ul>
                     }
 
@@ -100,6 +103,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Specialization" asp-action="Specializations">Specjalizacje</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Orders">Zamówienia Apteki</a>
                             </li>
                         </ul>
                     }

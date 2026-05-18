@@ -116,7 +116,11 @@ namespace MedicalCenter.Data
             );
 
             modelBuilder.Entity<Patient>().HasData(
-                new Patient { Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), UserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Pesel = "99010112345", BirthDate = new DateTime(1999, 1, 1) }
+                new Patient { Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), UserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Pesel = "99010112345", BirthDate = new DateTime(1999, 1, 1), AddressId = Guid.Parse("aaaa1111-1111-1111-1111-111111111111") }
+            );
+
+            modelBuilder.Entity<Address>().HasData(
+                new Address { Id = Guid.Parse("aaaa1111-1111-1111-1111-111111111111") }
             );
 
             modelBuilder.Entity<Courier>().HasData(
