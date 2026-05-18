@@ -11,5 +11,7 @@ namespace MedicalCenter.Repositories
         public Task CreateCourierAsync(Courier courier);
         public Task UpdateCourierAsync(Guid id, Courier courier);
         public Task DeleteCourierAsync(Guid CourierId);
+        public Task<Delivery> GetDeliveryByIdAsync(Guid deliveryId);
+        public Task SaveChangesAsync();
     }
 }

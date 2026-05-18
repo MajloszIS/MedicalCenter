@@ -8,11 +8,13 @@ namespace MedicalCenter.Services
     {
         private readonly ICourierRepository _courierRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public CourierService(ICourierRepository courierRepository, IUserRepository userRepository)
+        public CourierService(ICourierRepository courierRepository, IUserRepository userRepository, IOrderRepository orderRepository)
         {
             _courierRepository = courierRepository;
             _userRepository = userRepository;
+            _orderRepository = orderRepository;
         }
 
         private async Task<CourierDto> MapToCourierDtoAsync(Courier courier)
@@ -29,19 +31,21 @@ namespace MedicalCenter.Services
 
         public async Task<List<CourierDto>> GetAllCourierAsync()
         {
-            var couriers = await _courierRepository.GetAllCourierAsync(); 
+            var couriers = await _courierRepository.GetAllCourierAsync();
             var courierDtos = new List<CourierDto>();
             foreach (var courier in couriers)
             {
                 courierDtos.Add(await MapToCourierDtoAsync(courier));
             }
             return courierDtos;
-        }   
+        }
+
         public async Task<CourierDto> GetCourierByIdAsync(Guid id)
         {
-            var courier = await _courierRepository.GetCourierByIdAsync(id);   
+            var courier = await _courierRepository.GetCourierByIdAsync(id);
             return await MapToCourierDtoAsync(courier);
         }
+
         public async Task<CourierDto> GetCourierByUserIdAsync(Guid userId)
         {
             var courier = await _courierRepository.GetCourierByUserIdAsync(userId);
@@ -64,13 +68,14 @@ namespace MedicalCenter.Services
 
             await _userRepository.CreateUserAsync(user);
 
-            var courier = new Courier 
+            var courier = new Courier
             {
                 UserId = user.Id
             };
 
             await _courierRepository.CreateCourierAsync(courier);
         }
+
         public async Task DeleteCourierAsync(Guid CourierId)
         {
             var courier = await _courierRepository.GetCourierByIdAsync(CourierId);
@@ -80,6 +85,7 @@ namespace MedicalCenter.Services
             }
             await _courierRepository.DeleteCourierAsync(CourierId);
         }
+
         public async Task<UpdateProfileDto> GetCourierProfileAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
@@ -98,6 +104,7 @@ namespace MedicalCenter.Services
             };
             return courierProfileDto;
         }
+
         public async Task UpdateCourierProfileAsync(Guid id, UpdateProfileDto dto)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
@@ -112,5 +119,28 @@ namespace MedicalCenter.Services
             await _courierRepository.UpdateCourierAsync(id, courier);
         }
 
+        public async Task ChangeDeliveryStatusAsync(Guid deliveryId, int newStatusId)
+        {
+            var delivery = await _courierRepository.GetDeliveryByIdAsync(deliveryId);
+
+            if (delivery != null)
+            {
+                delivery.StatusId = newStatusId;
+
+                if (newStatusId == 4)
+                {
+                    delivery.DeliveredAt = DateTime.Now;
+                }
+
+                var order = await _orderRepository.GetOrderByIdAsync(delivery.OrderId);
+
+                if (order != null)
+                {
+                    order.StatusId = newStatusId;
+                }
+
+                await _courierRepository.SaveChangesAsync();
+            }
+        }
     }
 }
