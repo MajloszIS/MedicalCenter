@@ -1,11 +1,13 @@
 ﻿using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
+
         public CartService(ICartRepository cartRepository)
         {
             _cartRepository = cartRepository;
@@ -47,7 +49,7 @@ namespace MedicalCenter.Services
             await _cartRepository.SaveChangesAsync();
         }
 
-        public async Task CreateOrderFromCartAsync(Guid patientId)
+        public async Task CreateOrderFromCartAsync(Guid patientId, string sessionId)
         {
             var cart = await _cartRepository.GetCartWithItemsAsync(patientId);
 
@@ -56,6 +58,7 @@ namespace MedicalCenter.Services
             var order = new Order
             {
                 PatientId = patientId,
+                StripeSessionId = sessionId,
                 StatusId = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111"),
                 TotalPrice = cart.Items.Sum(i => i.Quantity * i.Medicine.Price),
                 Items = cart.Items.Select(ci => new OrderItem
@@ -69,6 +72,17 @@ namespace MedicalCenter.Services
             _cartRepository.RemoveCartItems(cart.Items);
 
             await _cartRepository.SaveChangesAsync();
+        }
+        public async Task ConfirmPaymentAsync(string sessionId)
+        {
+            var order = await _cartRepository.GetOrderBySessionIdAsync(sessionId);
+
+            if (order != null)
+            {
+                order.StatusId = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222");
+
+                await _cartRepository.SaveChangesAsync();
+            }
         }
 
         public async Task RemoveFromCartAsync(Guid patientId, Guid medicineId)

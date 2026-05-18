@@ -12,6 +12,7 @@ namespace MedicalCenter.Repositories
         void RemoveCartItem(CartItem item);
         void RemoveCartItems(IEnumerable<CartItem> items);
         Task AddOrderAsync(Order order);
+        Task<Order> GetOrderBySessionIdAsync(string sessionId);
         Task SaveChangesAsync();
     }
 }

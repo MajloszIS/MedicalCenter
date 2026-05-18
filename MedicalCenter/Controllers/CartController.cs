@@ -73,22 +73,24 @@ namespace MedicalCenter.Controllers
                 PaymentMethodTypes = new List<string> { "card", "blik", "p24" },
                 LineItems = lineItems,
                 Mode = "payment",
-                SuccessUrl = domain + "/Cart/OrderSuccess",
+                SuccessUrl = domain + "/Cart/OrderSuccess?sessionId={CHECKOUT_SESSION_ID}",
                 CancelUrl = domain + "/Cart/OrderCancel",
             };
             var service = new SessionService();
             Session session = service.Create(options);
 
 
-            await _cartService.CreateOrderFromCartAsync(patient.Id);
+            await _cartService.CreateOrderFromCartAsync(patient.Id, session.Id);
+
             Response.Headers.Add("Location", session.Url);
 
             return new StatusCodeResult(303);
         }
         [HttpGet]
-        public IActionResult OrderSuccess(string sessionId)
+        public async Task<IActionResult> OrderSuccess(string sessionId)
         {
-            TempData["SuccessMessage"] = "Płatność zaakceptowana! Twoje zamówienie jest w drodze.";
+            await _cartService.ConfirmPaymentAsync(sessionId);
+
             return View();
         }
 
@@ -97,6 +99,7 @@ namespace MedicalCenter.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveItem(Guid medicineId)

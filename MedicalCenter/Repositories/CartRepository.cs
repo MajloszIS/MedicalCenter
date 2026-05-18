@@ -58,6 +58,12 @@ namespace MedicalCenter.Repositories
             await _context.Orders.AddAsync(order);
         }
 
+        public async Task<Order> GetOrderBySessionIdAsync(string sessionId)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.StripeSessionId == sessionId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
