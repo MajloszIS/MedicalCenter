@@ -68,5 +68,9 @@ namespace MedicalCenter.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task AddDeliveryAsync(Delivery delivery)
+        {
+            await _context.Deliveries.AddAsync(delivery);
+        }
     }
 }

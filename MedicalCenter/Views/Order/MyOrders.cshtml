@@ -1,0 +1,39 @@
+﻿@model List<MedicalCenter.DTOs.OrderDto>
+@{
+    ViewData["Title"] = "Moje zamówienia";
+}
+
+<h2 class="page-title mb-4"><i class="fa-solid fa-box me-2"></i>Moje zamówienia z apteki</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nie masz jeszcze żadnych zamówień.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var order in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-primary h-100">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between">
+                        <span>ID: @order.Id.ToString().Substring(0, 8)</span>
+                        <span class="badge bg-light text-dark">@order.StatusName</span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fw-bold">Zamówione leki:</h6>
+                        <ul>
+                            @foreach (var item in order.Items)
+                            {
+                                <li>@item.MedicineName (Sztuk: @item.Quantity)</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-white text-end fw-bold text-success">
+                        Razem: @order.TotalPrice.ToString("C")
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -20,20 +20,22 @@ namespace MedicalCenter.Controllers
         private readonly IPatientService _patientService;
         private readonly IAppointmentService _appointmentService;
         private readonly ICourierService _courierService;
+        private readonly IOrderService _orderService;
 
         public AdminController(
             IPatientService patientService, 
             IDoctorService doctorService, 
             IUserService userService, 
             IAppointmentService appointmentService, 
-            ICourierService courierService)
+            ICourierService courierService,
+            IOrderService orderService)
         {
             _doctorService = doctorService;
             _userService = userService;
             _patientService = patientService;
             _appointmentService = appointmentService;
             _courierService = courierService;
-            _courierService = courierService;
+            _orderService = orderService;
         }
         public IActionResult Index()
         {
@@ -325,6 +327,11 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> CourierDeliveries(Guid courierId)
         {
             return View();
+        }
+        public async Task<IActionResult> Orders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return View(orders);
         }
     }
 }

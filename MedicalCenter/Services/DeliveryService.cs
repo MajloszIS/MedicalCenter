@@ -9,10 +9,12 @@ namespace MedicalCenter.Services
     public class DeliveryService : IDeliveryService
     {
         private readonly IDeliveryRepository _deliveryRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public DeliveryService(IDeliveryRepository deliveryRepository)
+        public DeliveryService(IDeliveryRepository deliveryRepository, IOrderRepository orderRepository)
         {
             _deliveryRepository = deliveryRepository;
+            _orderRepository = orderRepository;
         }
 
         public async Task<List<DeliveryDto>> GetAvailableDeliveriesAsync()
@@ -33,12 +35,18 @@ namespace MedicalCenter.Services
 
             if (delivery != null && delivery.CourierId == null)
             {
-                delivery.CourierId = courierId; // Przypisanie do kuriera
+                delivery.CourierId = courierId;
 
                 var inProgressStatus = await _deliveryRepository.GetStatusByNameAsync("W drodze");
                 if (inProgressStatus != null)
                 {
-                    delivery.StatusId = inProgressStatus.Id; // Automatyczna zmiana statusu
+                    delivery.StatusId = inProgressStatus.Id;
+
+                    var order = await _orderRepository.GetOrderByIdAsync(delivery.OrderId);
+                    if (order != null)
+                    {
+                        order.StatusId = 3;
+                    }
                 }
 
                 await _deliveryRepository.UpdateDeliveryAsync(delivery);
@@ -54,18 +62,29 @@ namespace MedicalCenter.Services
             if (newStatus != null)
             {
                 delivery.StatusId = newStatus.Id;
+
+                var order = await _orderRepository.GetOrderByIdAsync(delivery.OrderId);
+                if (order != null)
+                {
+                    if (statusName == "W drodze") order.StatusId = 3;
+                    else if (statusName == "Dostarczono" || statusName == "Zakończone") order.StatusId = 4;
+                }
+
+                if (statusName == "Dostarczono" || statusName == "Zakończone")
+                {
+                    delivery.DeliveredAt = DateTime.Now;
+                }
+
                 await _deliveryRepository.UpdateDeliveryAsync(delivery);
             }
         }
 
-        // Oryginalna metoda do wyświetlania wszystkiego
         public async Task<List<DeliveryDto>> GetAllDeliveriesAsync()
         {
             var deliveries = await _deliveryRepository.GetAllDeliveriesAsync();
             return MapToDtoList(deliveries);
         }
 
-        // Pomocnicza metoda do tworzenia DTO, żeby nie kopiować kodu
         private List<DeliveryDto> MapToDtoList(List<Delivery> deliveries)
         {
             return deliveries.Select(d => new DeliveryDto
