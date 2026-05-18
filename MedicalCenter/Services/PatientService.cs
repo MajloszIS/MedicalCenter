@@ -56,7 +56,8 @@ namespace MedicalCenter.Services
             {
                 Id = Guid.NewGuid(),
                 BirthDate = dto.BirthDate,
-                Pesel = dto.Pesel
+                Pesel = dto.Pesel,
+                Address = new Address()
             };
 
             patient.UserId = user.Id;
@@ -78,7 +79,8 @@ namespace MedicalCenter.Services
 
             var patient = new Patient
             {
-                UserId= user.Id
+                UserId= user.Id,
+                Address = new Address()
             };
 
             await _patientRepository.CreatePatientAsync(patient);
@@ -149,8 +151,8 @@ namespace MedicalCenter.Services
                 Phone = user.Phone,
                 Email = user.Email,
                 ProfilePicturePath = user.ProfilePicturePath,
-                Pesel = patient.Pesel ?? string.Empty,
-                BirthDate = patient.BirthDate,
+                Pesel = patient.Pesel,
+                BirthDate = patient.BirthDate
             };
             return patientProfileDto;
         }
@@ -167,7 +169,6 @@ namespace MedicalCenter.Services
             patient.Pesel = dto.Pesel ?? patient.Pesel;
             if (dto.BirthDate.HasValue)
                 patient.BirthDate = dto.BirthDate.Value;
-
 
             await _userRepository.UpdateUserAsync(user);
             await _patientRepository.UpdatePatientAsync(patient);

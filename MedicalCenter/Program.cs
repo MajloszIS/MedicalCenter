@@ -50,6 +50,8 @@ builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<ICourierService, CourierService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+
 
 // dodanie JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"];

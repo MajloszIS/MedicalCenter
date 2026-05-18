@@ -1,0 +1,47 @@
+﻿@model MedicalCenter.DTOs.AddressDto;
+
+@{
+    ViewData["Title"] = $"Edytuj Adres";
+}
+
+<div class="container py-1">
+    <h2 class="page-title">Mój profil</h2>
+    
+    <div class="row g-4">
+        <div class="col-lg-12">
+            <div class="medical-card mt-4">
+                <h5 class="mb-3">Adres</h5>
+                <form asp-action="UpdatePatientAddress" asp-controller="Account" method="post">
+                    @Html.AntiForgeryToken()
+    
+                    <div class="mb-2">
+                        <label class="form-label">Ulica</label>
+                        <input name="Street" value="@Model.Street" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Numer budynku</label>
+                        <input name="HouseNumber" value="@Model.HouseNumber" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Numer lokalu (opcjonalnie)</label>
+                        <input name="ApartmentNumber" value="@Model.ApartmentNumber" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Kod pocztowy</label>
+                        <input name="PostalCode" value="@Model.PostalCode" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Miasto</label>
+                        <input name="City" value="@Model.City" class="form-control form-control-sm" />
+                    </div>
+    
+                    <button type="submit" class="btn btn-medical">Zapisz adres</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
