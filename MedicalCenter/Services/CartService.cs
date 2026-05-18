@@ -59,6 +59,7 @@ namespace MedicalCenter.Services
             {
                 PatientId = patientId,
                 StatusId = 1,
+                StripeSessionId = sessionId,
                 TotalPrice = cart.Items.Sum(i => i.Quantity * i.Medicine.Price),
                 Items = cart.Items.Select(ci => new OrderItem
                 {
