@@ -19,6 +19,7 @@ namespace MedicalCenter.Repositories
                 .Include(d => d.Order)
                     .ThenInclude(o => o.Patient)
                         .ThenInclude(p => p.User)
+                .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.Address)
                 .Include(d => d.Status)
                 .ToListAsync();
         }
@@ -42,6 +43,7 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Deliveries
                 .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.User)
+                .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.Address)
                 .Include(d => d.Status)
                 .Where(d => d.CourierId == null) // Wyciągamy te, które nie mają jeszcze kuriera
                 .ToListAsync();
@@ -51,6 +53,7 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Deliveries
                 .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.User)
+                .Include(d => d.Order).ThenInclude(o => o.Patient).ThenInclude(p => p.Address)
                 .Include(d => d.Status)
                 .Where(d => d.CourierId == courierId) // Wyciągamy tylko moje
                 .ToListAsync();
