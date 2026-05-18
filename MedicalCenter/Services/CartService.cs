@@ -78,7 +78,7 @@ namespace MedicalCenter.Services
 
             if (order != null)
             {
-                order.StatusId = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222");
+                order.StatusId = 2;
 
                 await _cartRepository.SaveChangesAsync();
             }
