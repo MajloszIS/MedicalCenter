@@ -66,7 +66,6 @@ namespace MedicalCenter.Services
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,

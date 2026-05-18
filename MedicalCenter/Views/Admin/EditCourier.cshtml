@@ -1,0 +1,124 @@
+﻿@model MedicalCenter.DTOs.UpdateProfileDto;
+
+@{
+    ViewData["Title"] = $"Edytuj Kuriera {Model.FirstName} {Model.LastName}";
+}
+
+<div class="container py-5">
+    <h2 class="page-title">Kurier @Model.FirstName @Model.LastName</h2>
+    
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="medical-card text-center">
+                <div class="mb-3">
+                        <i class="fa-solid fa-track" style="font-size: 100px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="medical-card">
+                <form asp-action="EditDoctor" asp-controller="Admin"
+                      method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="doctorId" value="@ViewBag.DoctorId" />
+
+                    <!-- Imie -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Imię</label>
+                        <span id="firstName-text">@Model.FirstName</span>
+                        <input id="firstName-input" name="FirstName" value="@Model.FirstName"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="firstName-edit" onclick="enableEdit('firstName')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="firstName-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Nazwisko -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Nazwisko</label>
+                        <span id="lastName-text">@Model.LastName</span>
+                        <input id="lastName-input" name="LastName" value="@Model.LastName"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="lastName-edit" onclick="enableEdit('lastName')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="lastName-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Email</label>
+                        <span id="email-text">@Model.Email</span>
+                        <input id="email-input" name="Email" value="@Model.Email"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="email-edit" onclick="enableEdit('email')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="email-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- Telefon -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 120px;">Telefon</label>
+                        <span id="phone-text">@Model.Phone</span>
+                        <input id="phone-input" name="Phone" value="@Model.Phone"
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                        <button type="button" id="phone-edit" onclick="enableEdit('phone')"
+                                class="btn btn-sm btn-link ms-2">
+
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="phone-save" class="btn btn-sm btn-success ms-2"
+                                style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        function enableEdit(fieldId) {
+            const span = document.getElementById(`${fieldId}-text`);
+            const input = document.getElementById(`${fieldId}-input`);
+            const editBtn = document.getElementById(`${fieldId}-edit`);
+            const saveBtn = document.getElementById(`${fieldId}-save`);
+
+            span.style.display = 'none';
+            input.style.display = 'inline';
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline';
+        }
+
+        document.getElementById('profilePicture').addEventListener('change', function() {
+                const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
+                document.getElementById('fileName').textContent = fileName;
+            });
+    </script>
+}
+

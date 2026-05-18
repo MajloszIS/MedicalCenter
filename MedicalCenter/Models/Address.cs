@@ -7,27 +7,24 @@ namespace MedicalCenter.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid UserId { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Ulica jest wymagana")]
         [StringLength(100)]
-        public string Street { get; set; }
+        public string Street { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Numer domu jest wymagany")]
         [StringLength(10)]
-        public string HouseNumber { get; set; }
+        public string HouseNumber { get; set; } = null!;
 
         [StringLength(10)]
-        public string ApartmentNumber { get; set; }
+        public string? ApartmentNumber { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Kod pocztowy jest wymagany")]
         [StringLength(10)]
-        public string PostalCode { get; set; }
+        [RegularExpression(@"^\d{2}-\d{3}$", ErrorMessage = "Kod pocztowy w formacie XX-XXX")]
+        public string PostalCode { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Miasto jest wymagane")]
         [StringLength(100)]
-        public string City { get; set; }
-
-        public User User { get; set; }
+        public string City { get; set; } = null!;
     }
 }

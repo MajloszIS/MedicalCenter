@@ -98,6 +98,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Couriers">Kurierzy</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Specialization" asp-action="Specializations">Specjalizacje</a>
+                            </li>
                         </ul>
                     }
 
@@ -107,12 +110,13 @@
     </header>
 
     <div class="container">
-        @if (TempData["ErrorMessage"] != null)
+        @if (TempData["ErrorMessage"] != null || TempData["Error"] != null)
         {
             <div class="container mt-3">
                 <div class="alert alert-danger alert-dismissible fade show">
                     <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                    @TempData["ErrorMessage"]
+                    @TempData["ErrorMessage"] ?? @TempData["Error"]
+                    @TempData["Error"] ?? @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             </div>

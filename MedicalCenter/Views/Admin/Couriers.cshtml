@@ -45,31 +45,27 @@ else
                             <div class="fw-bold">@item.Phone</div>
                         </td>
 
-                        <!--
+                        
                         <td class="text-center justify-content-between d-flex">
+                            
                             <div class="fw-bold">
-                                <a asp-action="DoctorAppointments" asp-controller="Admin"
-                                       asp-route-doctorId="@item.Id" class="fw-bold">
-                                    <i class="fa-solid fa-file-medical me-1"></i>
-                                </a>
-                            </div>
-                            <div class="fw-bold">
-                                <a asp-action="EditDoctor" asp-controller="Admin"
-                                       asp-route-doctorId="@item.Id" class="fw-bold">
+                                <a asp-action="EditCourier" asp-controller="Admin"
+                                       asp-route-courierId="@item.Id" class="fw-bold">
                                     <i class="fa-solid fa-pen me-1"></i>
                                 </a>
                             </div>
+
                             <div class="fw-bold">
-                                <form asp-action="DeleteDoctor" asp-controller="Admin" method="post">
+                                <form asp-action="DeleteCourier" asp-controller="Admin" method="post">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="doctorId" value="@item.Id" />
+                                    <input type="hidden" name="courierId" value="@item.Id" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </form>
                             </div>
                         </td>
-                        -->
+                       
 
                     </tr>
                 }

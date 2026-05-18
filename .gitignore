@@ -12,6 +12,7 @@
 
 # Local settings 
 #**/appsettings.Development.json
+Claude.md
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

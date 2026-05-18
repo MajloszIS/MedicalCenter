@@ -22,7 +22,6 @@ namespace MedicalCenter.Services
                 Id = medicalRecord.Id,
                 PatientId = medicalRecord.PatientId,
                 DoctorId = medicalRecord.DoctorId,
-                Date = medicalRecord.Date,
                 Diagnoses = medicalRecord.Diagnoses?.Select(d => new DiagnosisDto
                 {
                     Id = d.Id,
@@ -83,8 +82,7 @@ namespace MedicalCenter.Services
                 var newMedicalRecord = new MedicalRecord
                 {
                     DoctorId = doctorId,
-                    PatientId = patientId,
-                    Date = DateTime.Now
+                    PatientId = patientId
                 };
                 await _medicalRecordRepository.CreateMedicalRecordAsync(newMedicalRecord);
                 medicalRecord = await _medicalRecordRepository.GetMedicalRecordByIdAsync(newMedicalRecord.Id);

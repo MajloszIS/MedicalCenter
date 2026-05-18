@@ -12,12 +12,14 @@ namespace MedicalCenter.Models
         public Guid UserId { get; set; }
 
         [StringLength(11)]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "PESEL must be 11 digits")]
-        public string? Pesel { get; set; } = string.Empty;
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "PESEL musi mieć 11 cyfr")]
+        public string? Pesel { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public Guid? AddressId { get; set; }
+        public Address? Address { get; set; } 
 
-        public User User { get; set; }
+        public User User { get; set; } = null!;
     }
 }

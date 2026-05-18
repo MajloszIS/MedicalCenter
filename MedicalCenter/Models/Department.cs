@@ -9,8 +9,8 @@ namespace MedicalCenter.Models
 
         [Required]
         [StringLength(150)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public List<DoctorDepartment> DoctorDepartments { get; set; }
+        public List<DoctorDepartment> DoctorDepartments { get; set; } = new List<DoctorDepartment>();
     }
 }

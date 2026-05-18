@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalCenter.Models
 {
@@ -7,14 +8,17 @@ namespace MedicalCenter.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [ForeignKey("MedicalRecord")]
         public Guid MedicalRecordId { get; set; }
 
         [Required]
         [StringLength(500)]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
-        public MedicalRecord MedicalRecord { get; set; }
+        public DateTime DiagnosedAt { get; set; } = DateTime.UtcNow;
 
-        public List<Treatment> Treatments { get; set; } = new List<Treatment>();
+        public MedicalRecord MedicalRecord { get; set; } = null!;
+
+        public List<Treatment> Treatments { get; set; } = new();
     }
 }

@@ -11,21 +11,21 @@ namespace MedicalCenter.Models
         [Required]
         [EmailAddress]
         [StringLength(100)]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
 
-        [StringLength(255, MinimumLength = 6)]
-        public string? PasswordHash { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(50)]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Only letters allowed")]
-        public string FirstName { get; set; }
+        [StringLength(255)]
+        public string? PasswordHash { get; set; }
 
         [Required]
         [StringLength(50)]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Only letters allowed")]
-        public string LastName { get; set; }
+        [RegularExpression(@"^[\p{L}\s'-]+$", ErrorMessage = "Tylko litery, spacje, łączniki i apostrofy")]
+        public string FirstName { get; set; } = null!;
+
+        [Required]
+        [StringLength(50)]
+        [RegularExpression(@"^[\p{L}\s'-]+$", ErrorMessage = "Tylko litery, spacje, łączniki i apostrofy")]
+        public string LastName { get; set; } = null!;
 
         [Phone]
         public string? Phone { get; set; }
@@ -35,9 +35,10 @@ namespace MedicalCenter.Models
 
         public string? ProfilePicturePath { get; set; }
 
-        public Role Role { get; set; }
+        public Role Role { get; set; } = null!;
 
-        public Doctor Doctor { get; set; }
-        public Patient Patient { get; set; }
+        public Doctor? Doctor { get; set; }
+        public Patient? Patient { get; set; }
+        public Courier? Courier { get; set; }
     }
 }
