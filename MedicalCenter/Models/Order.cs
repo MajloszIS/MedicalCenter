@@ -22,6 +22,7 @@ namespace MedicalCenter.Models
 
         public Patient Patient { get; set; } = null!;
         public OrderStatus Status { get; set; } = null!;
+        public string? StripeSessionId { get; set; }
 
         public List<OrderItem> Items { get; set; } = new();
     }
