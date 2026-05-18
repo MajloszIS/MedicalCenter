@@ -63,5 +63,14 @@ namespace MedicalCenter.Repositories
             }
 
         }
+        public async Task<Delivery> GetDeliveryByIdAsync(Guid deliveryId)
+        {
+            return await _context.Deliveries.FirstOrDefaultAsync(d => d.Id == deliveryId);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

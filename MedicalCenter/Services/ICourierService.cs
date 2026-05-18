@@ -12,5 +12,6 @@ namespace MedicalCenter.Services
         public Task DeleteCourierAsync(Guid CourierId);
         public Task<UpdateProfileDto> GetCourierProfileAsync(Guid id);
         public Task UpdateCourierProfileAsync(Guid id, UpdateProfileDto dto);
+        public Task ChangeDeliveryStatusAsync(Guid deliveryId, int newStatusId);
     }
 }

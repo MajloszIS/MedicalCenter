@@ -15,7 +15,6 @@ namespace MedicalCenter.Repositories
 
         public Task<List<Delivery>> GetAllDeliveriesAsync()
         {
-            // Przeniesione z dawnego Serwisu - samo wyciąganie z bazy
             return _context.Deliveries
                 .Include(d => d.Order)
                     .ThenInclude(o => o.Patient)
