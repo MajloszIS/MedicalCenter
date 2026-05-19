@@ -37,6 +37,7 @@ builder.Services.AddScoped<ICourierRepository, CourierRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 // dodanie serwisu
 builder.Services.AddScoped<IUserService, UserService>();
@@ -55,6 +56,7 @@ builder.Services.AddScoped<ICourierService, CourierService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, MedicalCenter.Services.ReviewService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 
 // dodanie JWT Authentication
