@@ -31,7 +31,9 @@ namespace MedicalCenter.Services
                     Pesel = a.Patient.Pesel
                 },
                 AppointmentDate = a.AppointmentDate,
-                StatusName = a.Status.Name
+                StatusName = a.Status.Name,
+                Description = a.Description,
+                DurationMinutes = a.DurationMinutes
             }).ToList();
             
             return appointmentDto;
@@ -67,24 +69,35 @@ namespace MedicalCenter.Services
                     SpecializationName = a.Doctor.Specialization.Name
                 },
                 AppointmentDate = a.AppointmentDate,
-                StatusName = a.Status.Name
+                StatusName = a.Status.Name,
+                DurationMinutes = a.DurationMinutes,
             }).ToList();
 
             return appointmentDto;
         }
-        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string? description, string? notes)
+        public async Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string? description, string? notes, int DurationTime)
         {
-            var appointment = new Appointment
-            {
-                PatientId = patientId,
-                DoctorId = doctorId,
-                Description = description ?? string.Empty,
-                Notes = notes ?? string.Empty,
-                StatusId = 1,
-                AppointmentDate = appointmentDate
-            };
+            var appointments = await _appointmentRepository.GetAppointmentsForDoctorInRangeAsync(doctorId, appointmentDate, appointmentDate.AddMinutes(DurationTime));
 
-            await _appointmentRepository.CreateAppointmentAsync(appointment);
+            if(appointments.Any())
+            {
+                throw new Exception("Lekarz nie jest dostępny w wybranym terminie");
+            }
+            else
+            { 
+                var appointment = new Appointment
+                {
+                    PatientId = patientId,
+                    DoctorId = doctorId,
+                    Description = description ?? string.Empty,
+                    Notes = notes ?? string.Empty,
+                    StatusId = 1,
+                    AppointmentDate = appointmentDate,
+                    DurationMinutes = DurationTime
+                };
+                await _appointmentRepository.CreateAppointmentAsync(appointment);
+            }
+
         }
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId)
@@ -116,7 +129,8 @@ namespace MedicalCenter.Services
                 AppointmentDate = appointment.AppointmentDate,
                 StatusName = appointment.Status.Name,
                 Description = appointment.Description,
-                Notes = appointment.Notes ?? "Brak notatek"
+                Notes = appointment.Notes ?? "Brak notatek",
+                DurationMinutes = appointment.DurationMinutes
             };
             return appointmentDto;
         }
@@ -160,15 +174,24 @@ namespace MedicalCenter.Services
             appointment.StatusId = statusId;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
-        public async Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate)
+        public async Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate, int DurationTime)
         {
             var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
+            var appointments = await _appointmentRepository.GetAppointmentsForDoctorInRangeAsync(appointment.DoctorId, newDate, newDate.AddMinutes(DurationTime));
+
+            if (appointments.Any())
             {
-                throw new Exception("Appointment not found");
+                throw new Exception("Lekarz nie jest dostępny w wybranym terminie");
             }
-            appointment.AppointmentDate = newDate;
-            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+            else
+            { 
+                if (appointment == null)
+                {
+                    throw new Exception("Appointment not found");
+                }
+                appointment.AppointmentDate = newDate;
+                await _appointmentRepository.UpdateAppointmentAsync(appointment);
+            }
         }
         public async Task UpdateAppointmentDescriptionAsync(Guid appointmentId, string description)
         {

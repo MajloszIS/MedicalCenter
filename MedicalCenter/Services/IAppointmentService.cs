@@ -8,13 +8,13 @@ namespace MedicalCenter.Services
         public Task<List<AppointmentDto>> GetAppointmentsByDoctorIdAsync(Guid doctorId);
         public Task<List<PatientDto>> GetPatientsByDoctorIdAsync(Guid doctorId);
         public Task<List<AppointmentDto>> GetAppointmentsByPatientIdAsync(Guid patientId);
-        public Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string? notes);
+        public Task CreateAppointmentAsync(Guid doctorId, Guid patientId, DateTime appointmentDate, string description, string? notes, int DurationTime);
         public Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId);
         public Task CancelAppointmentAsync(Guid appointmentId);
         public Task AddNoteAsync(Guid appointmentId, string note);
         public Task<List<AppointmentStatusDto>> GetAllAppointmentStatusAsync();
         public Task UpdateAppointmentStatusAsync(Guid appointmentId, int statusId);
-        public Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate);
+        public Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate, int DurationTime);
         public Task UpdateAppointmentDescriptionAsync(Guid appointmentId, string description);
 
 

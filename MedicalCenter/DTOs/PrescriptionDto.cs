@@ -9,5 +9,6 @@
         public DoctorDto Doctor { get; set; }
 
         public List<PrescriptionItemDto> Items { get; set; }
+        public DateTime IssuedAt { get; set; }
     }
 }

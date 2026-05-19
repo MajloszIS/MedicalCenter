@@ -14,7 +14,7 @@ namespace MedicalCenter.Models
         [ForeignKey("Doctor")]
         public Guid DoctorId { get; set; }
 
-        public DateTime IssuedAt { get; set; } = DateTime.UtcNow;
+        public DateTime IssuedAt { get; set; } = DateTime.UtcNow.AddDays(30);
 
         public MedicalRecord MedicalRecord { get; set; } = null!;
         public Doctor Doctor { get; set; } = null!;

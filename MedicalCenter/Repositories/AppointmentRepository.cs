@@ -99,5 +99,21 @@ namespace MedicalCenter.Repositories
         {
             return await _context.AppointmentStatuses.ToListAsync();
         }
+        public async Task<List<Appointment>> GetAppointmentsForDoctorInRangeAsync(
+            Guid doctorId, DateTime rangeStart, DateTime rangeEnd, Guid? excludeAppointmentId = null)
+        {
+            var appointments = await _context.Appointments
+                .Where(a => a.DoctorId == doctorId
+                         && a.AppointmentDate >= rangeStart
+                         && a.AppointmentDate < rangeEnd
+                         && a.StatusId != 3
+                         && (excludeAppointmentId == null || a.Id != excludeAppointmentId.Value))
+                .ToListAsync();
+
+            return appointments
+                .Where(a => a.AppointmentDate < rangeEnd
+                         && a.AppointmentDate.AddMinutes(a.DurationMinutes) > rangeStart)
+                .ToList();
+        }
     }
 }

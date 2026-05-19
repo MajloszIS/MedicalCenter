@@ -196,7 +196,7 @@
 						<div class="d-flex align-items-center justify-content-between mb-3">
 							<div class="d-flex align-items-center">
 								<i class="fa-solid fa-file-medical text-primary me-2"></i>
-								<h6 class="fw-bold mb-0">Recepta</h6>
+								<h6 class="fw-bold mb-0">Recepta ważna do @prescription.IssuedAt.ToString("dd.MM.yyyy")</h6>
 							</div>
 								<form asp-action="RemovePrescription" asp-controller="MedicalRecord" method="post">
 									@Html.AntiForgeryToken()

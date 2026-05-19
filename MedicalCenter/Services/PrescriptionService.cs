@@ -102,6 +102,7 @@ namespace MedicalCenter.Services
                 Id = p.Id,
                 MedicalRecordId = p.MedicalRecordId,
                 DoctorId = p.DoctorId,
+                IssuedAt = p.IssuedAt,
                 Doctor = new DoctorDto
                 {
                     Id = p.Doctor.Id,
@@ -153,6 +154,7 @@ namespace MedicalCenter.Services
                         column.Item().LineHorizontal(1).LineColor(Colors.Grey.Medium);
                         column.Spacing(10);
                         column.Item().Text($"Numer recepty: {prescription.Id}");
+                        column.Item().Text($"Ważna do: {prescription.IssuedAt.ToString("dd.MM.yyyy")}");
                         column.Item().Text($"Liczba leków: {prescription.Items.Count}");
 
                         foreach (var item in prescription.Items)
