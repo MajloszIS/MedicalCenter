@@ -8,5 +8,6 @@
         public string? Email { get; set; }
         public string? NewPassword { get; set; }
         public string? ProfilePicturePath { get; set; }
+        public string? VehicleRegistration { get; set; }
     }
 }

@@ -1,94 +1,75 @@
 ﻿@model MedicalCenter.DTOs.UpdateProfileDto
 
 @{
-    ViewData["Title"] = $"Edytuj Kuriera {Model.FirstName} {Model.LastName}";
+    ViewData["Title"] = "Profil Kuriera";
 }
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="page-title mb-0">
-            <i class="fa-solid fa-user-gear me-2"></i>Edycja Kuriera: <span class="text-primary">@Model.FirstName @Model.LastName</span>
-        </h2>
-        <a asp-controller="Admin" asp-action="Couriers" class="btn btn-outline-secondary fw-bold">
-            <i class="fa-solid fa-arrow-left me-2"></i>Powrót do listy
-        </a>
-    </div>
+<div class="container py-4">
+    <h2 class="page-title"><i class="fa-solid fa-user-tie me-2"></i>Profil Kuriera</h2>
 
     <div class="row g-4">
-        <div class="col-lg-4">
-            <div class="medical-card text-center py-4 shadow-sm rounded border bg-white">
-                <div class="mb-3">
-                    <i class="fa-solid fa-truck-ramp-box text-primary" style="font-size: 80px;"></i>
-                </div>
-                <h5 class="mb-1">@Model.FirstName @Model.LastName</h5>
-                <p class="text-muted small mb-0">Rola: Kurier</p>
-            </div>
-        </div>
-
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="medical-card p-4 shadow-sm rounded border bg-white">
-                <form asp-action="EditCourier" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                <form asp-action="UpdateCourierProfile" asp-controller="Account" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
-
-                    <input type="hidden" name="courierId" value="@ViewBag.CourierId" />
 
                     <div class="d-flex align-items-center mb-3 border-bottom pb-2">
                         <label class="fw-semibold text-muted" style="width: 150px;">Imię</label>
-                        <span id="firstName-text" class="fw-bold">@Model.FirstName</span>
+                        <span id="firstName-text">@Model.FirstName</span>
                         <input id="firstName-input" name="FirstName" value="@Model.FirstName" class="form-control form-control-sm ms-2" style="display:none; width:250px;" />
                         <button type="button" id="firstName-edit" onclick="enableEdit('firstName')" class="btn btn-sm btn-link ms-auto">
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
                         <button type="submit" id="firstName-save" class="btn btn-sm btn-success ms-auto" style="display:none;">
-                            <i class="fa-solid fa-check"></i> Potwierdź
+                            <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 
                     <div class="d-flex align-items-center mb-3 border-bottom pb-2">
                         <label class="fw-semibold text-muted" style="width: 150px;">Nazwisko</label>
-                        <span id="lastName-text" class="fw-bold">@Model.LastName</span>
+                        <span id="lastName-text">@Model.LastName</span>
                         <input id="lastName-input" name="LastName" value="@Model.LastName" class="form-control form-control-sm ms-2" style="display:none; width:250px;" />
                         <button type="button" id="lastName-edit" onclick="enableEdit('lastName')" class="btn btn-sm btn-link ms-auto">
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
                         <button type="submit" id="lastName-save" class="btn btn-sm btn-success ms-auto" style="display:none;">
-                            <i class="fa-solid fa-check"></i> Potwierdź
+                            <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 
                     <div class="d-flex align-items-center mb-3 border-bottom pb-2">
                         <label class="fw-semibold text-muted" style="width: 150px;">Email</label>
-                        <span id="email-text" class="fw-bold">@Model.Email</span>
+                        <span id="email-text">@Model.Email</span>
                         <input id="email-input" name="Email" value="@Model.Email" class="form-control form-control-sm ms-2" style="display:none; width:250px;" />
                         <button type="button" id="email-edit" onclick="enableEdit('email')" class="btn btn-sm btn-link ms-auto">
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
                         <button type="submit" id="email-save" class="btn btn-sm btn-success ms-auto" style="display:none;">
-                            <i class="fa-solid fa-check"></i> Potwierdź
+                            <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 
                     <div class="d-flex align-items-center mb-3 border-bottom pb-2">
                         <label class="fw-semibold text-muted" style="width: 150px;">Telefon</label>
-                        <span id="phone-text" class="fw-bold">@(string.IsNullOrEmpty(Model.Phone) ? "Brak" : Model.Phone)</span>
+                        <span id="phone-text">@(string.IsNullOrEmpty(Model.Phone) ? "Brak" : Model.Phone)</span>
                         <input id="phone-input" name="Phone" value="@Model.Phone" class="form-control form-control-sm ms-2" style="display:none; width:250px;" />
                         <button type="button" id="phone-edit" onclick="enableEdit('phone')" class="btn btn-sm btn-link ms-auto">
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
                         <button type="submit" id="phone-save" class="btn btn-sm btn-success ms-auto" style="display:none;">
-                            <i class="fa-solid fa-check"></i> Potwierdź
+                            <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 
                     <div class="d-flex align-items-center mb-3 border-bottom pb-2">
                         <label class="fw-semibold text-muted" style="width: 150px;">Rejestracja auta</label>
-                        <span id="vehicleRegistration-text" class="fw-bold text-secondary">@(string.IsNullOrEmpty(Model.VehicleRegistration) ? "Brak" : Model.VehicleRegistration)</span>
+                        <span id="vehicleRegistration-text">@(string.IsNullOrEmpty(Model.VehicleRegistration) ? "Brak" : Model.VehicleRegistration)</span>
                         <input id="vehicleRegistration-input" name="VehicleRegistration" value="@Model.VehicleRegistration" class="form-control form-control-sm ms-2" style="display:none; width:250px;" />
                         <button type="button" id="vehicleRegistration-edit" onclick="enableEdit('vehicleRegistration')" class="btn btn-sm btn-link ms-auto">
                             <i class="fa-solid fa-pen text-primary"></i>
                         </button>
                         <button type="submit" id="vehicleRegistration-save" class="btn btn-sm btn-success ms-auto" style="display:none;">
-                            <i class="fa-solid fa-check"></i> Potwierdź
+                            <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
 

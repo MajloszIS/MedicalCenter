@@ -23,6 +23,7 @@ namespace MedicalCenter.Controllers
         private readonly ICourierService _courierService;
         private readonly IOrderService _orderService;
         private readonly IMedicineService _medicineService;
+        private readonly IDeliveryService _deliveryService;
 
         public AdminController(
             IPatientService patientService, 
@@ -31,7 +32,8 @@ namespace MedicalCenter.Controllers
             IAppointmentService appointmentService, 
             ICourierService courierService,
             IOrderService orderService,
-            IMedicineService medicineService)
+            IMedicineService medicineService,
+            IDeliveryService deliveryService)
         {
             _doctorService = doctorService;
             _userService = userService;
@@ -40,6 +42,7 @@ namespace MedicalCenter.Controllers
             _courierService = courierService;
             _orderService = orderService;
             _medicineService = medicineService;
+            _deliveryService = deliveryService;
         }
         public IActionResult Index()
         {
@@ -313,24 +316,32 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCourier(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
+        public async Task<IActionResult> EditCourier(Guid courierId, UpdateProfileDto updateProfileDto)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if (doctorUserId == Guid.Empty)
+            var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
+            if (courierUserId == Guid.Empty)
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z kurierem.";
+                return RedirectToAction("Couriers", "Admin");
             }
 
-            await _doctorService.UpdateDoctorProfileAsync(doctorUserId, updateDoctorProfileDto);
+            await _courierService.UpdateCourierProfileAsync(courierUserId, updateProfileDto);
 
-            return RedirectToAction("Doctors");
+            return RedirectToAction("Couriers");
         }
 
         [HttpGet]
         public async Task<IActionResult> CourierDeliveries(Guid courierId)
         {
-            return View();
+            var courier = await _courierService.GetCourierByIdAsync(courierId);
+            if (courier != null)
+            {
+                ViewBag.CourierName = $"{courier.FirstName} {courier.LastName}";
+            }
+
+            var deliveries = await _deliveryService.GetMyDeliveriesAsync(courierId);
+
+            return View(deliveries);
         }
         public async Task<IActionResult> Orders()
         {
