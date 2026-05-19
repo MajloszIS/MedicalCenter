@@ -29,7 +29,6 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <ul class="navbar-nav">
-
                             <li class="nav-item d-flex align-items-center">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">
                                     <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
@@ -40,6 +39,14 @@
                                 </form>
                             </li>
 
+                            @if (User.IsInRole("Courier"))
+                            {
+                                <li class="nav-item d-flex align-items-center">
+                                    <a class="btn btn-success btn-sm ms-2 fw-bold" asp-area="" asp-controller="Courier" asp-action="Index">
+                                        <i class="fa-solid fa-truck-fast me-1"></i> Panel Kuriera
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     }
 
@@ -56,14 +63,6 @@
                         </ul>
                     }
 
-                    @if (User.IsInRole("Courier"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-bold text-success" asp-area="" asp-controller="Courier" asp-action="Index">
-                                <i class="fa-solid fa-truck-fast me-1"></i> Panel Kuriera
-                            </a>
-                        </li>
-                    }
 
                     @if (User.IsInRole("Patient"))
                     {

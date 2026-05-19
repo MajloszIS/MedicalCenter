@@ -28,6 +28,7 @@ else
                     <th>Imię</th>
                     <th>Nazwisko</th>
                     <th>Telefon</th>
+                    <th>Auto (Rejestracja)</th>
                     <th class="text-center">Akcje</th>
                 </tr>
             </thead>
@@ -44,14 +45,22 @@ else
                         <td>
                             <div class="fw-bold">@item.Phone</div>
                         </td>
+                        <td>
+                            <div class="fw-bold text-secondary">@(string.IsNullOrEmpty(item.VehicleRegistration) ? "Brak" : item.VehicleRegistration)</div>
+                        </td>
 
-                        
-                        <td class="text-center justify-content-between d-flex">
-                            
+
+                        <td class="text-center justify-content-center d-flex gap-2">
+
                             <div class="fw-bold">
-                                <a asp-action="EditCourier" asp-controller="Admin"
-                                       asp-route-courierId="@item.Id" class="fw-bold">
-                                    <i class="fa-solid fa-pen me-1"></i>
+                                <a asp-action="CourierDeliveries" asp-controller="Admin" asp-route-courierId="@item.Id" class="btn btn-sm btn-outline-info" title="Paczki kuriera">
+                                    <i class="fa-solid fa-box"></i>
+                                </a>
+                            </div>
+
+                            <div class="fw-bold">
+                                <a asp-action="EditCourier" asp-controller="Admin" asp-route-courierId="@item.Id" class="btn btn-sm btn-outline-primary" title="Edytuj kuriera">
+                                    <i class="fa-solid fa-pen"></i>
                                 </a>
                             </div>
 
@@ -59,11 +68,12 @@ else
                                 <form asp-action="DeleteCourier" asp-controller="Admin" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="courierId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Usuń kuriera">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </form>
                             </div>
+
                         </td>
                        
 

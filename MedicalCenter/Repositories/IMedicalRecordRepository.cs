@@ -4,7 +4,7 @@ namespace MedicalCenter.Repositories
 {
     public interface IMedicalRecordRepository
     {
-        public Task<MedicalRecord> GetByDoctorAndPatientAsync(Guid doctorId, Guid patientId);
+        public Task<MedicalRecord?> GetByDoctorAndPatientAsync(Guid doctorId, Guid patientId);
         public Task<MedicalRecord> GetByPatientAsync(Guid patientId);
         public Task<MedicalRecord> GetByDoctorIdAsync(Guid doctorId);
         public Task<MedicalRecord> GetMedicalRecordByIdAsync(Guid id);

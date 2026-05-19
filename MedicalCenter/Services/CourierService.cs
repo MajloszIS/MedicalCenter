@@ -25,6 +25,7 @@ namespace MedicalCenter.Services
                 FirstName = courier.User.FirstName,
                 LastName = courier.User.LastName,
                 Phone = courier.User.Phone ?? string.Empty,
+                VehicleRegistration = courier.VehicleRegistration
             };
             return courierDto;
         }
@@ -101,6 +102,7 @@ namespace MedicalCenter.Services
                 Phone = user.Phone,
                 Email = user.Email,
                 ProfilePicturePath = user.ProfilePicturePath,
+                VehicleRegistration = courier.VehicleRegistration
             };
             return courierProfileDto;
         }
@@ -114,6 +116,8 @@ namespace MedicalCenter.Services
             user.LastName = dto.LastName ?? user.LastName;
             user.Phone = dto.Phone ?? user.Phone;
             user.Email = dto.Email ?? user.Email;
+
+            courier.VehicleRegistration = dto.VehicleRegistration ?? courier.VehicleRegistration;
 
             await _userRepository.UpdateUserAsync(user);
             await _courierRepository.UpdateCourierAsync(id, courier);

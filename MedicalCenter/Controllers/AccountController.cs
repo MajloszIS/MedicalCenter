@@ -21,12 +21,14 @@ namespace MedicalCenter.Controllers
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
         private readonly IAddressService _addressService;
-        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService)
+        private readonly ICourierService _courierService;
+        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService, ICourierService courierService)
         {
             _userService = userService;
             _patientService = patientService;
             _doctorService = doctorService;
             _addressService = addressService;
+            _courierService = courierService;
         }
 
         public IActionResult Index()
@@ -214,18 +216,13 @@ namespace MedicalCenter.Controllers
             return RedirectToAction("DoctorProfile");
         }
 
-        // Akcje dla profilu Kuriera
-        /*
         public async Task<IActionResult> CourierProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login");
 
             var courierProfile = await _courierService.GetCourierProfileAsync(Guid.Parse(userId));
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            ViewBag.Specializations = specializations;
-
-            return View(adminProfile);
+            return View(courierProfile);
         }
 
         [HttpPost]
@@ -234,22 +231,22 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login");
+
             await _courierService.UpdateCourierProfileAsync(Guid.Parse(userId), dto);
             var updatedUser = await _courierService.GetCourierProfileAsync(Guid.Parse(userId));
 
-            // Aktulaizacja claimsów po zmianie danych
             var identity = new ClaimsIdentity(new Claim[]
                 {
-                    new (ClaimTypes.NameIdentifier, userId),
-                    new (ClaimTypes.Email, updatedUser.Email),
-                    new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
-                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
+            new (ClaimTypes.NameIdentifier, userId),
+            new (ClaimTypes.Email, updatedUser.Email),
+            new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
+            new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
                 }, "login");
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            return RedirectToAction("DoctorProfile");
-        }*/
+            return RedirectToAction("CourierProfile");
+        }
 
         // Akcje dla profilu Admina
         public async Task<IActionResult> AdminProfile()
