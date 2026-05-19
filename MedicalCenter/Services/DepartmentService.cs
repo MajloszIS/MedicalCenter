@@ -1,13 +1,15 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Stripe;
+using System.Linq.Expressions;
 
 namespace MedicalCenter.Services
 {
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepository _departmentRepository;
-        public DepartmentService(IDepartmentRepository departmentRepository) 
+        public DepartmentService(IDepartmentRepository departmentRepository)
         {
             _departmentRepository = departmentRepository;
         }
@@ -36,6 +38,32 @@ namespace MedicalCenter.Services
                 Name = departmentDto.Name,
             };
             await _departmentRepository.AddDepartmentAsync(departament);
+        }
+        public async Task<DepartmentDto> GetDepartmentByIdAsync(Guid departmentId)
+        {
+            var department = await _departmentRepository.GetDepartmentByIdAsync(departmentId);
+            if (department == null)
+            {
+                throw new Exception("Nie znaleziono Departamentu o podanym ID");
+            }
+
+            var departamentDto = new DepartmentDto 
+            { 
+                Id = departmentId, 
+                Name= department.Name,
+                DoctorDepartments = department.DoctorDepartments,
+            };
+
+            return departamentDto;
+        }
+        public async Task DeleteDepartmentAsync(Guid departmentId)
+        {
+            var department = await _departmentRepository.GetDepartmentByIdAsync(departmentId);
+            if (department == null)
+            {
+                throw new NullReferenceException("Nie znaleziono opinii o podanym ID.");
+            }
+            await _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using MedicalCenter.Controllers;
 using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace MedicalCenter.Repositories
 {
@@ -27,5 +29,22 @@ namespace MedicalCenter.Repositories
             return await _context.Departments.AnyAsync(d => d.Name == departmentName);
 
         }
+        public async Task<Department?> GetDepartmentByIdAsync(Guid departmentId)
+        {
+            var department = await _context.Departments
+                .Where(r => r.Id == departmentId)
+                .FirstOrDefaultAsync();
+            return department;
+        }
+        public async Task DeleteDepartmentAsync(Guid departmentId)
+        {
+            var department = await _context.Departments.FindAsync(departmentId);
+            if (department != null)
+            {
+                _context.Departments.Remove(department);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

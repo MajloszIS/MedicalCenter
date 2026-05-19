@@ -81,6 +81,7 @@ namespace MedicalCenter.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(Guid reviewId)
         {
             var review = await _reviewService.GetReviewByIdAsync(reviewId);
