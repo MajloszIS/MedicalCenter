@@ -6,10 +6,12 @@ namespace MedicalCenter.Services
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly IMedicineRepository _medicineRepository;
 
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, IMedicineRepository medicineRepository)
         {
             _cartRepository = cartRepository;
+            _medicineRepository = medicineRepository;
         }
 
         public async Task<Cart> GetCartAsync(Guid patientId)
@@ -17,8 +19,15 @@ namespace MedicalCenter.Services
             return await _cartRepository.GetCartWithItemsAsync(patientId);
         }
 
-        public async Task AddToCartAsync(Guid patientId, Guid medicineId, int quantity)
+        public async Task<(bool success, string message)> AddToCartAsync(Guid patientId, Guid medicineId, int quantity)
         {
+            var medicine = await _medicineRepository.GetByIdAsync(medicineId);
+
+            if (medicine == null || medicine.StockQuantity <= 0 || quantity <= 0)
+            {
+                return (false, "Lek jest niedostępny lub podano błędną ilość.");
+            }
+
             var cart = await _cartRepository.GetCartAsync(patientId);
 
             if (cart == null)
@@ -32,20 +41,45 @@ namespace MedicalCenter.Services
 
             if (existingItem != null)
             {
-                existingItem.Quantity += quantity;
+                if (existingItem.Quantity + quantity > medicine.StockQuantity)
+                {
+                    int possibleToAdd = medicine.StockQuantity - existingItem.Quantity;
+
+                    if (possibleToAdd <= 0)
+                    {
+                        return (false, $"Nie możesz dodać więcej. Masz już w koszyku maksymalną dostępną ilość tego leku ({medicine.StockQuantity} szt.).");
+                    }
+                    else
+                    {
+                        existingItem.Quantity = medicine.StockQuantity;
+                        await _cartRepository.SaveChangesAsync();
+                        return (true, $"Dodano {possibleToAdd} szt. Osiągnięto limit dostępności w magazynie ({medicine.StockQuantity} szt.).");
+                    }
+                }
+                else
+                {
+                    existingItem.Quantity += quantity;
+                    await _cartRepository.SaveChangesAsync();
+                    return (true, "Lek został pomyślnie dodany do koszyka!");
+                }
             }
             else
             {
-                var newItem = new CartItem
+                if (quantity > medicine.StockQuantity)
                 {
-                    CartId = cart.Id,
-                    MedicineId = medicineId,
-                    Quantity = quantity
-                };
-                await _cartRepository.AddCartItemAsync(newItem);
+                    var newItem = new CartItem { CartId = cart.Id, MedicineId = medicineId, Quantity = medicine.StockQuantity };
+                    await _cartRepository.AddCartItemAsync(newItem);
+                    await _cartRepository.SaveChangesAsync();
+                    return (true, $"Dodano {medicine.StockQuantity} szt. Osiągnięto limit dostępności w magazynie.");
+                }
+                else
+                {
+                    var newItem = new CartItem { CartId = cart.Id, MedicineId = medicineId, Quantity = quantity };
+                    await _cartRepository.AddCartItemAsync(newItem);
+                    await _cartRepository.SaveChangesAsync();
+                    return (true, "Lek został pomyślnie dodany do koszyka!");
+                }
             }
-
-            await _cartRepository.SaveChangesAsync();
         }
 
         public async Task CreateOrderFromCartAsync(Guid patientId, string sessionId)

@@ -27,20 +27,27 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(Guid medicineId, int quantity = 1)
+        public async Task<IActionResult> AddToCart(Guid medicineId, int quantity)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userIdString == null) return Unauthorized();
             var userId = Guid.Parse(userIdString);
 
             var patient = await _patientService.GetPatientByUserIdAsync(userId);
-            if (patient == null) return NotFound("Nie znaleziono profilu pacjenta.");
+            if (patient == null) return NotFound();
 
-            await _cartService.AddToCartAsync(patient.Id, medicineId, quantity);
+            var result = await _cartService.AddToCartAsync(patient.Id, medicineId, quantity);
 
-            TempData["SuccessMessage"] = "Lek został dodany do koszyka!";
+            if (result.success)
+            {
+                TempData["SuccessMessage"] = result.message;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.message;
+            }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }

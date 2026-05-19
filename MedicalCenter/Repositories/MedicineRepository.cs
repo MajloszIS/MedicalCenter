@@ -22,5 +22,19 @@ namespace MedicalCenter.Repositories
         {
             return _context.Medicines.Include(m => m.Category).FirstOrDefaultAsync(m => m.Id == id);
         }
+        public async Task AddMedicineAsync(Medicine medicine)
+        {
+            await _context.Medicines.AddAsync(medicine);
+        }
+
+        public async Task<List<MedicineCategory>> GetAllCategoriesAsync()
+        {
+            return await _context.MedicineCategories.ToListAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
