@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,17 +22,43 @@ namespace MedicalCenter.Controllers
             return View(departments);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDepartment(DepartmentDto departmentDto)
         {
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Niepoprawne dane.";
+                return RedirectToAction("Index");
+
             }
 
             try
             {
                 await _departmentService.AddDepartmentAsync(departmentDto);
                 TempData["Success"] = "Pomyślnie dodano department";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"{ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDepartment(Guid departmentId)
+        {
+            Console.WriteLine("------------------------" + departmentId);
+
+            var review = await _departmentService.GetDepartmentByIdAsync(departmentId);
+            if (review == null) return NotFound();
+
+            try
+            {
+                await _departmentService.DeleteDepartmentAsync(departmentId);
+                TempData["Success"] = "Pomyślnie usunięto Departament";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

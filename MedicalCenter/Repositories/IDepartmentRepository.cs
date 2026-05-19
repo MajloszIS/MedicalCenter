@@ -8,5 +8,8 @@ namespace MedicalCenter.Repositories
         public Task<List<Department>> GetAllDepartmentsAsync();
         public Task AddDepartmentAsync(Department department);
         public Task<bool> ExistsAsnyc(string departmentName);
+        public Task<Department?> GetDepartmentByIdAsync(Guid departmentId);
+        public Task DeleteDepartmentAsync(Guid departmentId);
+
     }
 }
