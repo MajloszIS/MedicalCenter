@@ -115,18 +115,33 @@
 				<div class="d-flex align-items-center mb-3">
 					<label class="fw-semibold me-2" style="width: 120px;">Data wizyty</label>
 					<span id="date-text">@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</span>
+
+					<label class="fw-semibold me-2 ms-lg-2" style="width: 120px;">Czas trwania</label>
+					<span id="date-text">@Model.DurationMinutes minut</span>
+
 					<button type="button" id="date-edit" onclick="enableDateEdit()"
 							class="btn btn-sm btn-link ms-2">
 						<i class="fa-solid fa-pen text-primary"></i>
 					</button>
+
 				</div>
 
 				<div id="date-form" style="display:none;">
 					<form asp-action="RescheduleAppointment" asp-controller="Appointment" method="post">
 						@Html.AntiForgeryToken()
-						<input type="hidden" name="AppointmentId" value="@Model.Id" />
-						<input type="text" id="newDate" name="newDate"
-							   class="form-control mb-2" placeholder="@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")" />
+						<div>
+							<input type="hidden" name="AppointmentId" value="@Model.Id" />
+							<input type="text" id="newDate" name="newDate"
+								   class="form-control mb-2" placeholder="@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")" />
+
+							<label for="DurationTime" class="form-label fw-semibold">Długość Wizyty</label>
+							<select id="DurationTime" name="DurationTime" class="form-control mb-2" style="width: 120px;">
+								<option value="60">60 minut</option>
+								<option value="45">45 minut</option>
+								<option value="30">30 minut</option>
+								<option value="15">15 minut</option>
+							</select>
+						</div>
 						<button type="submit" class="btn btn-medical btn-sm">
 							<i class="fa-solid fa-check me-1"></i>Zapisz
 						</button>
@@ -134,6 +149,8 @@
 								class="btn btn-outline-secondary btn-sm">
 							Anuluj
 						</button>
+
+
 					</form>
 				</div>
 			}

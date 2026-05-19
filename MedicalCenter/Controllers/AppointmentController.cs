@@ -1,8 +1,10 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static Azure.Core.HttpHeader;
 
 namespace MedicalCenter.Controllers
 {
@@ -53,13 +55,18 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Guid DoctorId, DateTime appointmentDate, string Description, string? Notes)
+        public async Task<IActionResult> Create(Guid DoctorId, DateTime appointmentDate, string Description, string? Notes, int DurationTime)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(DoctorId);
             if (doctor == null)
             {
                 TempData["ErrorMessage"] = "Lekarz nie został znaleziony.";
                 return RedirectToAction("Index", "Doctors");
+            }
+            if (DurationTime <= 0 || DurationTime > 120 || DurationTime % 15 != 0)
+            {
+                TempData["ErrorMessage"] = "Nieprawidłowa długość wizyty.";
+                return View(doctor);
             }
 
             if (ModelState.IsValid)
@@ -84,8 +91,15 @@ namespace MedicalCenter.Controllers
                     return View(doctor);
                 }
 
-                await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, appointmentDate, Description, Notes);
-
+                try
+                {
+                    await _appointmentService.CreateAppointmentAsync(DoctorId, patient.Id, appointmentDate, Description = "Brak opisu", Notes, DurationTime);
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                    return View(doctor);
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -159,14 +173,23 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RescheduleAppointment(Guid AppointmentId, DateTime? newDate)
+        public async Task<IActionResult> RescheduleAppointment(Guid AppointmentId, DateTime? newDate, int DurationTime)
         {
             if (newDate == null || newDate == DateTime.MinValue)
             {
                 return RedirectToAction("Details", new { AppointmentId = AppointmentId });
             }
 
-            await _appointmentService.RescheduleAppointmentAsync(AppointmentId, newDate.Value);
+            try
+            {
+                await _appointmentService.RescheduleAppointmentAsync(AppointmentId, newDate.Value, DurationTime);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Details", new { AppointmentId = AppointmentId });
+            }
+
             return RedirectToAction("Details", new { AppointmentId = AppointmentId });
         }
 

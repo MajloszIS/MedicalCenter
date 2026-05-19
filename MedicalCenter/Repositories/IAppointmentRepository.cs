@@ -14,5 +14,7 @@ namespace MedicalCenter.Repositories
         public Task<List<Patient>> GetPatientsByDoctorIdAsync(Guid doctorId);
         public Task<List<Appointment>> GetAppointmentsByPatientIdAsync(Guid patientId);
         public Task<List<AppointmentStatus>> GetAllAppointmentStatusAsync();
+        public Task<List<Appointment>> GetAppointmentsForDoctorInRangeAsync(Guid doctorId, DateTime rangeStart, DateTime rangeEnd, Guid? excludeAppointmentId = null);
+
     }
 }
