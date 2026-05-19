@@ -5,6 +5,7 @@ using MedicalCenter.Repositories;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Numerics;
@@ -21,6 +22,7 @@ namespace MedicalCenter.Controllers
         private readonly IAppointmentService _appointmentService;
         private readonly ICourierService _courierService;
         private readonly IOrderService _orderService;
+        private readonly IMedicineService _medicineService;
 
         public AdminController(
             IPatientService patientService, 
@@ -28,7 +30,8 @@ namespace MedicalCenter.Controllers
             IUserService userService, 
             IAppointmentService appointmentService, 
             ICourierService courierService,
-            IOrderService orderService)
+            IOrderService orderService,
+            IMedicineService medicineService)
         {
             _doctorService = doctorService;
             _userService = userService;
@@ -36,6 +39,7 @@ namespace MedicalCenter.Controllers
             _appointmentService = appointmentService;
             _courierService = courierService;
             _orderService = orderService;
+            _medicineService = medicineService;
         }
         public IActionResult Index()
         {
@@ -332,6 +336,71 @@ namespace MedicalCenter.Controllers
         {
             var orders = await _orderService.GetAllOrdersAsync();
             return View(orders);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Medicines()
+        {
+            var medicines = await _medicineService.GetAllMedicineAsync();
+            return View(medicines);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CreateMedicine()
+        {
+            var categories = await _medicineService.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMedicine(MedicineCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                var categories = await _medicineService.GetAllCategoriesAsync();
+                ViewBag.Categories = new SelectList(categories, "Id", "Name");
+                ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+                return View(dto);
+            }
+
+            await _medicineService.AddMedicineAsync(dto);
+            TempData["SuccessMessage"] = "Nowy lek został pomyślnie dodany!";
+
+            return RedirectToAction("Medicines", "Admin");
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditMedicine(Guid medicineId)
+        {
+            var dto = await _medicineService.GetMedicineForEditAsync(medicineId);
+            if (dto == null) return NotFound("Nie znaleziono leku.");
+
+            var categories = await _medicineService.GetAllCategoriesAsync();
+            ViewBag.Categories = categories;
+            ViewBag.MedicineId = medicineId;
+
+            return View(dto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMedicine(UpdateMedicineDto dto, Guid medicineId)
+        {
+            if (!ModelState.IsValid)
+            {
+                var categories = await _medicineService.GetAllCategoriesAsync();
+                ViewBag.Categories = categories;
+                ViewBag.MedicineId = medicineId;
+                TempData["Error"] = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+
+                return View(dto);
+            }
+
+            dto.Id = medicineId;
+            await _medicineService.UpdateMedicineAsync(dto);
+
+            TempData["SuccessMessage"] = "Dane leku zostały zaktualizowane!";
+            return RedirectToAction("Medicines");
         }
     }
 }

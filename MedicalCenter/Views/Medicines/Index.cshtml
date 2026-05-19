@@ -41,17 +41,44 @@
                             <td class="fw-bold">@item.Name</td>
                             <td><span class="badge bg-secondary">@item.CategoryName</span></td>
                             <td>@item.Price.ToString("C")</td>
-                            <td class="text-center">
-                                <form asp-controller="Medicines" asp-action="AddToCart" method="post" class="d-flex justify-content-center align-items-center">
-                                    <input type="hidden" name="medicineId" value="@item.Id" />
 
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="number" name="quantity" value="1" min="1" max="50" class="form-control text-center" />
-                                        <button type="submit" class="btn btn-success">
-                                            Dodaj do koszyka
-                                        </button>
+                            <td class="text-center align-middle">
+                                @if (item.StockQuantity > 0)
+                                {
+                                    <form asp-controller="Medicines" asp-action="AddToCart" method="post" class="d-flex flex-column align-items-center justify-content-center m-0">
+                                        <input type="hidden" name="medicineId" value="@item.Id" />
+
+                                        <div class="mb-1" style="font-size: 0.85rem;">
+                                            <span class="text-success fw-semibold">
+                                                Dostępne: @item.StockQuantity szt.
+                                            </span>
+                                        </div>
+
+                                        <div class="input-group input-group-sm" style="width: 170px;">
+                                            <input type="number" name="quantity" value="1" min="1" max="@item.StockQuantity" class="form-control text-center" />
+                                            <button type="submit" class="btn btn-success fw-bold">
+                                                Do koszyka
+                                            </button>
+                                        </div>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <div class="d-flex flex-column align-items-center justify-content-center m-0">
+                                        <div class="mb-1" style="font-size: 0.85rem;">
+                                            <span class="text-danger fw-semibold">
+                                                Brak w magazynie
+                                            </span>
+                                        </div>
+
+                                        <div class="input-group input-group-sm" style="width: 170px;">
+                                            <input type="number" class="form-control text-center" disabled placeholder="0" />
+                                            <button type="button" class="btn btn-secondary fw-bold" disabled>
+                                                Niedostępny
+                                            </button>
+                                        </div>
                                     </div>
-                                </form>
+                                }
                             </td>
                         </tr>
                     }
