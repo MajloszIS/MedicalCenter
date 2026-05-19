@@ -54,17 +54,20 @@ namespace MedicalCenter.Services
 
             if (cart == null || !cart.Items.Any()) return;
 
+            var orderItems = cart.Items.Select(ci => new OrderItem
+            {
+                MedicineId = ci.MedicineId,
+                Quantity = ci.Quantity,
+                UnitPrice = ci.Medicine.Price
+            }).ToList();
+
             var order = new Order
             {
                 PatientId = patientId,
                 StatusId = 1,
                 StripeSessionId = sessionId,
-                TotalPrice = cart.Items.Sum(i => i.Quantity * i.Medicine.Price),
-                Items = cart.Items.Select(ci => new OrderItem
-                {
-                    MedicineId = ci.MedicineId,
-                    Quantity = ci.Quantity
-                }).ToList()
+                TotalPrice = orderItems.Sum(i => i.Quantity * i.UnitPrice),
+                Items = orderItems
             };
 
             await _cartRepository.AddOrderAsync(order);
