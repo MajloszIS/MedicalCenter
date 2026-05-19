@@ -17,7 +17,7 @@ namespace MedicalCenter.Services
 
         private MedicalRecordDto MapToDto(MedicalRecord medicalRecord)
         {
-            return new MedicalRecordDto
+            var medicalRecordDto = new MedicalRecordDto
             {
                 Id = medicalRecord.Id,
                 PatientId = medicalRecord.PatientId,
@@ -39,6 +39,7 @@ namespace MedicalCenter.Services
                     Id = p.Id,
                     MedicalRecordId = p.MedicalRecordId,
                     DoctorId = p.DoctorId,
+                    IssuedAt = p.IssuedAt,
                     Items = p.Items?.Select(i => new PrescriptionItemDto
                     {
                         Id = i.Id,
@@ -62,6 +63,8 @@ namespace MedicalCenter.Services
                     Pesel = medicalRecord.Patient.Pesel
                 } : null
             };
+
+            return medicalRecordDto;
         }
 
         public async Task<MedicalRecordDto> GetOrCreateAsync(Guid doctorId, Guid patientId)
