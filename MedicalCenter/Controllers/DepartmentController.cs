@@ -1,0 +1,45 @@
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Stripe;
+using System.Security.Claims;
+
+namespace MedicalCenter.Controllers
+{
+    [Authorize(Roles = "Admin")]
+    public class DepartmentController : Controller
+    {
+        readonly IDepartmentService _departmentService;
+        public DepartmentController (IDepartmentService departmentService)
+        {
+            _departmentService = departmentService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var departments = await _departmentService.GetAllDepartmentsAsync();
+            return View(departments);
+        }
+
+        public async Task<IActionResult> AddDepartment(DepartmentDto departmentDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Niepoprawne dane.";
+            }
+
+            try
+            {
+                await _departmentService.AddDepartmentAsync(departmentDto);
+                TempData["Success"] = "Pomyślnie dodano department";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"{ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+    }
+}
