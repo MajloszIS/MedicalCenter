@@ -1,0 +1,62 @@
+﻿@model MedicalCenter.DTOs.DoctorDto;
+
+@{
+    ViewData["Title"] = $"Wystaw opinie {Model.FirstName} {Model.LastName}";
+}
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="medical-card">
+
+                <h4 class="page-title">Wystaw opinie</h4>
+
+                <form asp-action="AddReview" asp-controller="Review" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="DoctorId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="Rating" class="form-label fw-semibold">Oceń w skali 1 do 5</label>
+                        <select id="Rating" name="Rating" class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Komentarz</label>
+                        <textarea name="Comment" class="form-control" rows="4" placeholder="Dodaj komentarz"></textarea>
+                    </div>
+
+                    <div>
+                        @if (ViewBag.Error != null)
+                        {
+                            <span>@ViewBag.Error</span>
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
+                        <i class="fa-regular fa-calendar-check me-2"></i>Dodaj opinię
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="medical-card">
+                <div class="text-center mb-3">
+                    <i class="fa-solid fa-user-doctor text-primary" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="fw-bold text-center">Dr @Model.FirstName @Model.LastName</h5>
+                <p class="text-center text-primary mb-3">@Model.SpecializationName</p>
+                <hr>
+                <p><i class="fa-solid fa-phone me-2 text-primary"></i>@Model.Phone</p>
+            </div>
+        </div>
+
+    </div>
+</div>
