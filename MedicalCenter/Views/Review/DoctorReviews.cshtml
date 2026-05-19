@@ -1,0 +1,66 @@
+﻿@model List<MedicalCenter.DTOs.ReviewDto>
+
+@{
+    ViewData["Title"] = "Opinie o lekarzu";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="page-title mb-0"><i class="fa-solid fa-user-md me-2"></i>Opinie o lekarzu</h2>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="medical-card text-center py-5">
+        <i class="fa-solid fa-star text-muted mb-3" style="font-size: 3rem;"></i>
+        <h4>Brak opinii</h4>
+        <p class="text-muted">Ten Lekarz jeszcze nie ma opinii.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive col-lg-6">
+        <table class="table table-custom align-middle">
+            <thead>
+                <tr>
+                    <th>Ocena</th>
+                    <th>Komentarz</th>
+                    <th class="text-center">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold ">@item.Rating/5</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold">
+								@if (!string.IsNullOrEmpty(item.Comment))
+                                {
+                                    @item.Comment
+                                }
+                                else
+                                {
+                                    <span class="text-muted">brak komentarza</span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-center justify-content-center d-flex">
+                           
+                            <div class="fw-bold">
+                                <form asp-action="DeleteReview" asp-controller="Review" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="reviewId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
