@@ -60,13 +60,8 @@ namespace MedicalCenter.Controllers
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddDiagnosis(Guid medicalRecordId, Guid patientId, string description)
+        public async Task<IActionResult> AddDiagnosis(Guid patientId, DiagnosisDto diagnosisDto)
         {
-            var diagnosisDto = new DiagnosisDto
-            {
-                Description = description,
-                MedicalRecordId = medicalRecordId
-            };
             await _diagnosisService.CreateDiagnosisAsync(diagnosisDto);
 
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });

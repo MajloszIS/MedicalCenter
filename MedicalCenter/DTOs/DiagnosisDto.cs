@@ -9,5 +9,6 @@
         public string Description { get; set; }
 
         public List<TreatmentDto> Treatments { get; set; }
+        public DateTime DiagnosedAt { get; set; }
     }
 }

@@ -68,8 +68,10 @@
 							<div class="medical-card">
 								<div class="d-flex align-items-center justify-content-between mb-1">
 									<div>
-										<i class="fa-solid fa-list-alt me-2 text-primary"></i>
-										<p class="text-muted small mb-0">Opis</p>
+										<div class="d-flex align-items-center">
+											<i class="fa-solid fa-list-alt me-2 text-primary"></i>
+											<h6 class="fw-bold mb-0">Diagnoza z dnia @diagnosis.DiagnosedAt.ToString("dd.MM.yyyy")</h6>
+										</div>
 									</div>
 
 									<form asp-action="RemoveDiagnosis" asp-controller="MedicalRecord" method="post">

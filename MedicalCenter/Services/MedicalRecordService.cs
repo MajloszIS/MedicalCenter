@@ -22,25 +22,26 @@ namespace MedicalCenter.Services
                 Id = medicalRecord.Id,
                 PatientId = medicalRecord.PatientId,
                 DoctorId = medicalRecord.DoctorId,
-                Diagnoses = medicalRecord.Diagnoses?.Select(d => new DiagnosisDto
+                Diagnoses = medicalRecord.Diagnoses.Select(d => new DiagnosisDto
                 {
                     Id = d.Id,
                     MedicalRecordId = d.MedicalRecordId,
                     Description = d.Description,
-                    Treatments = d.Treatments?.Select(t => new TreatmentDto
+                    DiagnosedAt = d.DiagnosedAt,
+                    Treatments = d.Treatments.Select(t => new TreatmentDto
                     {
                         Id = t.Id,
                         DiagnosisId = t.DiagnosisId,
                         Description = t.Description
                     }).ToList()
                 }).ToList(),
-                Prescriptions = medicalRecord.Prescriptions?.Select(p => new PrescriptionDto
+                Prescriptions = medicalRecord.Prescriptions.Select(p => new PrescriptionDto
                 {
                     Id = p.Id,
                     MedicalRecordId = p.MedicalRecordId,
                     DoctorId = p.DoctorId,
                     IssuedAt = p.IssuedAt,
-                    Items = p.Items?.Select(i => new PrescriptionItemDto
+                    Items = p.Items.Select(i => new PrescriptionItemDto
                     {
                         Id = i.Id,
                         PrescriptionId = i.PrescriptionId,
