@@ -36,6 +36,7 @@ builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<ICourierRepository, CourierRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 // dodanie serwisu
 builder.Services.AddScoped<IUserService, UserService>();
@@ -52,8 +53,9 @@ builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<ICourierService, CourierService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
-
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IReviewService, MedicalCenter.Services.ReviewService>();
+
 
 // dodanie JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"];
