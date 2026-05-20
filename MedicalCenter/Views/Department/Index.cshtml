@@ -5,7 +5,7 @@
 }
 
 <div class="row g-4">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <h4 class="page-title">Dodaj nowy Departament</h4>
         <form asp-action="AddDepartment" asp-controller="Department" method="post">
             @Html.AntiForgeryToken()
@@ -29,7 +29,7 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-lg-8">
+        <div class="col-lg-6">
             <h2 class="page-title mb-3"><i class="fa-solid fa-stethoscope me-2"></i>Departamenty</h2>
             @if (!Model.Any())
             {
@@ -46,35 +46,31 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Nazwa</th>
-                                <th class="text-center">Akcje</th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>
-                                    <div class="fw-bold text-center">@item.Name</div>
-                                </td>
                                 <td class="text-center justify-content-around d-flex">
                                     <div class="fw-bold">
-                                        <form asp-action="EditSpecialization" asp-controller="Specialization" method="post">
+                                        <form asp-action="EditDepartment" asp-controller="Department" method="post">
                                             @Html.AntiForgeryToken()
 
-                                            <input type="hidden" name="specializationId" value="@item.Id" />
+                                            <input type="hidden" name="Id" value="@item.Id" />
                                             <div class="d-flex align-items-center mb-3">
 
-                                                <span id="name-text"></span>
+                                                <span id="@item.Id-text">@item.Name</span>
 
-                                                <input id="name-input" name="Name" value="@item.Name"
+                                                <input id="@item.Id-input" name="Name" value="@item.Name"
                                                        class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
 
-                                                <button type="button" id="name-edit" onclick="enableEdit('name')"
+                                                <button type="button" id="@item.Id-edit" onclick="enableEdit('@item.Id')"
                                                         class="btn btn-sm btn-link ms-2">
-
                                                     <i class="fa-solid fa-pen text-primary"></i>
                                                 </button>
-                                                <button type="submit" id="name-save" class="btn btn-sm btn-success ms-2"
+
+                                                <button type="submit" id="@item.Id-save" class="btn btn-sm btn-success ms-2"
                                                         style="display:none;">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>

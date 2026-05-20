@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
@@ -9,11 +10,13 @@ namespace MedicalCenter.Services
         private readonly IDoctorRepository _doctorRepository;
         private readonly IUserRepository _userRepository;
         private readonly ISpecializationsRepository _specializationsRepository;
-        public DoctorService(IDoctorRepository doctorRepository, IUserRepository userRepository, ISpecializationsRepository specializationsRepository)
+        private readonly IDepartmentRepository _departmentRepository;
+        public DoctorService(IDoctorRepository doctorRepository, IUserRepository userRepository, ISpecializationsRepository specializationsRepository, IDepartmentRepository departmentRepository)
         {
             _doctorRepository = doctorRepository;
             _userRepository = userRepository;
             _specializationsRepository = specializationsRepository;
+            _departmentRepository = departmentRepository;
         }
         public async Task<List<DoctorDto>> GetAllDoctorsAsync()
         {
@@ -43,8 +46,11 @@ namespace MedicalCenter.Services
                 FirstName = doctor.User.FirstName,
                 LastName = doctor.User.LastName,
                 Phone = doctor.User.Phone,
-                SpecializationName = doctor.Specialization.Name
-            };
+                SpecializationName = doctor.Specialization.Name,
+                
+
+
+            }; 
             return doctorDto;
         }
 
@@ -71,7 +77,7 @@ namespace MedicalCenter.Services
                 LastName = dto.LastName,
                 Phone = dto.Phone,
                 PasswordHash = passwordHash,
-                RoleId = 2
+                RoleId = 2,
             };
 
             await _userRepository.CreateUserAsync(user);
@@ -83,15 +89,31 @@ namespace MedicalCenter.Services
                 throw new Exception("Nie znaleziono takiej specjalizacji");
             }
 
+            if (dto.SelectedDepartmentIds == null || !dto.SelectedDepartmentIds.Any())
+            {
+                throw new Exception("Nie podano żadnego departamnetu");
+            }
+
+            var selectedDepartments = await _departmentRepository.GetDepartmentsByIdsAsync(dto.SelectedDepartmentIds);
+
+            if (selectedDepartments.Count != dto.SelectedDepartmentIds.Count)
+            {
+                throw new Exception("Jeden lub więcej departamentów nie istnieje");
+            }
+
             var doctor = new Doctor
             {
-                Id = Guid.NewGuid(),
                 LicenseNumber = dto.LicenseNumber,
                 SpecializationId = specialization.Id,
-                UserId = user.Id
+                UserId = user.Id,
             };
 
             doctor.UserId = user.Id;
+            doctor.DoctorDepartments = selectedDepartments.Select(d => new DoctorDepartment
+            {
+                DoctorId = doctor.Id,
+                DepartmentId = d.Id
+            }).ToList();
 
             await _doctorRepository.CreateDoctorAsync(doctor);
         }
@@ -126,7 +148,12 @@ namespace MedicalCenter.Services
                 Email = user.Email,
                 ProfilePicturePath = user.ProfilePicturePath,
                 LicenseNumber = doctor.LicenseNumber,
-                SpecializationName = doctor.Specialization.Name
+                SpecializationName = doctor.Specialization.Name,
+                SelectedDepartment = doctor.DoctorDepartments.Select(dd => new DepartmentDto
+                {
+                    Id = dd.Department.Id,
+                    Name = dd.Department.Name
+                }).ToList()
             };
             return doctorProfileDto;
         }
@@ -147,6 +174,11 @@ namespace MedicalCenter.Services
                 {
                     doctor.SpecializationId = specialization.Id;
                 }
+            }
+
+            if (dto.SelectedDepartmentIds != null)
+            {
+                await _doctorRepository.UpdateDoctorDepartmentsAsync(doctor.Id, dto.SelectedDepartmentIds);
             }
 
             await _userRepository.UpdateUserAsync(user);

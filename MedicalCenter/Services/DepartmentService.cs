@@ -61,9 +61,22 @@ namespace MedicalCenter.Services
             var department = await _departmentRepository.GetDepartmentByIdAsync(departmentId);
             if (department == null)
             {
-                throw new NullReferenceException("Nie znaleziono opinii o podanym ID.");
+                throw new NullReferenceException("Nie znaleziono departamentu");
             }
             await _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
+        public async Task EditDepartmentAsync(DepartmentDto departmentDto)
+        {
+            var department = await _departmentRepository.GetDepartmentByIdAsync((Guid)departmentDto.Id);
+            if(department == null)
+            {
+                throw new NullReferenceException("Nie znaleziono departamentu");
+            }
+
+            department.Name = departmentDto.Name;
+
+            await _departmentRepository.EditDepartmentAsync(department);
+        }
+
     }
 }

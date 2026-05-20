@@ -1,9 +1,7 @@
-﻿using MedicalCenter.Controllers;
-using MedicalCenter.Data;
-using MedicalCenter.DTOs;
+﻿using MedicalCenter.Data;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
-using Stripe;
+using NuGet.Packaging.Signing;
 
 namespace MedicalCenter.Repositories
 {
@@ -45,6 +43,16 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
+        public async Task EditDepartmentAsync(Department department)
+        {
+            _context.Departments.Update(department);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<List<Department>> GetDepartmentsByIdsAsync(List<Guid> ids)
+        {
+            return await _context.Departments
+                .Where(d => ids.Contains(d.Id))
+                .ToListAsync();
+        }
     }
 }

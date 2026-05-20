@@ -1,5 +1,4 @@
-﻿using MedicalCenter.DTOs;
-using MedicalCenter.Models;
+﻿using MedicalCenter.Models;
 
 namespace MedicalCenter.Repositories
 {
@@ -10,6 +9,7 @@ namespace MedicalCenter.Repositories
         public Task<bool> ExistsAsnyc(string departmentName);
         public Task<Department?> GetDepartmentByIdAsync(Guid departmentId);
         public Task DeleteDepartmentAsync(Guid departmentId);
-
+        public Task EditDepartmentAsync(Department department);
+        public Task<List<Department>> GetDepartmentsByIdsAsync(List<Guid> ids);
     }
 }

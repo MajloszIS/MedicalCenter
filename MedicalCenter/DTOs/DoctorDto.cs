@@ -10,4 +10,5 @@ public class DoctorDto
     public string LastName { get; set; }
     public string Phone { get; set; }
     public string SpecializationName { get; set; }
+    public List<DepartmentDto>? SelectedDepartment { get; set; }
 }

@@ -225,6 +225,8 @@ namespace MedicalCenter.Controllers
             return View(courierProfile);
         }
 
+
+        // Akcje dla profilu kuriera
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateCourierProfile(UpdateProfileDto dto)
