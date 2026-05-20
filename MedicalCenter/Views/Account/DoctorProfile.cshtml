@@ -164,6 +164,29 @@
                         </button>
                     </div>
 
+                    <!-- Departamenty -->
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-bold">Departamenty</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @if (ViewBag.DoctorDepartment != null)
+                            {
+                                @foreach (var dept in ViewBag.DoctorDepartment)
+                                {
+                                    <div class="form-check">
+                                        <label for="dept-@dept.Id" class="form-check-label">@dept.Name</label>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="medical-card text-center py-5">
+                                    <i class="fa-solid fa-home text-muted mb-3"></i>
+                                    <p class="text-muted">Brak Departamentów</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
 
                 </form>
             </div>
