@@ -39,5 +39,15 @@ namespace MedicalCenter.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<List<Diagnosis>> GetPatientDiagnosisAsync(Guid patientId)
+        {
+            var diagnoses = await _context.Diagnoses
+                .Include(d => d.Treatments)
+                .Include(d => d.MedicalRecord)
+                .Where(d => d.MedicalRecord.PatientId == patientId)
+                .ToListAsync();
+            return diagnoses;
+        }
+
     }
 }

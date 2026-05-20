@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Services
 {
@@ -8,5 +9,6 @@ namespace MedicalCenter.Services
         public Task CreateDiagnosisAsync(DiagnosisDto diagnosisDto);
         public Task UpdateDiagnosisAsync(DiagnosisDto diagnosisDto);
         public Task DeleteDiagnosisAsync(Guid id);
+        public Task<List<DiagnosisDto>> GetPatientDiagnosisAsync(Guid patientId);
     }
 }

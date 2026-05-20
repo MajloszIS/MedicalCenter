@@ -23,6 +23,7 @@ namespace MedicalCenter.Services
                 Id = diagnosis.Id,
                 MedicalRecordId = diagnosis.MedicalRecordId,
                 Description = diagnosis.Description,
+                DiagnosedAt = diagnosis.DiagnosedAt,
                 Treatments = diagnosis.Treatments.Select(t => new TreatmentDto
                 {
                     Id = t.Id,
@@ -61,5 +62,31 @@ namespace MedicalCenter.Services
         {
             await _diagnosisRepository.DeleteDiagnosisAsync(id);
         }
+        public async Task<List<DiagnosisDto>> GetPatientDiagnosisAsync(Guid patientId)
+        {
+            var diagnoses = await _diagnosisRepository.GetPatientDiagnosisAsync(patientId);
+
+            if (diagnoses == null || !diagnoses.Any())
+            {
+                throw new Exception("Nie znaleziono diagnoz");
+            }
+
+            var diagnosesDto = diagnoses.Select(diagnosis => new DiagnosisDto
+            {
+                Id = diagnosis.Id,
+                MedicalRecordId = diagnosis.MedicalRecordId,
+                Description = diagnosis.Description,
+                DiagnosedAt = diagnosis.DiagnosedAt,
+                Treatments = diagnosis.Treatments.Select(t => new TreatmentDto
+                {
+                    Id = t.Id,
+                    DiagnosisId = diagnosis.Id,
+                    Description = t.Description
+                }).ToList()
+            }).ToList();
+
+            return diagnosesDto;
+        }
+
     }
 }

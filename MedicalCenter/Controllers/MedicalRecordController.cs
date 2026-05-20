@@ -47,7 +47,6 @@ namespace MedicalCenter.Controllers
             return View(medicalRecord);
         }
 
-
         // Metoda do dodawania Diagnozy
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddDiagnosis(Guid medicalRecordId, Guid patientId)
