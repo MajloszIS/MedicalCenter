@@ -24,7 +24,7 @@ namespace MedicalCenter.Controllers
         private readonly IOrderService _orderService;
         private readonly IMedicineService _medicineService;
         private readonly IDeliveryService _deliveryService;
-
+        private readonly IDepartmentService _departmentService;
         public AdminController(
             IPatientService patientService, 
             IDoctorService doctorService, 
@@ -33,7 +33,9 @@ namespace MedicalCenter.Controllers
             ICourierService courierService,
             IOrderService orderService,
             IMedicineService medicineService,
-            IDeliveryService deliveryService)
+            IDeliveryService deliveryService,
+            IDepartmentService departmentService
+            )
         {
             _doctorService = doctorService;
             _userService = userService;
@@ -43,6 +45,7 @@ namespace MedicalCenter.Controllers
             _orderService = orderService;
             _medicineService = medicineService;
             _deliveryService = deliveryService;
+            _departmentService = departmentService;
         }
         public IActionResult Index()
         {
@@ -53,12 +56,13 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> Doctors()
         {
             var doctorDtos = await _doctorService.GetAllDoctorsAsync();
-
             return View(doctorDtos);
         }
 
         public async Task<IActionResult> CreateDoctor()
         {
+            var departments = await _departmentService.GetAllDepartmentsAsync();
+            ViewBag.Departments = departments;
             var specializations = await _doctorService.GetAllSpecializationsAsync();
             return View(specializations);
         }
@@ -75,15 +79,23 @@ namespace MedicalCenter.Controllers
 
             if (ModelState.IsValid)
             {
-                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}, Spec: {dto.SpecializationName}");
-
-                await _doctorService.CreateDoctorAsync(dto);
-
-                return RedirectToAction("Doctors", "Admin");
+                try
+                {
+                    await _doctorService.CreateDoctorAsync(dto);
+                    return RedirectToAction("Doctors", "Admin");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex;
+                    return RedirectToAction("Doctors");
+                }
             }
             else
             {
                 ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+
+                var departments = await _departmentService.GetAllDepartmentsAsync();
+                ViewBag.Departaments = departments;
                 var specs = await _doctorService.GetAllSpecializationsAsync();
                 return View(specs);
             }
