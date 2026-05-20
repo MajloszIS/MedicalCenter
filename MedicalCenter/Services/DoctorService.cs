@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {
@@ -127,7 +128,7 @@ namespace MedicalCenter.Services
                     await _userRepository.DeleteUserAsync(user.Id);
                 }
             }
-        }
+        } 
         public async Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
