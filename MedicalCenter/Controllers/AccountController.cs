@@ -6,10 +6,8 @@ using MedicalCenter.Repositories;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
@@ -22,13 +20,15 @@ namespace MedicalCenter.Controllers
         private readonly IDoctorService _doctorService;
         private readonly IAddressService _addressService;
         private readonly ICourierService _courierService;
-        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService, ICourierService courierService)
+        private readonly IDepartmentService _departmentService;
+        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService, ICourierService courierService, IDepartmentService departmentService)
         {
             _userService = userService;
             _patientService = patientService;
             _doctorService = doctorService;
             _addressService = addressService;
             _courierService = courierService;
+            _departmentService = departmentService;
         }
 
         public IActionResult Index()
@@ -187,6 +187,8 @@ namespace MedicalCenter.Controllers
 
             var doctorProfile = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
             var specializations = await _doctorService.GetAllSpecializationsAsync();
+
+            ViewBag.DoctorDepartment = doctorProfile.SelectedDepartment;
             ViewBag.Specializations = specializations;
 
             return View(doctorProfile);
