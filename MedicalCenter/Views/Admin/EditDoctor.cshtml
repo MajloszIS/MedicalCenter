@@ -147,6 +147,44 @@
                             <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
+                    
+                    <!-- Departamenty -->
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-bold">Departamenty</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @if (ViewBag.Departments != null)
+                            {
+                                @foreach (var dept in ViewBag.Departments)
+                                {
+                                    bool isChecked = ((List<Guid>)ViewBag.DoctorDepartmentIds).Any(id => id == dept.Id);
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               id="dept-@dept.Id"
+                                               name="SelectedDepartmentIds"
+                                               value="@dept.Id"
+                                               class="form-check-input"
+                                        @(isChecked ? "checked" : "") />
+                                        <label for="dept-@dept.Id" class="form-check-label">@dept.Name</label>
+                                    </div>
+                                }
+                                <div class="w-100 mt-2">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fa-solid fa-check me-1"></i> Zapisz departamenty
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="medical-card text-center py-5">
+                                    <i class="fa-solid fa-home text-muted mb-3"></i>
+                                    <p class="text-muted">Brak Departamentów</p>
+                                    <span class="text-muted fst-italic" style="font-weight: normal; font-size: 0.85em;">
+                                        dodaj nowe <a asp-action="Index" asp-controller="Department">Departamenty</a>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
 
 
                 </form>
@@ -171,11 +209,6 @@
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline';
         }
-
-        document.getElementById('profilePicture').addEventListener('change', function() {
-                const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
-                document.getElementById('fileName').textContent = fileName;
-            });
     </script>
 }
 

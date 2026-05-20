@@ -23,6 +23,8 @@ namespace MedicalCenter.Repositories
         {
             var doctors = await _context.Doctors
                 .Include(d => d.User)
+                .Include(d => d.DoctorDepartments)
+                    .ThenInclude(dd => dd.Department)
                 .Include(d => d.Specialization)
                 .FirstOrDefaultAsync(d => d.Id == id);
 
@@ -55,7 +57,14 @@ namespace MedicalCenter.Repositories
         }
         public async Task<Doctor> GetDoctorByUserIdAsync(Guid userId)
         {
-            return await _context.Doctors.Include(d => d.User).Include(d => d.Specialization).FirstOrDefaultAsync(d => d.UserId == userId);
+            var doctor = await _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.DoctorDepartments)
+                    .ThenInclude(dd => dd.Department)
+                .Include(d => d.Specialization)
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+
+            return doctor;
         }
         public async Task<List<Doctor>> GetDoctorsBySpecializationAsync(string specializationName)
         {
@@ -64,6 +73,23 @@ namespace MedicalCenter.Repositories
                 .Include(d => d.Specialization)
                 .Where(d => d.Specialization.Name == specializationName)
                 .ToListAsync();
+        }
+        public async Task UpdateDoctorDepartmentsAsync(Guid doctorId, List<Guid> newDepartmentIds)
+        {
+            var existing = await _context.DoctorDepartments
+                .Where(dd => dd.DoctorId == doctorId)
+                .ToListAsync();
+
+            _context.DoctorDepartments.RemoveRange(existing);
+
+            var newDepartments = newDepartmentIds.Select(deptId => new DoctorDepartment
+            {
+                DoctorId = doctorId,
+                DepartmentId = deptId
+            }).ToList();
+
+            await _context.DoctorDepartments.AddRangeAsync(newDepartments);
+            await _context.SaveChangesAsync();
         }
     }
 }

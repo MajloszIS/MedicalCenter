@@ -46,8 +46,11 @@ namespace MedicalCenter.Services
                 FirstName = doctor.User.FirstName,
                 LastName = doctor.User.LastName,
                 Phone = doctor.User.Phone,
-                SpecializationName = doctor.Specialization.Name
-            };
+                SpecializationName = doctor.Specialization.Name,
+                
+
+
+            }; 
             return doctorDto;
         }
 
@@ -128,7 +131,7 @@ namespace MedicalCenter.Services
                     await _userRepository.DeleteUserAsync(user.Id);
                 }
             }
-        } 
+        }
         public async Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
@@ -145,7 +148,12 @@ namespace MedicalCenter.Services
                 Email = user.Email,
                 ProfilePicturePath = user.ProfilePicturePath,
                 LicenseNumber = doctor.LicenseNumber,
-                SpecializationName = doctor.Specialization.Name
+                SpecializationName = doctor.Specialization.Name,
+                SelectedDepartment = doctor.DoctorDepartments.Select(dd => new DepartmentDto
+                {
+                    Id = dd.Department.Id,
+                    Name = dd.Department.Name
+                }).ToList()
             };
             return doctorProfileDto;
         }
@@ -166,6 +174,11 @@ namespace MedicalCenter.Services
                 {
                     doctor.SpecializationId = specialization.Id;
                 }
+            }
+
+            if (dto.SelectedDepartmentIds != null)
+            {
+                await _doctorRepository.UpdateDoctorDepartmentsAsync(doctor.Id, dto.SelectedDepartmentIds);
             }
 
             await _userRepository.UpdateUserAsync(user);

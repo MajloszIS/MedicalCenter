@@ -95,7 +95,7 @@ namespace MedicalCenter.Controllers
                 ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
 
                 var departments = await _departmentService.GetAllDepartmentsAsync();
-                ViewBag.Departaments = departments;
+                ViewBag.Departments = departments;
                 var specs = await _doctorService.GetAllSpecializationsAsync();
                 return View(specs);
             }
@@ -106,7 +106,6 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> DeleteDoctor(Guid doctorId)
         {
             await _doctorService.DeleteDoctorAsync(doctorId);
-
             return RedirectToAction("Doctors");
         }
 
@@ -128,8 +127,13 @@ namespace MedicalCenter.Controllers
             }
 
             var specializations = await _doctorService.GetAllSpecializationsAsync();
-            ViewBag.Specializations = specializations;
+            var allDepartments = await _departmentService.GetAllDepartmentsAsync();
+
             ViewBag.DoctorId = doctorId;
+            ViewBag.Specializations = specializations;
+            ViewBag.Departments = allDepartments;
+            ViewBag.DoctorDepartmentIds = doctorProfile.SelectedDepartment.Select(x => x.Id).ToList();
+
             return View(doctorProfile);
         }
 
