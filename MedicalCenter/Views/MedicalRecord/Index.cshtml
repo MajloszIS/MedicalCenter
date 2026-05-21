@@ -16,7 +16,7 @@
 				</h3>
 
 				<div class="row g-4">
-					<div class="col-6">
+					<div class="col-4">
 						<div class="d-flex align-items-center mb-1">
 							<i class="fa-solid fa-phone me-2 text-primary"></i>
 							<p class="text-muted small mb-0">Telefon</p>
@@ -24,12 +24,20 @@
 						<p class="fw-semibold">@Model.Patient.Phone</p>
 					</div>
 
-					<div class="col-6">
+					<div class="col-4">
 						<div class="d-flex align-items-center mb-1">
 							<i class="fa-solid fa-id-card me-2 text-primary"></i>
 							<p class="text-muted small mb-0">Pesel</p>
 						</div>
 						<p class="fw-semibold">@Model.Patient.Pesel</p>
+					</div>
+					<div class="col-4">
+
+						<a asp-action="Create" asp-controller="MedicalLeave"
+							   asp-route-patientId="@Model.PatientId" class="btn btn-medical w-100 fw-bold">
+							<i class="fa-solid fa-bandage me-2"></i> Wystaw zwolnienie
+						</a>
+
 					</div>
 				</div>
             </div>
