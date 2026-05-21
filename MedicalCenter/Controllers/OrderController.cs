@@ -16,16 +16,14 @@ namespace MedicalCenter.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IPatientRepository _patientRepository;
-        private readonly AppDbContext _context;
 
         public OrderController(
             IOrderService orderService,
-            IPatientRepository patientRepository,
-            AppDbContext context)
+            IPatientRepository patientRepository
+            )
         {
             _orderService = orderService;
             _patientRepository = patientRepository;
-            _context = context;
         }
 
         public async Task<IActionResult> MyOrders()
