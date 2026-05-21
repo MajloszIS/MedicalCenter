@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,32 @@ namespace MedicalCenter.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+        public async Task AddCategoryAsync(MedicineCategory category)
+        {
+            await _context.MedicineCategories.AddAsync(category);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<MedicineCategory> GetCategoryByIdAsync(Guid id)
+        {
+            return await _context.MedicineCategories.FindAsync(id);
+        }
+
+        public async Task UpdateCategoryAsync(MedicineCategory category)
+        {
+            _context.MedicineCategories.Update(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteCategoryAsync(MedicineCategory category)
+        {
+            _context.MedicineCategories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasMedicinesInCategoryAsync(Guid categoryId)
+        {
+            return await _context.Medicines.AnyAsync(m => m.CategoryId == categoryId);
         }
     }
 }

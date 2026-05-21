@@ -92,5 +92,41 @@ namespace MedicalCenter.Services
                 await _medicineRepo.SaveChangesAsync();
             }
         }
+        public async Task AddCategoryAsync(MedicineCreateCategoryDTO dto)
+        {
+            var category = new MedicineCategory
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name
+            };
+
+            await _medicineRepo.AddCategoryAsync(category);
+        }
+        public async Task UpdateCategoryAsync(Guid id, string name)
+        {
+            var category = await _medicineRepo.GetCategoryByIdAsync(id);
+            if (category != null)
+            {
+                category.Name = name;
+                await _medicineRepo.UpdateCategoryAsync(category);
+            }
+        }
+
+        public async Task<bool> DeleteCategoryAsync(Guid id)
+        {
+            bool hasMedicines = await _medicineRepo.HasMedicinesInCategoryAsync(id);
+            if (hasMedicines)
+            {
+                return false;
+            }
+
+            var category = await _medicineRepo.GetCategoryByIdAsync(id);
+            if (category != null)
+            {
+                await _medicineRepo.DeleteCategoryAsync(category);
+            }
+
+            return true;
+        }
     }
 }
