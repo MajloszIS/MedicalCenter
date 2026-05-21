@@ -25,6 +25,7 @@ namespace MedicalCenter.Data
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
+        public DbSet<MedicalLeave> MedicalLeaves{ get; set; }
 
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
@@ -34,6 +35,7 @@ namespace MedicalCenter.Data
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderRating> OrderRatings { get; set; }
 
         public DbSet<Courier> Couriers { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
@@ -49,6 +51,8 @@ namespace MedicalCenter.Data
 
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +94,10 @@ namespace MedicalCenter.Data
 
             modelBuilder.Entity<Review>()
                 .HasIndex(r => new { r.PatientId, r.DoctorId })
+                .IsUnique();
+
+            modelBuilder.Entity<OrderRating>()
+                .HasIndex(r => new { r.PatientId, r.OrderId })
                 .IsUnique();
 
             modelBuilder.Entity<Role>().HasData(
