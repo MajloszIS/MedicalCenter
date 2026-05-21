@@ -16,27 +16,17 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Od</label>
-                        <input type="text" id="DateFrom" name="DateFrom"
-                               class="form-control" required placeholder="Wybierz datę i godzinę..." />
+                        <input type="date" id="DateFrom" name="DateFrom"
+                               class="form-control" required placeholder="Wybierz datę" />
 
                         <label class="form-label fw-semibold">Do</label>
-                        <input type="text" id="DateTo" name="DateTo"
-                               class="form-control" required placeholder="Wybierz datę i godzinę..." />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="DurationTime" class="form-label fw-semibold">Długość Wizyty</label>
-                        <select id="DurationTime" name="DurationTime" class="form-control">
-                            <option value="60">60 minut</option>
-                            <option value="45">45 minut</option>
-                            <option value="30" selected>30 minut</option>
-                            <option value="15">15 minut</option>
-                        </select>
+                        <input type="date" id="DateTo" name="DateTo"
+                               class="form-control" required placeholder="Wybierz datę" />
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Opis zwolnienia</label>
-                        <textarea name="Description" class="form-control" rows="4" required placeholder="Opisz powód zwolnienia"></textarea>
+                        <textarea name="Reason" class="form-control" rows="4" required placeholder="Opisz powód zwolnienia"></textarea>
                     </div>
 
                     <div>
@@ -46,7 +36,7 @@
                         }
                     </div>
                     <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
-                        <i class="fa-regular fa-calendar-check me-2"></i>Potwierdź wizytę
+                        <i class="fa-regular fa-calendar-check me-2"></i>Potwierdź
                     </button>
                 </form>
             </div>
