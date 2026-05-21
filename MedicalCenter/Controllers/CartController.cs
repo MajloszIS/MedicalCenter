@@ -45,6 +45,18 @@ namespace MedicalCenter.Controllers
             var patient = await _patientService.GetPatientByUserIdAsync(userId);
             if (patient == null) return NotFound();
 
+            // Weryfikacja magazynu przed płatnością
+            var stockCheck = await _cartService.ValidateCartStockAsync(patient.Id);
+
+            if (!stockCheck.valid)
+            {
+                // Towar został wykupiony w międzyczasie! 
+                // Koszyk został już skorygowany w bazie, więc cofamy pacjenta z komunikatem błędu.
+                TempData["ErrorMessage"] = stockCheck.message;
+                return RedirectToAction("Index");
+            }
+
+            // Jeśli walidacja przeszła pomyślnie, pobieramy koszyk do wygenerowania sesji Stripe
             var cart = await _cartService.GetCartAsync(patient.Id);
             if (cart == null || !cart.Items.Any()) return RedirectToAction("Index");
 
@@ -78,7 +90,6 @@ namespace MedicalCenter.Controllers
             };
             var service = new SessionService();
             Session session = service.Create(options);
-
 
             await _cartService.CreateOrderFromCartAsync(patient.Id, session.Id);
 

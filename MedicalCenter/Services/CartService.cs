@@ -118,6 +118,26 @@ namespace MedicalCenter.Services
             {
                 order.StatusId = 2;
 
+                // Odejmujemy po udanej płatności
+                if (order.Items != null)
+                {
+                    foreach (var orderItem in order.Items)
+                    {
+                        var medicine = await _medicineRepository.GetByIdAsync(orderItem.MedicineId);
+
+                        if (medicine != null)
+                        {
+                            medicine.StockQuantity -= orderItem.Quantity;
+
+                            // Zabezpieczenie przed ujemnym stanem (gdyby 2 osoby zapłaciły w tej samej sekundzie)
+                            if (medicine.StockQuantity < 0)
+                            {
+                                medicine.StockQuantity = 0;
+                            }
+                        }
+                    }
+                }
+
                 var delivery = new Delivery
                 {
                     Id = Guid.NewGuid(),
@@ -127,6 +147,8 @@ namespace MedicalCenter.Services
                 };
 
                 await _cartRepository.AddDeliveryAsync(delivery);
+
+                // Zapisujemy nowy status zamówienia i ucięte stany magazynowe w jednej transakcji
                 await _cartRepository.SaveChangesAsync();
             }
         }
@@ -143,6 +165,57 @@ namespace MedicalCenter.Services
                 _cartRepository.RemoveCartItem(itemToRemove);
                 await _cartRepository.SaveChangesAsync();
             }
+        }
+        public async Task<(bool valid, string message)> ValidateCartStockAsync(Guid patientId)
+        {
+            // Pobieramy koszyk wraz z lekami
+            var cart = await _cartRepository.GetCartWithItemsAsync(patientId);
+
+            if (cart == null || !cart.Items.Any())
+            {
+                return (false, "Twój koszyk jest pusty.");
+            }
+
+            bool wasAdjusted = false;
+            string adjustmentMessage = "Niektóre produkty w Twoim koszyku zostały zmodyfikowane z powodu braku asortymentu: \n";
+
+            foreach (var cartItem in cart.Items)
+            {
+                var medicine = await _medicineRepository.GetByIdAsync(cartItem.MedicineId);
+
+                if (medicine == null)
+                {
+                    // Lek został usunięty z systemu przez admina
+                    _cartRepository.RemoveCartItem(cartItem);
+                    wasAdjusted = true;
+                    adjustmentMessage += $"- Lek nie jest już dostępny w naszej ofercie.\n";
+                    continue;
+                }
+
+                // SCENARIUSZ 1: Lek został całkowicie wykupiony
+                if (medicine.StockQuantity <= 0)
+                {
+                    _cartRepository.RemoveCartItem(cartItem);
+                    wasAdjusted = true;
+                    adjustmentMessage += $"- Lek '{medicine.Name}' został całkowicie wyprzedany.\n";
+                }
+                // SCENARIUSZ 2: Ktoś wykupił część i pacjent chce więcej niż zostało
+                else if (cartItem.Quantity > medicine.StockQuantity)
+                {
+                    cartItem.Quantity = medicine.StockQuantity; // Zmniejszamy ilość do maksa w magazynie
+                    wasAdjusted = true;
+                    adjustmentMessage += $"- Zmniejszono ilość leku '{medicine.Name}' do dostępnych {medicine.StockQuantity} szt.\n";
+                }
+            }
+
+            if (wasAdjusted)
+            {
+                // Zapisujemy korektę koszyka w bazie danych
+                await _cartRepository.SaveChangesAsync();
+                return (false, adjustmentMessage);
+            }
+
+            return (true, string.Empty);
         }
     }
 }
