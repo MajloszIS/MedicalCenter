@@ -73,5 +73,9 @@ namespace MedicalCenter.Repositories
         {
             await _context.Deliveries.AddAsync(delivery);
         }
+        public async Task AddInvoiceAsync(Invoice invoice)
+        {
+            await _context.Invoices.AddAsync(invoice);
+        }
     }
 }

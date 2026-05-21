@@ -2,6 +2,7 @@
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace MedicalCenter.Repositories
 {
     public class OrderRepository : IOrderRepository
@@ -33,6 +34,18 @@ namespace MedicalCenter.Repositories
         public async Task<Order> GetOrderByIdAsync(Guid orderId)
         {
             return await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+        }
+        public async Task<Invoice> GetInvoiceByOrderIdAsync(Guid orderId)
+        {
+            return await _context.Invoices
+                .Include(i => i.Order)
+                    .ThenInclude(o => o.Items)
+                        .ThenInclude(oi => oi.Medicine)
+                .Include(i => i.Patient)
+                    .ThenInclude(p => p.User)
+                .Include(i => i.Patient)
+                    .ThenInclude(p => p.Address)
+                .FirstOrDefaultAsync(i => i.OrderId == orderId);
         }
     }
 }
