@@ -1,4 +1,5 @@
-﻿using MedicalCenter.Models;
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Repositories
 {
@@ -9,5 +10,10 @@ namespace MedicalCenter.Repositories
         Task AddMedicineAsync(Medicine medicine);
         Task<List<MedicineCategory>> GetAllCategoriesAsync();
         Task SaveChangesAsync();
+        Task AddCategoryAsync(MedicineCategory category);
+        Task<MedicineCategory> GetCategoryByIdAsync(Guid id);
+        Task UpdateCategoryAsync(MedicineCategory category);
+        Task DeleteCategoryAsync(MedicineCategory category);
+        Task<bool> HasMedicinesInCategoryAsync(Guid categoryId);
     }
 }
