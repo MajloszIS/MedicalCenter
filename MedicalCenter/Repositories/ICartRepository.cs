@@ -15,5 +15,6 @@ namespace MedicalCenter.Repositories
         Task<Order> GetOrderBySessionIdAsync(string sessionId);
         Task SaveChangesAsync();
         Task AddDeliveryAsync(Delivery delivery);
+        Task AddInvoiceAsync(Invoice invoice);
     }
 }

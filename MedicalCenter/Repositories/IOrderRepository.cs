@@ -1,5 +1,6 @@
 ﻿using MedicalCenter.Models;
 
+
 namespace MedicalCenter.Repositories
 {
     public interface IOrderRepository
@@ -7,5 +8,6 @@ namespace MedicalCenter.Repositories
         Task<List<Order>> GetOrdersByPatientIdAsync(Guid patientId);
         Task<List<Order>> GetAllOrdersAsync();
         Task<Order> GetOrderByIdAsync(Guid orderId);
+        Task<Invoice> GetInvoiceByOrderIdAsync(Guid orderId);
     }
 }

@@ -146,9 +146,23 @@ namespace MedicalCenter.Services
                     StatusId = 1
                 };
 
-                await _cartRepository.AddDeliveryAsync(delivery);
+                decimal vatRate = 0.08m;
+                decimal netAmount = order.TotalPrice / (1 + vatRate);
+                decimal taxAmount = order.TotalPrice - netAmount;
 
-                // Zapisujemy nowy status zamówienia i ucięte stany magazynowe w jednej transakcji
+                var invoice = new Invoice
+                {
+                    PatientId = order.PatientId,
+                    OrderId = order.Id,
+                    Amount = Math.Round(netAmount, 2),
+                    TaxAmount = Math.Round(taxAmount, 2),
+                    TotalAmount = Math.Round(order.TotalPrice, 2),
+                    IssuedAt = DateTime.UtcNow,
+                    StripePaymentId = sessionId
+                };
+
+                await _cartRepository.AddInvoiceAsync(invoice);
+
                 await _cartRepository.SaveChangesAsync();
             }
         }

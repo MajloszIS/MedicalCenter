@@ -29,8 +29,19 @@ else
                             }
                         </ul>
                     </div>
-                    <div class="card-footer bg-white text-end fw-bold text-success">
-                        Razem: @order.TotalPrice.ToString("C")
+
+                    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            @if (order.StatusName != "Nowe")
+                            {
+                                <a asp-controller="Order" asp-action="DownloadInvoice" asp-route-orderId="@order.Id" class="btn btn-sm btn-outline-primary fw-bold">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </a>
+                            }
+                        </div>
+                        <div class="text-success fw-bold">
+                            Razem: @order.TotalPrice.ToString("C")
+                        </div>
                     </div>
                 </div>
             </div>

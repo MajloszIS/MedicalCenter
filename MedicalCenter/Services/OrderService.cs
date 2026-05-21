@@ -51,5 +51,44 @@ namespace MedicalCenter.Services
 
             return "Weryfikacja płatności"; 
         }
+        public async Task<InvoiceDto?> GetInvoiceByOrderIdAsync(Guid orderId)
+        {
+            var invoice = await _orderRepository.GetInvoiceByOrderIdAsync(orderId);
+            if (invoice == null) return null;
+
+            var address = invoice.Patient?.Address;
+            string? addressLine1 = address != null
+                ? $"{address.Street} {address.HouseNumber}" + (!string.IsNullOrEmpty(address.ApartmentNumber) ? $"/{address.ApartmentNumber}" : "")
+                : null;
+            string? addressLine2 = address != null
+                ? $"{address.PostalCode} {address.City}"
+                : null;
+
+            return new InvoiceDto
+            {
+                Id = invoice.Id,
+                OrderId = invoice.OrderId,
+                IssuedAt = invoice.IssuedAt,
+                PatientUserId = invoice.Patient?.UserId ?? Guid.Empty,
+                PatientFullName = invoice.Patient?.User != null
+                    ? $"{invoice.Patient.User.FirstName} {invoice.Patient.User.LastName}"
+                    : "Nieznany pacjent",
+                PatientIdStr = invoice.PatientId.ToString().Substring(0, 8),
+
+                PatientAddressLine1 = addressLine1,
+                PatientAddressLine2 = addressLine2,
+
+                Amount = invoice.Amount,
+                TaxAmount = invoice.TaxAmount,
+                TotalAmount = invoice.TotalAmount,
+                StripePaymentId = invoice.StripePaymentId,
+                Items = invoice.Order?.Items?.Select(oi => new InvoiceItemDto
+                {
+                    MedicineName = oi.Medicine?.Name ?? "Nieznany lek",
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList() ?? new List<InvoiceItemDto>()
+            };
+        }
     }
 }
