@@ -23,9 +23,8 @@ namespace MedicalCenter.Models
         [Required, StringLength(500)]
         public string Reason { get; set; } = string.Empty;
 
-        public DateTime IssuedAt { get; set; } = DateTime.UtcNow;
+        public DateTime IssuedAt { get; set; }
 
-        [StringLength(500)]
         public Patient Patient { get; set; } = null!;
         public Doctor Doctor { get; set; } = null!;
     }

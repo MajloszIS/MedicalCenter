@@ -140,9 +140,16 @@ namespace MedicalCenter.Services
                     page.Margin(1, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(12));
 
-                    page.Header()
-                        .Text("Recepta")
-                        .FontSize(20).Bold();
+                    // Nagłówek faktury
+                    page.Header().Row(row =>
+                    {
+                        row.RelativeItem().Column(col =>
+                        {
+                            col.Item().Text("MedicalCenter").FontSize(20).SemiBold().FontColor(Colors.Blue.Darken2);
+                            col.Item().Text("ul. Wiejska 1, Białystok");
+                            col.Item().Text("NIP: 123-456-78-90");
+                        });
+                    });
 
                     page.Content().Column(column =>
                     {

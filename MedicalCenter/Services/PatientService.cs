@@ -89,6 +89,10 @@ namespace MedicalCenter.Services
         public async Task<PatientDto> GetPatientByIdAsync(Guid id)
         {
             var patient = await _patientRepository.GetPatientByIdAsync(id); 
+
+            if(patient == null)
+                throw new ArgumentNullException("Nie znaleziono Pacjenta", nameof(patient));
+
             var patientDto = new PatientDto
             {
                 Id = patient.Id,
