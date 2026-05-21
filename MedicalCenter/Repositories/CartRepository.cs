@@ -61,6 +61,7 @@ namespace MedicalCenter.Repositories
         public async Task<Order> GetOrderBySessionIdAsync(string sessionId)
         {
             return await _context.Orders
+                .Include(o => o.Items)
                 .FirstOrDefaultAsync(o => o.StripeSessionId == sessionId);
         }
 
