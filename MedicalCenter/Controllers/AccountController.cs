@@ -76,6 +76,11 @@ namespace MedicalCenter.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
+        private async Task<IActionResult> LogoutAndRedirect()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
 
         public IActionResult Register()
         {
@@ -122,7 +127,7 @@ namespace MedicalCenter.Controllers
                 return RedirectToAction("AdminProfile");
             else
             {
-                await Logout();
+                await LogoutAndRedirect();
                 return RedirectToAction("Register", "Account");
             }
         }
@@ -132,7 +137,7 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> PatientProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Logout");
+            if (userId == null) return await LogoutAndRedirect();
 
             try
             {
@@ -142,7 +147,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -152,7 +157,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userId == null || userRole == null) return RedirectToAction("Logout");
+            if (userId == null || userRole == null) return await LogoutAndRedirect();
 
             try
             {
@@ -160,7 +165,7 @@ namespace MedicalCenter.Controllers
 
                 var updatedUser = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
                 if (updatedUser == null)
-                    return RedirectToAction("Logout");
+                    return await LogoutAndRedirect();
 
                 var identity = new ClaimsIdentity(new Claim[]
                     {
@@ -177,7 +182,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
 
         }
@@ -186,7 +191,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) 
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             try
             {
@@ -197,7 +202,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
 
         }
@@ -208,7 +213,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) 
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             try
             {
@@ -219,7 +224,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -228,7 +233,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) 
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             try
             {
@@ -243,7 +248,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
            
         }
@@ -254,7 +259,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userId == null || userRole == null) return RedirectToAction("Logout");
+            if (userId == null || userRole == null) return await LogoutAndRedirect();
 
             try
             {
@@ -262,7 +267,7 @@ namespace MedicalCenter.Controllers
 
                 var updatedUser = await _doctorService.GetDoctorProfileAsync(Guid.Parse(userId));
                 if (updatedUser == null)
-                    return RedirectToAction("Logout");
+                    return await LogoutAndRedirect();
 
                 // Aktulaizacja claimsów po zmianie danych
                 var identity = new ClaimsIdentity(new Claim[]
@@ -280,7 +285,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -289,7 +294,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) 
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             try
             {
@@ -299,7 +304,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -309,7 +314,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userId == null || userRole == null) return RedirectToAction("Logout");
+            if (userId == null || userRole == null) return await LogoutAndRedirect();
 
             try
             {
@@ -317,7 +322,7 @@ namespace MedicalCenter.Controllers
 
                 var updatedUser = await _courierService.GetCourierProfileAsync(Guid.Parse(userId));
                 if (updatedUser == null)
-                    return RedirectToAction("Logout");
+                    return await LogoutAndRedirect();
 
                 // Aktulaizacja claimsów po zmianie danych
                 var identity = new ClaimsIdentity(new Claim[]
@@ -335,7 +340,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -344,7 +349,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             try
             {
@@ -354,7 +359,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -364,7 +369,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userId == null || userRole == null) return RedirectToAction("Logout");
+            if (userId == null || userRole == null) return await LogoutAndRedirect();
 
             try
             {
@@ -372,7 +377,7 @@ namespace MedicalCenter.Controllers
 
                 var updatedUser = await _userService.GetUserProfileAsync(Guid.Parse(userId));
                 if (updatedUser == null)
-                    return RedirectToAction("Logout");
+                    return await LogoutAndRedirect();
 
                 // Aktulaizacja claimsów po zmianie danych
                 var identity = new ClaimsIdentity(new Claim[]
@@ -390,7 +395,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             }
         }
 
@@ -402,7 +407,7 @@ namespace MedicalCenter.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
 
             var result = await _userService.ChangePasswordAsync(Guid.Parse(userId), oldPassword, newPassword);
             if (result)
@@ -451,7 +456,7 @@ namespace MedicalCenter.Controllers
             // zapisz ścieżkę w bazie
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
-                return RedirectToAction("Logout");
+                return await LogoutAndRedirect();
             await _userService.UpdateProfilePictureAsync(Guid.Parse(userId), $"/images/profiles/{fileName}");
 
             return RedirectToAction("Profile");
