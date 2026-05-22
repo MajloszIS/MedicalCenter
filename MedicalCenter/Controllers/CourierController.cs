@@ -11,12 +11,12 @@ namespace MedicalCenter.Controllers
     public class CourierController : Controller
     {
         private readonly IDeliveryService _deliveryService;
-        private readonly AppDbContext _context;
+        private readonly ICourierService _courierService;
 
-        public CourierController(IDeliveryService deliveryService, AppDbContext context)
+        public CourierController(IDeliveryService deliveryService, ICourierService courierService)
         {
             _deliveryService = deliveryService;
-            _context = context;
+            _courierService = courierService;
         }
 
         public async Task<IActionResult> Index()
@@ -27,7 +27,7 @@ namespace MedicalCenter.Controllers
             try
             {
                 var userId = Guid.Parse(userIdStr);
-                var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
+                var courier = await _courierService.GetCourierByUserIdAsync(userId);
                 if (courier == null) return NotFound("Nie znaleziono profilu kuriera.");
 
                 var availableDeliveries = await _deliveryService.GetAvailableDeliveriesAsync();
@@ -53,7 +53,7 @@ namespace MedicalCenter.Controllers
             try
             {
                 var userId = Guid.Parse(userIdStr);
-                var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
+                var courier = await _courierService.GetCourierByUserIdAsync(userId);
 
                 if (courier != null)
                 {

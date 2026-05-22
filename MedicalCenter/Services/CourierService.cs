@@ -17,14 +17,16 @@ namespace MedicalCenter.Services
             _orderRepository = orderRepository;
         }
 
-        private async Task<CourierDto> MapToCourierDtoAsync(Courier courier)
+        private CourierDto MapToCourierDto(Courier courier)
         {
+            if (courier == null) return null;
+
             var courierDto = new CourierDto
             {
                 Id = courier.Id,
-                FirstName = courier.User.FirstName,
-                LastName = courier.User.LastName,
-                Phone = courier.User.Phone ?? string.Empty,
+                FirstName = courier.User?.FirstName ?? string.Empty,
+                LastName = courier.User?.LastName ?? string.Empty,
+                Phone = courier.User?.Phone ?? string.Empty,
                 VehicleRegistration = courier.VehicleRegistration
             };
             return courierDto;
@@ -36,7 +38,7 @@ namespace MedicalCenter.Services
             var courierDtos = new List<CourierDto>();
             foreach (var courier in couriers)
             {
-                courierDtos.Add(await MapToCourierDtoAsync(courier));
+                courierDtos.Add(MapToCourierDto(courier));
             }
             return courierDtos;
         }
@@ -44,13 +46,13 @@ namespace MedicalCenter.Services
         public async Task<CourierDto> GetCourierByIdAsync(Guid id)
         {
             var courier = await _courierRepository.GetCourierByIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera");
-            return await MapToCourierDtoAsync(courier);
+            return MapToCourierDto(courier);
         }
 
         public async Task<CourierDto> GetCourierByUserIdAsync(Guid userId)
         {
             var courier = await _courierRepository.GetCourierByUserIdAsync(userId);
-            return await MapToCourierDtoAsync(courier);
+            return MapToCourierDto(courier);
         }
 
         public async Task CreateCourierAsync(AdminCreateDto dto)

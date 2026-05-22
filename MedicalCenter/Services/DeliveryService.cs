@@ -33,24 +33,31 @@ namespace MedicalCenter.Services
         {
             var delivery = await _deliveryRepository.GetDeliveryByIdAsync(deliveryId);
 
-            if (delivery != null && delivery.CourierId == null)
+            if (delivery == null)
             {
-                delivery.CourierId = courierId;
-
-                var inProgressStatus = await _deliveryRepository.GetStatusByNameAsync("W drodze");
-                if (inProgressStatus != null)
-                {
-                    delivery.StatusId = inProgressStatus.Id;
-
-                    var order = await _orderRepository.GetOrderByIdAsync(delivery.OrderId);
-                    if (order != null)
-                    {
-                        order.StatusId = 3;
-                    }
-                }
-
-                await _deliveryRepository.UpdateDeliveryAsync(delivery);
+                throw new Exception("Dostawa nie istnieje lub została usunięta.");
             }
+
+            if (delivery.CourierId != null)
+            {
+                throw new Exception("Ktoś był szybszy! Ta paczka została już przypisana do innego kuriera.");
+            }
+
+            delivery.CourierId = courierId;
+
+            var inProgressStatus = await _deliveryRepository.GetStatusByNameAsync("W drodze");
+            if (inProgressStatus != null)
+            {
+                delivery.StatusId = inProgressStatus.Id;
+
+                var order = await _orderRepository.GetOrderByIdAsync(delivery.OrderId);
+                if (order != null)
+                {
+                    order.StatusId = 3;
+                }
+            }
+
+            await _deliveryRepository.UpdateDeliveryAsync(delivery);
         }
 
         public async Task ChangeStatusAsync(Guid deliveryId, string statusName)
