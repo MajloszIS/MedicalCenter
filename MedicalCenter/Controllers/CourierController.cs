@@ -23,18 +23,25 @@ namespace MedicalCenter.Controllers
         {
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdStr)) return Challenge();
-            var userId = Guid.Parse(userIdStr);
 
-            var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
-            if (courier == null) return NotFound("Nie znaleziono profilu kuriera.");
+            try
+            {
+                var userId = Guid.Parse(userIdStr);
+                var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
+                if (courier == null) return NotFound("Nie znaleziono profilu kuriera.");
 
-            // Pobieramy obie listy
-            var availableDeliveries = await _deliveryService.GetAvailableDeliveriesAsync();
-            var myDeliveries = await _deliveryService.GetMyDeliveriesAsync(courier.Id);
+                var availableDeliveries = await _deliveryService.GetAvailableDeliveriesAsync();
+                var myDeliveries = await _deliveryService.GetMyDeliveriesAsync(courier.Id);
 
-            ViewBag.AvailableDeliveries = availableDeliveries;
+                ViewBag.AvailableDeliveries = availableDeliveries;
 
-            return View(myDeliveries);
+                return View(myDeliveries);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -42,23 +49,40 @@ namespace MedicalCenter.Controllers
         {
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdStr)) return Challenge();
-            var userId = Guid.Parse(userIdStr);
 
-            var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
-
-            if (courier != null)
+            try
             {
-                await _deliveryService.AcceptDeliveryAsync(id, courier.Id);
-            }
+                var userId = Guid.Parse(userIdStr);
+                var courier = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
 
-            return RedirectToAction(nameof(Index));
+                if (courier != null)
+                {
+                    await _deliveryService.AcceptDeliveryAsync(id, courier.Id);
+                    TempData["Success"] = "Pomyślnie przypisano dostawę.";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangeStatus(Guid deliveryId, string statusName)
         {
-            await _deliveryService.ChangeStatusAsync(deliveryId, statusName);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _deliveryService.ChangeStatusAsync(deliveryId, statusName);
+                TempData["Success"] = "Status dostawy został zmieniony.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

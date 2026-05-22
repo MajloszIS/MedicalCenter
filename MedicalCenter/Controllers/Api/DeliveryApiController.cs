@@ -21,9 +21,6 @@ namespace MedicalCenter.Controllers.Api
 
         // GET: api/deliveries/unassigned
         [HttpGet("unassigned")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetUnassignedDeliveries()
         {
             var deliveries = await _deliveryService.GetAvailableDeliveriesAsync();
@@ -38,11 +35,6 @@ namespace MedicalCenter.Controllers.Api
 
         // POST: api/deliveries/{id}/accept
         [HttpPost("{id}/accept")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AcceptDelivery(Guid id, [FromBody] AcceptDeliveryDto dto)
         {
             if (dto == null || dto.CourierId == Guid.Empty)
@@ -63,11 +55,6 @@ namespace MedicalCenter.Controllers.Api
 
         // PATCH: api/deliveries/{id}/status
         [HttpPatch("{id}/status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateDeliveryStatus(Guid id, [FromBody] UpdateDeliveryStatusDto dto)
         {
             if (dto == null || string.IsNullOrWhiteSpace(dto.StatusName))

@@ -39,7 +39,7 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return View();
+                return RedirectToAction("Index", "Home");
             }
         }
     }
