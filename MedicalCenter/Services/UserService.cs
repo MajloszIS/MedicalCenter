@@ -88,29 +88,17 @@ namespace MedicalCenter.Services
 
         public async Task<Guid> GetUserIdByDoctorIdAsync(Guid doctorId)
         {
-            var user = await _userRepository.GetUserByDoctorIdAsync(doctorId);
-            if (user == null)
-            {
-                return Guid.Empty;
-            }
+            var user = await _userRepository.GetUserByDoctorIdAsync(doctorId) ?? throw new Exception("Nie znaleziono Użytkownika");
             return user.Id;
         }
         public async Task<Guid> GetUserIdByPatientIdAsync(Guid patientId)
         {
-            var user = await _userRepository.GetUserByPatientIdAsync(patientId);
-            if (user == null)
-            {
-                return Guid.Empty;
-            }
+            var user = await _userRepository.GetUserByPatientIdAsync(patientId) ?? throw new Exception("Nie znaleziono Użytkownika");
             return user.Id;
         }
         public async Task<Guid> GetUserIdByCourierIdAsync(Guid courierId)
         {
-            var user = await _userRepository.GetUserByCourierIdAsync(courierId);
-            if (user == null)
-            {
-                return Guid.Empty;
-            }
+            var user = await _userRepository.GetUserByCourierIdAsync(courierId) ?? throw new Exception("Nie znaleziono Użytkownika");
             return user.Id;
         }
         public LoginResponseDto GenerateJwtToken(LoginResultDto user)

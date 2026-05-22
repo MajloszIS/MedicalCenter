@@ -94,10 +94,7 @@ namespace MedicalCenter.Services
 
         public async Task<PatientDto> GetPatientByIdAsync(Guid id)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(id); 
-
-            if(patient == null)
-                throw new ArgumentNullException("Nie znaleziono Pacjenta", nameof(patient));
+            var patient = await _patientRepository.GetPatientByIdAsync(id) ?? throw new Exception("Nie znaleziono Pacjenta");
 
             var patientDto = new PatientDto
             {
@@ -191,17 +188,12 @@ namespace MedicalCenter.Services
 
         public async Task DeletePatientAsync(Guid patientId)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-            if (patient != null)
-            {
-                var user = await _userRepository.GetUserByIdAsync(patient.UserId);
-                if (user != null)
-                {
-                    await _appointmentRepository.DeleteAppointmentsByPatientIdAsync(patientId);
-                    await _patientRepository.DeletePatientAsync(patientId);
-                    await _userRepository.DeleteUserAsync(patient.UserId);
-                }
-            }
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Nie znaleziono pacjenta");
+            var user = await _userRepository.GetUserByIdAsync(patient.UserId) ?? throw new Exception("Nie znaleziono użytkownika");
+
+            await _appointmentRepository.DeleteAppointmentsByPatientIdAsync(patientId);
+            await _patientRepository.DeletePatientAsync(patientId);
+            await _userRepository.DeleteUserAsync(patient.UserId);
         }
     }
 }

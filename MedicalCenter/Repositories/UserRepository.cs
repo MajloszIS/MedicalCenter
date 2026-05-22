@@ -29,19 +29,19 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Users.Include(u => u.Role).Include(u => u.Patient).FirstOrDefaultAsync(u => u.Email == email);
         }
-        public async Task<User> GetUserByDoctorIdAsync(Guid doctorId)
+        public async Task<User?> GetUserByDoctorIdAsync(Guid doctorId)
         {
-            var user = await _context.Users.Include(u => u.Doctor).FirstOrDefaultAsync(u => u.Doctor.Id == doctorId);
+            var user = await _context.Users.Include(u => u.Doctor).FirstOrDefaultAsync(u => u.Doctor != null && u.Doctor.Id == doctorId);
             return user;
         }
-        public async Task<User> GetUserByPatientIdAsync(Guid patientId)
+        public async Task<User?> GetUserByPatientIdAsync(Guid patientId)
         {
-            var user = await _context.Users.Include(u => u.Patient).FirstOrDefaultAsync(u => u.Patient.Id == patientId);
+            var user = await _context.Users.Include(u => u.Patient).FirstOrDefaultAsync(u => u.Patient != null && u.Patient.Id == patientId);
             return user;
         }
-        public async Task<User> GetUserByCourierIdAsync(Guid courierId)
+        public async Task<User?> GetUserByCourierIdAsync(Guid courierId)
         {
-            var user = await _context.Users.Include(u => u.Courier).FirstOrDefaultAsync(u => u.Courier.Id == courierId);
+            var user = await _context.Users.Include(u => u.Courier).FirstOrDefaultAsync(u => u.Courier != null && u.Courier.Id == courierId);
             return user;
         }
 

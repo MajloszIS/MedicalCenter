@@ -18,7 +18,7 @@ namespace MedicalCenter.Repositories
                 .Include(c => c.Deliveries)
                 .ToListAsync();
         }
-        public async Task<Courier> GetCourierByIdAsync(Guid id)
+        public async Task<Courier?> GetCourierByIdAsync(Guid id)
         {
             return await _context.Couriers
                 .Include(c => c.User)

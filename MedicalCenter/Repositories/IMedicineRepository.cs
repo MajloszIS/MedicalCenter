@@ -6,7 +6,7 @@ namespace MedicalCenter.Repositories
     public interface IMedicineRepository
     {
         Task<List<Medicine>> GetAllMedicinesAsync();
-        Task<Medicine> GetByIdAsync(Guid id);
+        Task<Medicine?> GetByIdAsync(Guid id);
         Task AddMedicineAsync(Medicine medicine);
         Task DeleteMedicineAsync(Medicine medicine);
         Task<List<MedicineCategory>> GetAllCategoriesAsync();
