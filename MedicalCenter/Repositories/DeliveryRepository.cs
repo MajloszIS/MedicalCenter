@@ -24,12 +24,12 @@ namespace MedicalCenter.Repositories
                 .ToListAsync();
         }
 
-        public Task<Delivery> GetDeliveryByIdAsync(Guid id)
+        public Task<Delivery?> GetDeliveryByIdAsync(Guid id)
         {
             return _context.Deliveries.FirstOrDefaultAsync(d => d.Id == id);
         }
 
-        public Task<DeliveryStatus> GetStatusByNameAsync(string statusName)
+        public Task<DeliveryStatus?> GetStatusByNameAsync(string statusName)
         {
             return _context.DeliveryStatuses.FirstOrDefaultAsync(s => s.Name == statusName);
         }
