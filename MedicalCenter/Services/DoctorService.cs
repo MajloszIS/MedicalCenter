@@ -1,7 +1,6 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Services
 {

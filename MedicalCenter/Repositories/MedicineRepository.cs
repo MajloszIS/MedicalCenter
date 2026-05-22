@@ -1,5 +1,4 @@
 ﻿using MedicalCenter.Data;
-using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 

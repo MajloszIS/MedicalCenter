@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MedicalCenter.DTOs
+﻿namespace MedicalCenter.DTOs
 {
     public class AcceptDeliveryDto
     {

@@ -1,5 +1,4 @@
 ﻿using MedicalCenter.Models;
-using MedicalCenter.DTOs;   
 
 namespace MedicalCenter.Repositories
 {

@@ -1,5 +1,4 @@
 ﻿using MedicalCenter.DTOs;
-using MedicalCenter.Models;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

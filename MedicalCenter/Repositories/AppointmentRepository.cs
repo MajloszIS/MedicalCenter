@@ -1,7 +1,6 @@
 ﻿using MedicalCenter.Data;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace MedicalCenter.Repositories
 {

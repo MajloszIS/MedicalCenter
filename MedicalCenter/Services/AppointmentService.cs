@@ -1,10 +1,6 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
-using System.Numerics;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Net.WebRequestMethods;
-
 
 namespace MedicalCenter.Services
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MedicalCenter.DTOs
+﻿namespace MedicalCenter.DTOs
 {
     public class InvoiceDto
     {

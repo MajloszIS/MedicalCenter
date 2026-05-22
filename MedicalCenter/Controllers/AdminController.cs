@@ -1,15 +1,8 @@
-﻿using MedicalCenter.Data;
-using MedicalCenter.DTOs;
-using MedicalCenter.Models;
-using MedicalCenter.Repositories;
+﻿using MedicalCenter.DTOs;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.Numerics;
-using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {

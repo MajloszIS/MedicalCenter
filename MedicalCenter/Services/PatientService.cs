@@ -1,9 +1,6 @@
-﻿using Humanizer;
-using MedicalCenter.DTOs;
+﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.Security.Claims;
 
 
 namespace MedicalCenter.Services

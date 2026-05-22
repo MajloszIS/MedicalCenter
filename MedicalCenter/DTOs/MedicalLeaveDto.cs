@@ -1,5 +1,4 @@
-﻿using MedicalCenter.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MedicalCenter.DTOs
 {

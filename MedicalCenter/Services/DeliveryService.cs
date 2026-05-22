@@ -1,6 +1,4 @@
-﻿using MedicalCenter.Data;
-using MedicalCenter.DTOs;
-using Microsoft.EntityFrameworkCore;
+﻿using MedicalCenter.DTOs;
 using MedicalCenter.Repositories;
 using MedicalCenter.Models;
 

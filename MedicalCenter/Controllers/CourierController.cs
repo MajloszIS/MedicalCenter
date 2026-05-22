@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
-using MedicalCenter.Data;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MedicalCenter.Controllers
 {

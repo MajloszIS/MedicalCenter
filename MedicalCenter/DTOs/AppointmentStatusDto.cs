@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MedicalCenter.DTOs
+﻿namespace MedicalCenter.DTOs
 {
     public class AppointmentStatusDto
     {

@@ -11,12 +11,12 @@ namespace MedicalCenter.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
-        private readonly IPatientRepository _patientRepository;
+        private readonly IPatientService _patientService;
 
-        public OrderController(IOrderService orderService, IPatientRepository patientRepository)
+        public OrderController(IOrderService orderService, IPatientService patientService)
         {
             _orderService = orderService;
-            _patientRepository = patientRepository;
+            _patientService = patientService;
         }
 
         public async Task<IActionResult> MyOrders()
@@ -26,7 +26,8 @@ namespace MedicalCenter.Controllers
                 var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userIdStr)) return Challenge();
 
-                var patient = await _patientRepository.GetPatientByUserIdAsync(Guid.Parse(userIdStr));
+                var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userIdStr));
+
                 if (patient == null)
                 {
                     TempData["ErrorMessage"] = "Nie znaleziono pacjenta.";
@@ -59,7 +60,7 @@ namespace MedicalCenter.Controllers
                 var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userIdStr)) return Challenge();
 
-                var patient = await _patientRepository.GetPatientByUserIdAsync(Guid.Parse(userIdStr));
+                var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userIdStr));
                 if (patient == null)
                 {
                     TempData["ErrorMessage"] = "Nie znaleziono pacjenta.";

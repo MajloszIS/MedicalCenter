@@ -1,10 +1,7 @@
 ﻿using MedicalCenter.DTOs;
-using MedicalCenter.Models;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
-using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {

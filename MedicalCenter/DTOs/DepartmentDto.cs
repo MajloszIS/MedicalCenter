@@ -1,6 +1,4 @@
 ﻿using MedicalCenter.Models;
-using System.ComponentModel.DataAnnotations;
-
 namespace MedicalCenter.DTOs
 {
     public class DepartmentDto

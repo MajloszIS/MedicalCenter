@@ -1,6 +1,4 @@
 ﻿using MedicalCenter.DTOs;
-using MedicalCenter.Models;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace MedicalCenter.Services
 {
