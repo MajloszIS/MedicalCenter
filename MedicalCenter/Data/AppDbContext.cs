@@ -26,6 +26,7 @@ namespace MedicalCenter.Data
         public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<MedicalLeave> MedicalLeaves{ get; set; }
+        public DbSet<Referral> Referral { get; set; }
 
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
@@ -107,34 +108,6 @@ namespace MedicalCenter.Data
                 new Role { Id = 4, Name = "Courier" }
             );
 
-            modelBuilder.Entity<Specialization>().HasData(
-                new Specialization { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Name = "Kardiolog" },
-                new Specialization { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Name = "Neurolog" }
-            );
-
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), Email = "admin@medical.pl", PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e", FirstName = "Adam", LastName= "Nowak", Phone= "111222333", RoleId = 1},
-                new User { Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Email = "doktor@medical.pl", PasswordHash = "$2a$11$VmozT24fOt40zBIdkcNYFeO6z0sVfe2GdFOzyoSKVgSATzjNZSia6", FirstName = "Jan", LastName = "Kowalski", Phone = "222333444", RoleId = 2 },
-                new User { Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Email = "pacjent@medical.pl", PasswordHash = "$2a$11$SjBITGayq8gTCE4JLjt4becH4zr32rn5cixIlaqdJtSCvYwd1O/QC", FirstName = "Anna", LastName = "Wiśniewska", Phone = "333444555", RoleId = 3 },
-                new User { Id = Guid.Parse("ffffffff-1111-1111-1111-111111111111"), Email = "kurier@medical.pl", PasswordHash = "$2a$11$VmozT24fOt40zBIdkcNYFeO6z0sVfe2GdFOzyoSKVgSATzjNZSia6", FirstName = "Szybki", LastName = "Wiesiek", Phone = "999888777", RoleId = 4 }
-                );
-
-            modelBuilder.Entity<Doctor>().HasData(
-                new Doctor { Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"), UserId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), LicenseNumber = "LEK123456", SpecializationId = Guid.Parse("11111111-1111-1111-1111-111111111111") }
-            );
-
-            modelBuilder.Entity<Patient>().HasData(
-                new Patient { Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), UserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), Pesel = "99010112345", BirthDate = new DateTime(1999, 1, 1), AddressId = Guid.Parse("aaaa1111-1111-1111-1111-111111111111") }
-            );
-
-            modelBuilder.Entity<Address>().HasData(
-                new Address { Id = Guid.Parse("aaaa1111-1111-1111-1111-111111111111") }
-            );
-
-            modelBuilder.Entity<Courier>().HasData(
-                new Courier { Id = Guid.Parse("ffffffff-2222-2222-2222-222222222222"), UserId = Guid.Parse("ffffffff-1111-1111-1111-111111111111") }
-            );
-
             modelBuilder.Entity<AppointmentStatus>().HasData(
                 new AppointmentStatus { Id = 1, Name = "Zaplanowana" },
                 new AppointmentStatus { Id = 2, Name = "Zakończona" },
@@ -148,41 +121,265 @@ namespace MedicalCenter.Data
                 new OrderStatus { Id = 4, Name = "Zakończone" }
             );
 
-            modelBuilder.Entity<MedicineCategory>().HasData(
-                new MedicineCategory { Id = Guid.Parse("cccccccc-1111-1111-1111-111111111111"), Name = "Leki przeciwbólowe" },
-                new MedicineCategory { Id = Guid.Parse("cccccccc-2222-2222-2222-222222222222"), Name = "Syrop" },
-                new MedicineCategory { Id = Guid.Parse("cccccccc-3333-3333-3333-333333333333"), Name = "Leki" }
-            );
-
-            modelBuilder.Entity<Medicine>().HasData(
-                new Medicine { Id = Guid.Parse("dddddddd-1111-1111-1111-111111111111"), Name = "Apap Extra", Price = 15.50m, CategoryId = Guid.Parse("cccccccc-1111-1111-1111-111111111111") },
-                new Medicine { Id = Guid.Parse("dddddddd-2222-2222-2222-222222222222"), Name = "Ibuprom Max", Price = 12.99m, CategoryId = Guid.Parse("cccccccc-1111-1111-1111-111111111111") },
-                new Medicine { Id = Guid.Parse("dddddddd-3333-3333-3333-333333333333"), Name = "Rutinoscorbin", Price = 9.00m, CategoryId = Guid.Parse("cccccccc-3333-3333-3333-333333333333") },
-                new Medicine { Id = Guid.Parse("dddddddd-4444-4444-4444-444444444444"), Name = "Syrop na kaszel", Price = 21.30m, CategoryId = Guid.Parse("cccccccc-2222-2222-2222-222222222222") }
-            );
-
             modelBuilder.Entity<DeliveryStatus>().HasData(
                 new DeliveryStatus { Id = 1, Name = "Oczekuje na kuriera" },
                 new DeliveryStatus { Id = 2, Name = "W drodze" },
                 new DeliveryStatus { Id = 3, Name = "Dostarczono" }
             );
 
-            modelBuilder.Entity<Order>().HasData(
-                new Order { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 31.00m, StatusId = 1, CreatedAt = new DateTime(2026, 1, 15) },
-                new Order { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 12.99m, StatusId = 2, CreatedAt = new DateTime(2026, 1, 16) },
-                new Order { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), PatientId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), TotalPrice = 9.00m, StatusId = 4, CreatedAt = new DateTime(2026, 1, 17) }
+
+
+
+            // SPECIALIZATIONS
+            var specjalizacjaKardiolog = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var specjalizacjaNeurolog = Guid.Parse("22222222-2222-2222-2222-222222222222");
+            var specjalizacjaPediatra = Guid.Parse("33333333-3333-3333-3333-333333333333");
+
+            modelBuilder.Entity<Specialization>().HasData(
+                new Specialization
+                {
+                    Id = specjalizacjaKardiolog,
+                    Name = "Kardiolog"
+                },
+                new Specialization
+                {
+                    Id = specjalizacjaNeurolog,
+                    Name = "Neurolog"
+                },
+                new Specialization
+                {
+                    Id = specjalizacjaPediatra,
+                    Name = "Pediatra"
+                }
             );
 
-            modelBuilder.Entity<OrderItem>().HasData(
-                new OrderItem { Id = Guid.Parse("66666666-1111-1111-1111-111111111111"), OrderId = Guid.Parse("11111111-1111-1111-1111-111111111111"), MedicineId = Guid.Parse("dddddddd-1111-1111-1111-111111111111"), Quantity = 2 },
-                new OrderItem { Id = Guid.Parse("66666666-2222-2222-2222-222222222222"), OrderId = Guid.Parse("22222222-2222-2222-2222-222222222222"), MedicineId = Guid.Parse("dddddddd-2222-2222-2222-222222222222"), Quantity = 1 },
-                new OrderItem { Id = Guid.Parse("66666666-3333-3333-3333-333333333333"), OrderId = Guid.Parse("33333333-3333-3333-3333-333333333333"), MedicineId = Guid.Parse("dddddddd-3333-3333-3333-333333333333"), Quantity = 1 }
+            // DEPARTMENTS
+            var oddzialKardiologia = Guid.Parse("44444444-1111-1111-1111-111111111111");
+            var oddzialNeurologia = Guid.Parse("44444444-2222-2222-2222-222222222222");
+            var oddzialPediatria = Guid.Parse("44444444-3333-3333-3333-333333333333");
+
+            modelBuilder.Entity<Department>().HasData(
+                new Department
+                {
+                    Id = oddzialKardiologia,
+                    Name = "Oddział Kardiologii"
+                },
+                new Department
+                {
+                    Id = oddzialNeurologia,
+                    Name = "Oddział Neurologii"
+                },
+                new Department
+                {
+                    Id = oddzialPediatria,
+                    Name = "Oddział Pediatrii"
+                }
             );
 
-            modelBuilder.Entity<Delivery>().HasData(
-                new Delivery { Id = Guid.Parse("55555555-1111-1111-1111-111111111111"), OrderId = Guid.Parse("22222222-2222-2222-2222-222222222222"), CourierId = null, StatusId = 1 },
-                new Delivery { Id = Guid.Parse("55555555-2222-2222-2222-222222222222"), OrderId = Guid.Parse("33333333-3333-3333-3333-333333333333"), CourierId = Guid.Parse("ffffffff-2222-2222-2222-222222222222"), StatusId = 3 }
+            // ADDRESSES
+            var adresPacjenta = Guid.Parse("55555555-1111-1111-1111-111111111111");
+            var adresLekarza = Guid.Parse("55555555-2222-2222-2222-222222222222");
+            var adresKuriera = Guid.Parse("55555555-3333-3333-3333-333333333333");
+
+            modelBuilder.Entity<Address>().HasData(
+                new Address
+                {
+                    Id = adresPacjenta,
+                    Street = "Lipowa",
+                    HouseNumber = "12",
+                    ApartmentNumber = "5",
+                    PostalCode = "15-424",
+                    City = "Białystok"
+                },
+                new Address
+                {
+                    Id = adresLekarza,
+                    Street = "Warszawska",
+                    HouseNumber = "88",
+                    ApartmentNumber = "2",
+                    PostalCode = "15-077",
+                    City = "Białystok"
+                },
+                new Address
+                {
+                    Id = adresKuriera,
+                    Street = "Sienkiewicza",
+                    HouseNumber = "3",
+                    ApartmentNumber = "10",
+                    PostalCode = "18-300",
+                    City = "Zambrów"
+                }
             );
+
+            // USERS
+            var adminUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            var doctorUserId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+            var patientUserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+            var courierUserId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = adminUserId,
+                    Email = "admin@medical.pl",
+                    PasswordHash = "admin123",
+                    FirstName = "Adam",
+                    LastName = "Nowak",
+                    Phone = "111222333",
+                    RoleId = 1,
+                    ProfilePicturePath = null
+                },
+                new User
+                {
+                    Id = doctorUserId,
+                    Email = "lekarz@medical.pl",
+                    PasswordHash = "doctor123",
+                    FirstName = "Jan",
+                    LastName = "Kowalski",
+                    Phone = "222333444",
+                    RoleId = 2,
+                    ProfilePicturePath = null
+                },
+                new User
+                {
+                    Id = patientUserId,
+                    Email = "pacjent@medical.pl",
+                    PasswordHash = "patient123",
+                    FirstName = "Anna",
+                    LastName = "Wiśniewska",
+                    Phone = "333444555",
+                    RoleId = 3,
+                    ProfilePicturePath = null
+                },
+                new User
+                {
+                    Id = courierUserId,
+                    Email = "kurier@medical.pl",
+                    PasswordHash = "courier123",
+                    FirstName = "Piotr",
+                    LastName = "Szybki",
+                    Phone = "999888777",
+                    RoleId = 4,
+                    ProfilePicturePath = null
+                }
+            );
+
+            // DOCTOR
+            var doctorId = Guid.Parse("66666666-1111-1111-1111-111111111111");
+
+            modelBuilder.Entity<Doctor>().HasData(
+                new Doctor
+                {
+                    Id = doctorId,
+                    UserId = doctorUserId,
+                    LicenseNumber = "LEK123456",
+                    SpecializationId = specjalizacjaKardiolog
+                }
+            );
+
+            // DOCTOR DEPARTMENTS
+            modelBuilder.Entity<DoctorDepartment>().HasData(
+                new DoctorDepartment
+                {
+                    Id = Guid.Parse("77777777-1111-1111-1111-111111111111"),
+                    DoctorId = doctorId,
+                    DepartmentId = oddzialKardiologia
+                },
+                new DoctorDepartment
+                {
+                    Id = Guid.Parse("77777777-2222-2222-2222-222222222222"),
+                    DoctorId = doctorId,
+                    DepartmentId = oddzialNeurologia
+                }
+            );
+
+            // PATIENT
+            var patientId = Guid.Parse("88888888-1111-1111-1111-111111111111");
+
+            modelBuilder.Entity<Patient>().HasData(
+                new Patient
+                {
+                    Id = patientId,
+                    UserId = patientUserId,
+                    Pesel = "99010112345",
+                    BirthDate = new DateTime(1999, 1, 1),
+                    AddressId = adresPacjenta
+                }
+            );
+
+            // COURIER
+            modelBuilder.Entity<Courier>().HasData(
+                new Courier
+                {
+                    Id = Guid.Parse("99999999-1111-1111-1111-111111111111"),
+                    UserId = courierUserId,
+                    VehicleRegistration = "BI1234K"
+                }
+            );
+
+            // MEDICINE CATEGORIES
+            var przeciwboloweId = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111");
+            var antybiotykiId = Guid.Parse("aaaaaaaa-2222-2222-2222-222222222222");
+            var syropyId = Guid.Parse("aaaaaaaa-3333-3333-3333-333333333333");
+
+            modelBuilder.Entity<MedicineCategory>().HasData(
+                new MedicineCategory
+                {
+                    Id = przeciwboloweId,
+                    Name = "Leki przeciwbólowe"
+                },
+                new MedicineCategory
+                {
+                    Id = antybiotykiId,
+                    Name = "Antybiotyki"
+                },
+                new MedicineCategory
+                {
+                    Id = syropyId,
+                    Name = "Syropy"
+                }
+            );
+
+            // MEDICINES
+            modelBuilder.Entity<Medicine>().HasData(
+                new Medicine
+                {
+                    Id = Guid.Parse("bbbbbbbb-1111-1111-1111-111111111111"),
+                    Name = "Apap Extra",
+                    Price = 15.50m,
+                    StockQuantity = 120,
+                    Description = "Lek przeciwbólowy i przeciwgorączkowy",
+                    CategoryId = przeciwboloweId
+                },
+                new Medicine
+                {
+                    Id = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"),
+                    Name = "Ibuprom Max",
+                    Price = 12.99m,
+                    StockQuantity = 85,
+                    Description = "Silny lek przeciwbólowy",
+                    CategoryId = przeciwboloweId
+                },
+                new Medicine
+                {
+                    Id = Guid.Parse("bbbbbbbb-3333-3333-3333-333333333333"),
+                    Name = "Amotaks",
+                    Price = 29.99m,
+                    StockQuantity = 40,
+                    Description = "Antybiotyk",
+                    CategoryId = antybiotykiId
+                },
+                new Medicine
+                {
+                    Id = Guid.Parse("bbbbbbbb-4444-4444-4444-444444444444"),
+                    Name = "Syrop na kaszel",
+                    Price = 21.30m,
+                    StockQuantity = 65,
+                    Description = "Syrop łagodzący kaszel",
+                    CategoryId = syropyId
+                }
+            );
+
         }
     }
 }
