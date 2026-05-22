@@ -1,5 +1,4 @@
 ﻿using MedicalCenter.DTOs;
-using MedicalCenter.Models;
 
 namespace MedicalCenter.Services
 {

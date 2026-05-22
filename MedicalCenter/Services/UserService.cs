@@ -1,8 +1,5 @@
-﻿using Humanizer;
-using MedicalCenter.DTOs;
-using MedicalCenter.Models;
+﻿using MedicalCenter.DTOs;
 using MedicalCenter.Repositories;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

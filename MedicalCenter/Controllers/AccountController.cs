@@ -1,8 +1,4 @@
-﻿using Humanizer;
-using MedicalCenter.Data;
-using MedicalCenter.DTOs;
-using MedicalCenter.Models;
-using MedicalCenter.Repositories;
+﻿using MedicalCenter.DTOs;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

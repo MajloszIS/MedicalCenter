@@ -1,10 +1,5 @@
-﻿using MedicalCenter.Data;
-using MedicalCenter.DTOs;
-using MedicalCenter.Models;
-using MedicalCenter.Repositories;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MedicalCenter.Services;
 
 namespace MedicalCenter.Controllers

@@ -7,12 +7,10 @@ namespace MedicalCenter.Services
     public class MedicalRecordService : IMedicalRecordService
     {
         private readonly IMedicalRecordRepository _medicalRecordRepository;
-        private readonly IPatientRepository _patientRepository;
 
-        public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository, IPatientRepository patientRepository) 
+        public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository) 
         {
             _medicalRecordRepository = medicalRecordRepository;
-            _patientRepository = patientRepository;
         }
 
         private MedicalRecordDto MapToDto(MedicalRecord medicalRecord)

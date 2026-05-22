@@ -1,6 +1,4 @@
-﻿using MedicalCenter.Models;
-
-namespace MedicalCenter.DTOs
+﻿namespace MedicalCenter.DTOs
 {
     public class MedicalRecordDto
     {

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MedicalCenter.DTOs;
+﻿namespace MedicalCenter.DTOs;
 
 public class DoctorDto
 {

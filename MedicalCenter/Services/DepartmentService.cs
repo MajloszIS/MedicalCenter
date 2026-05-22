@@ -1,8 +1,6 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
-using Stripe;
-using System.Linq.Expressions;
 
 namespace MedicalCenter.Services
 {
