@@ -71,14 +71,14 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateDoctor(AdminCreateDoctorDto dto)
         {
-            if (await _userService.IsUserWithThisEmailExists(dto.Email))
-            {
-                ViewBag.Error = "Konto z tym Email już istnieje";
-                return View();
-            }
-
             if (ModelState.IsValid)
             {
+                if (await _userService.IsUserWithThisEmailExists(dto.Email))
+                {
+                    ViewBag.Error = "Konto z tym Email już istnieje";
+                    return View();
+                }
+
                 try
                 {
                     await _doctorService.CreateDoctorAsync(dto);
@@ -105,80 +105,86 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteDoctor(Guid doctorId)
         {
-            await _doctorService.DeleteDoctorAsync(doctorId);
-            return RedirectToAction("Doctors");
+            try
+            {
+                await _doctorService.DeleteDoctorAsync(doctorId);
+                TempData["Succes"] = "Pomyślnie usunięto lekarza";
+                return RedirectToAction("Doctors");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Doctors");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditDoctor(Guid doctorId)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if (doctorUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
-            }
+                var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
 
-            var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
-            if (doctorProfile == null)
+                var doctorProfile = await _doctorService.GetDoctorProfileAsync(doctorUserId);
+
+                var specializations = await _doctorService.GetAllSpecializationsAsync();
+                var allDepartments = await _departmentService.GetAllDepartmentsAsync();
+
+                ViewBag.DoctorId = doctorId;
+                ViewBag.Specializations = specializations;
+                ViewBag.Departments = allDepartments;
+                ViewBag.DoctorDepartmentIds = doctorProfile.SelectedDepartment.Select(x => x.Id).ToList();
+
+                return View(doctorProfile);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Nie można znaleźć lekarza.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Doctors");
             }
-
-            var specializations = await _doctorService.GetAllSpecializationsAsync();
-            var allDepartments = await _departmentService.GetAllDepartmentsAsync();
-
-            ViewBag.DoctorId = doctorId;
-            ViewBag.Specializations = specializations;
-            ViewBag.Departments = allDepartments;
-            ViewBag.DoctorDepartmentIds = doctorProfile.SelectedDepartment.Select(x => x.Id).ToList();
-
-            return View(doctorProfile);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditDoctor(Guid doctorId, UpdateDoctorProfileDto updateDoctorProfileDto)
         {
-            var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
-            if(doctorUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z lekarzem.";
-                return RedirectToAction("Doctors", "Admin");
+                var doctorUserId = await _userService.GetUserIdByDoctorIdAsync(doctorId);
+                await _doctorService.UpdateDoctorProfileAsync(doctorUserId, updateDoctorProfileDto);
+                TempData["Succes"] = "Pomyślnie edytowano lekarza";
+                return RedirectToAction("Doctors");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Doctors");
             }
 
-            await _doctorService.UpdateDoctorProfileAsync(doctorUserId ,updateDoctorProfileDto);
-
-            return RedirectToAction("Doctors");
         }
 
         [HttpGet]
         public async Task<IActionResult> DoctorAppointments(Guid doctorId)
         {
-            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
-            if (appointments == null)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć lekarza lub jego wizyt.";
-                return RedirectToAction("Doctors", "Admin");
-            }
+                var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctorId);
+                var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
 
-            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
-            if (doctor == null)
+                ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
+                return View(appointments);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Nie można znaleźć lekarza.";
-                return RedirectToAction("Doctors", "Admin");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Doctors");
             }
-
-            ViewBag.DoctorName = $"{doctor.FirstName} {doctor.LastName}";
-            return View(appointments);
         }
 
         // Pacjenci
         public async Task<IActionResult> Patients()
         {
             var patients = await _patientService.GetAllPatientsAsync();
-
             return View(patients);
         }
 
@@ -186,67 +192,71 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePatient(Guid patientId)
         {
-            await _patientService.DeletePatientAsync(patientId);
-
-            return RedirectToAction("Patients");
+            try
+            {
+                await _patientService.DeletePatientAsync(patientId);
+                TempData["Succes"] = "Pomyślnie usunięto pacjenta";
+                return RedirectToAction("Patients");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditPatient(Guid patientId)
         {
-            var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
-            if (patientUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z pacjentem.";
-                return RedirectToAction("Patients", "Admin");
-            }
+                var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
+                var patientProfile = await _patientService.GetPatientProfileAsync(patientUserId);
 
-            var patientProfile = await _patientService.GetPatientProfileAsync(patientUserId);
-            if (patientProfile == null)
+                ViewBag.PatientId = patientId;
+                return View(patientProfile);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Nie można znaleźć pacjenta.";
-                return RedirectToAction("Patients", "Admin");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients");
             }
-
-            ViewBag.PatientId = patientId;
-            return View(patientProfile);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPatient(Guid patientId, UpdatePatientProfileDto updatePatientProfileDto)
         {
-            var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
-            if (patientUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z pacjentem.";
-                return RedirectToAction("Patients", "Admin");
+                var patientUserId = await _userService.GetUserIdByPatientIdAsync(patientId);
+                await _patientService.UpdatePatientProfileAsync(patientUserId, updatePatientProfileDto);
+                TempData["Succes"] = "Pomyślnie edytowano pacjenta";
+                return RedirectToAction("Patients");
             }
-
-            await _patientService.UpdatePatientProfileAsync(patientUserId, updatePatientProfileDto);
-
-            return RedirectToAction("Patients");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> PatientAppointments(Guid patientId)
         {
-            var appointments = await _appointmentService.GetAppointmentsByPatientIdAsync(patientId);
-            if (appointments == null)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć pacjenta lub jego wizyt.";
-                return RedirectToAction("Patients", "Admin");
-            }
+                var appointments = await _appointmentService.GetAppointmentsByPatientIdAsync(patientId);
+                var patient = await _patientService.GetPatientByIdAsync(patientId);
 
-            var patient = await _patientService.GetPatientByIdAsync(patientId);
-            if (patient == null)
+                ViewBag.PatientName = $"{patient.FirstName} {patient.LastName}";
+                return View(appointments);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Nie można znaleźć pacjenta.";
-                return RedirectToAction("Patients", "Admin");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients");
             }
-
-            ViewBag.PatientName = $"{patient.FirstName} {patient.LastName}";
-            return View(appointments);
         }
 
         // Couriers
@@ -254,11 +264,9 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> Couriers()
         {
             var courierDtos = await _courierService.GetAllCourierAsync();
-
             return View(courierDtos);
         }
 
-        
         public async Task<IActionResult> CreateCourier()
         {
             return View();
@@ -268,97 +276,104 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCourier(AdminCreateDto dto)
         {
-            if (await _userService.IsUserWithThisEmailExists(dto.Email))
-            {
-                ViewBag.Error = "Konto z tym Email już istnieje";
-                return View();
-            }
-
             if (ModelState.IsValid)
             {
-                Console.WriteLine($"Email: {dto.Email}, FirstName: {dto.FirstName}");
+                if (await _userService.IsUserWithThisEmailExists(dto.Email))
+                {
+                    ViewBag.Error = "Konto z tym Email już istnieje";
+                    return View();
+                }
 
-                await _courierService.CreateCourierAsync(dto);
-
-                return RedirectToAction("Couriers", "Admin");
+                try
+                {
+                    await _courierService.CreateCourierAsync(dto);
+                    return RedirectToAction("Couriers", "Admin");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex;
+                    return RedirectToAction("Couriers", "Admin");
+                }
             }
             else
             {
                 ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
                 return View();
             }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCourier(Guid courierId)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                { 
-                    await _courierService.DeleteCourierAsync(courierId);
-                }
-                catch 
-                {
-                    TempData["Error"] = "Nie można znaleźć kuriera.";
-                    return RedirectToAction("Couriers", "Admin");
-                }
-
+            try
+            { 
+                await _courierService.DeleteCourierAsync(courierId);
+                TempData["Succes"] = "Pomyślnie usunięto kuriera";
+                return RedirectToAction("Couriers");
             }
-            return RedirectToAction("Couriers", "Admin");
+            catch 
+            {
+                TempData["Error"] = "Nie można znaleźć kuriera.";
+                return RedirectToAction("Couriers");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditCourier(Guid courierId)
         {
-            var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
-            if (courierUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z kurierem.";
-                return RedirectToAction("Couriers", "Admin");
-            }
+                var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
+                var courierProfile = await _courierService.GetCourierProfileAsync(courierUserId);
 
-            var courierProfile = await _courierService.GetCourierProfileAsync(courierUserId);
-            if (courierProfile == null)
+                ViewBag.CourierId = courierId;
+                return View(courierProfile);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Nie można znaleźć kuriera.";
-                return RedirectToAction("Couriers", "Admin");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Couriers");
             }
-
-            ViewBag.CourierId = courierId;
-            return View(courierProfile);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCourier(Guid courierId, UpdateCourierProfileDto updateProfileDto)
         {
-            var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
-            if (courierUserId == Guid.Empty)
+            try
             {
-                TempData["Error"] = "Nie można znaleźć użytkownika powiązanego z kurierem.";
-                return RedirectToAction("Couriers", "Admin");
+                var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
+                await _courierService.UpdateCourierProfileAsync(courierUserId, updateProfileDto);
+                TempData["Succes"] = "Pomyślnie edytowano kuriera";
+                return RedirectToAction("Couriers");
             }
-
-            await _courierService.UpdateCourierProfileAsync(courierUserId, updateProfileDto);
-
-            return RedirectToAction("Couriers");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Couriers");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> CourierDeliveries(Guid courierId)
         {
-            var courier = await _courierService.GetCourierByIdAsync(courierId);
-            if (courier != null)
+            try
             {
+                var courier = await _courierService.GetCourierByIdAsync(courierId);
                 ViewBag.CourierName = $"{courier.FirstName} {courier.LastName}";
+                var deliveries = await _deliveryService.GetMyDeliveriesAsync(courierId);
+                return View(deliveries);
             }
-
-            var deliveries = await _deliveryService.GetMyDeliveriesAsync(courierId);
-
-            return View(deliveries);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Couriers");
+            }
         }
+
+        // Apteka
         public async Task<IActionResult> Orders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
@@ -383,48 +398,82 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateMedicine(MedicineCreateDto dto)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var categories = await _medicineService.GetAllCategoriesAsync();
-                ViewBag.Categories = new SelectList(categories, "Id", "Name");
-                ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
-                return View(dto);
+                try
+                {
+                    await _medicineService.AddMedicineAsync(dto);
+                    TempData["Success"] = "Nowy lek został pomyślnie dodany!";
+                    return RedirectToAction("Medicines");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                    return RedirectToAction("Medicines");
+                }
             }
 
-            await _medicineService.AddMedicineAsync(dto);
-            TempData["SuccessMessage"] = "Nowy lek został pomyślnie dodany!";
-
-            return RedirectToAction("Medicines", "Admin");
+            ViewBag.Error = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+            return View(dto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteMedicine(Guid medicineId)
         {
-            await _medicineService.DeleteMedicineAsync(medicineId);
-
-            TempData["SuccessMessage"] = "Lek został pomyślnie usunięty z bazy.";
-            return RedirectToAction("Medicines");
+            try
+            {
+                await _medicineService.DeleteMedicineAsync(medicineId);
+                TempData["SuccessMessage"] = "Lek został pomyślnie usunięty z bazy.";
+                return RedirectToAction("Medicines");
+            }
+            catch
+            {
+                TempData["Error"] = "Nie można znaleźć leku";
+                return RedirectToAction("Medicines");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditMedicine(Guid medicineId)
         {
-            var dto = await _medicineService.GetMedicineForEditAsync(medicineId);
-            if (dto == null) return NotFound("Nie znaleziono leku.");
+            try
+            {
+                var dto = await _medicineService.GetMedicineForEditAsync(medicineId);
+                var categories = await _medicineService.GetAllCategoriesAsync();
 
-            var categories = await _medicineService.GetAllCategoriesAsync();
-            ViewBag.Categories = categories;
-            ViewBag.MedicineId = medicineId;
-
-            return View(dto);
+                ViewBag.Categories = categories;
+                ViewBag.MedicineId = medicineId;
+                return View(dto);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Medicines");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMedicine(UpdateMedicineDto dto, Guid medicineId)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    dto.Id = medicineId;
+                    await _medicineService.UpdateMedicineAsync(dto);
+
+                    TempData["SuccessMessage"] = "Dane leku zostały zaktualizowane!";
+                    return RedirectToAction("Medicines");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                    return RedirectToAction("Medicines");
+                }
+            }
+            else
             {
                 var categories = await _medicineService.GetAllCategoriesAsync();
                 ViewBag.Categories = categories;
@@ -434,11 +483,6 @@ namespace MedicalCenter.Controllers
                 return View(dto);
             }
 
-            dto.Id = medicineId;
-            await _medicineService.UpdateMedicineAsync(dto);
-
-            TempData["SuccessMessage"] = "Dane leku zostały zaktualizowane!";
-            return RedirectToAction("Medicines");
         }
     }
 }

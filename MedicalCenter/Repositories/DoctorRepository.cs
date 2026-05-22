@@ -19,7 +19,7 @@ namespace MedicalCenter.Repositories
                 .Include(d => d.Specialization)
                 .ToListAsync();
         }
-        public async Task<Doctor> GetDoctorByIdAsync(Guid id)
+        public async Task<Doctor?> GetDoctorByIdAsync(Guid id)
         {
             var doctors = await _context.Doctors
                 .Include(d => d.User)

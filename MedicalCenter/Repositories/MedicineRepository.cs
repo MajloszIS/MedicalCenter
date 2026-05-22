@@ -19,7 +19,7 @@ namespace MedicalCenter.Repositories
             return _context.Medicines.Include(m => m.Category).ToListAsync();
         }
 
-        public Task<Medicine> GetByIdAsync(Guid id)
+        public Task<Medicine?> GetByIdAsync(Guid id)
         {
             return _context.Medicines.Include(m => m.Category).FirstOrDefaultAsync(m => m.Id == id);
         }

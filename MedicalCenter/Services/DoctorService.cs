@@ -35,11 +35,8 @@ namespace MedicalCenter.Services
         }
         public async Task<DoctorDto> GetDoctorByIdAsync(Guid id)
         {
-            var doctor = await _doctorRepository.GetDoctorByIdAsync(id);
-            if (doctor == null)
-            {
-                return null;
-            }
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza");
+
             var doctorDto = new DoctorDto
             {
                 Id = doctor.Id,
@@ -47,9 +44,6 @@ namespace MedicalCenter.Services
                 LastName = doctor.User.LastName,
                 Phone = doctor.User.Phone,
                 SpecializationName = doctor.Specialization.Name,
-                
-
-
             }; 
             return doctorDto;
         }
@@ -119,24 +113,18 @@ namespace MedicalCenter.Services
         }
         public async Task DeleteDoctorAsync(Guid DoctorId)
         {
-            var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId);
-
-            if (doctor != null)
-            {
-                var user = await _userRepository.GetUserByIdAsync(doctor.UserId);
-
-                if (user != null)
-                {
-                    await _doctorRepository.DeleteDoctorAsync(doctor.Id);
-                    await _userRepository.DeleteUserAsync(user.Id);
-                }
-            }
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId) ?? throw new Exception("Nie znaleziono lekarza");
+            var user = await _userRepository.GetUserByIdAsync(doctor.UserId) ?? throw new Exception("Nie znaleziono użytkownika");
+            
+            await _doctorRepository.DeleteDoctorAsync(doctor.Id);
+            await _userRepository.DeleteUserAsync(user.Id);
+            
         }
         public async Task<DoctorProfileDto> GetDoctorProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Błąd");
- 
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza");
+
             var doctorProfileDto = new DoctorProfileDto
             {
                 FirstName = user.FirstName,

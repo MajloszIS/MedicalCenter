@@ -72,8 +72,7 @@ namespace MedicalCenter.Services
         }
         public async Task<UpdateMedicineDto> GetMedicineForEditAsync(Guid id)
         {
-            var medicine = await _medicineRepo.GetByIdAsync(id);
-            if (medicine == null) return null;
+            var medicine = await _medicineRepo.GetByIdAsync(id) ?? throw new Exception("Nie znaleziono leku"); 
 
             return new UpdateMedicineDto
             {
@@ -89,17 +88,15 @@ namespace MedicalCenter.Services
 
         public async Task UpdateMedicineAsync(UpdateMedicineDto dto)
         {
-            var medicine = await _medicineRepo.GetByIdAsync(dto.Id);
-            if (medicine != null)
-            {
-                medicine.Name = dto.Name;
-                medicine.Price = dto.Price;
-                medicine.StockQuantity = dto.StockQuantity;
-                medicine.Description = dto.Description;
-                medicine.CategoryId = dto.CategoryId;
+            var medicine = await _medicineRepo.GetByIdAsync(dto.Id) ?? throw new Exception("Nie znaleziono leku");
+            
+            medicine.Name = dto.Name;
+            medicine.Price = dto.Price;
+            medicine.StockQuantity = dto.StockQuantity;
+            medicine.Description = dto.Description;
+            medicine.CategoryId = dto.CategoryId;
 
-                await _medicineRepo.SaveChangesAsync();
-            }
+            await _medicineRepo.SaveChangesAsync();
         }
         public async Task AddCategoryAsync(MedicineCreateCategoryDTO dto)
         {
