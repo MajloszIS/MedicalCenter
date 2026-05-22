@@ -98,7 +98,7 @@ namespace MedicalCenter.Services
                 OrderId = d.OrderId,
                 PatientFullName = d.Order.Patient.User.FirstName + " " + d.Order.Patient.User.LastName,
                 TotalPrice = d.Order.TotalPrice,
-                StatusName = d.Status != null ? d.Status.Name : "Brak statusu",
+                StatusName = d.Status != null ? d.Status.Name : "Brak statusu!",
                 DeliveryAddress = $"{d.Order.Patient.Address.Street ?? "Brak ulicy!"}, {d.Order.Patient.Address.HouseNumber}, {d.Order.Patient.Address.ApartmentNumber}",   
                 City = d.Order.Patient.Address.City ?? "Brak miasta!",
                 PostalCode = d.Order.Patient.Address.PostalCode ?? "Brak kodu pocztowego!"

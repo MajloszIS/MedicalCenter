@@ -14,7 +14,7 @@ namespace MedicalCenter.Services
 
         public async Task<AddressDto> GetAddressByPatientIdAsync(Guid patientId)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Błąd");
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Nie znaleziono pacjenta.");
 
             var addressDto = new AddressDto
             {
@@ -29,10 +29,10 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateAddressAsync(Guid patientId, AddressDto dto)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Błąd");
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Nie znaleziono pacjenta.");
 
             if (dto == null)
-                throw new Exception("Wprowadź dane do adresu");
+                throw new Exception("Wprowadź dane do adresu.");
 
             if (patient.Address == null)
             {

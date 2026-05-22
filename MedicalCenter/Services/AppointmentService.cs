@@ -77,7 +77,7 @@ namespace MedicalCenter.Services
 
             if(appointments.Any())
             {
-                throw new Exception("Lekarz nie jest dostępny w wybranym terminie");
+                throw new Exception("Lekarz nie jest dostępny w wybranym terminie.");
             }
             else
             { 
@@ -98,7 +98,7 @@ namespace MedicalCenter.Services
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
 
             var appointmentDto = new AppointmentDto
             {
@@ -129,13 +129,13 @@ namespace MedicalCenter.Services
         }
         public async Task CancelAppointmentAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
             appointment.StatusId = 3;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
         public async Task AddNoteAsync(Guid appointmentId, string note)
         { 
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
 
             appointment.Notes = note;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
@@ -151,18 +151,18 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateAppointmentStatusAsync(Guid appointmentId, int statusId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
             appointment.StatusId = statusId;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
         public async Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate, int DurationTime)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
             var appointments = await _appointmentRepository.GetAppointmentsForDoctorInRangeAsync(appointment.DoctorId, newDate, newDate.AddMinutes(DurationTime));
 
             if (appointments.Any())
             {
-                throw new Exception("Lekarz nie jest dostępny w wybranym terminie");
+                throw new Exception("Lekarz nie jest dostępny w wybranym terminie.");
             }
             else
             { 
@@ -172,7 +172,7 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateAppointmentDescriptionAsync(Guid appointmentId, string description)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty.");
             appointment.Description = description;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }

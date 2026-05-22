@@ -20,7 +20,7 @@ namespace MedicalCenter.Services
                 throw new ArgumentNullException("Podano puste dane", nameof(medicalLeaveDto));
 
             if (medicalLeaveDto.DateTo <= medicalLeaveDto.DateFrom)
-                throw new ArgumentException("Data końca musi być późniejsza niż data początku");
+                throw new ArgumentException("Data końca musi być późniejsza niż data początku.");
 
             var medicalLeave = new MedicalLeave
             {
@@ -38,7 +38,7 @@ namespace MedicalCenter.Services
         {
             var medicalLeaves = await _medicalLeaveRepository.GetMedicalLeavesByPatientIdAsync(patientId);
             if (medicalLeaves == null || !medicalLeaves.Any())
-                throw new Exception("Nie znaleziono zwolnień");
+                throw new Exception("Nie znaleziono zwolnień.");
 
             var medicalLeavesDto = medicalLeaves.Select(ml => new MedicalLeaveDto
             { 
@@ -59,7 +59,7 @@ namespace MedicalCenter.Services
         {
             var medicalLeave = await _medicalLeaveRepository.GetMedicalLeaveIdAsync(id);
             if (medicalLeave == null)
-                throw new Exception("Nie znaleziono Zwolnienia");
+                throw new Exception("Nie znaleziono Zwolnienia.");
 
             var document = Document.Create(container =>
             {

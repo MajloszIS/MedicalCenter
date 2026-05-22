@@ -80,7 +80,7 @@ namespace MedicalCenter.Services
                 };
                 await _medicalRecordRepository.CreateMedicalRecordAsync(newMedicalRecord);
                 medicalRecord = await _medicalRecordRepository.GetMedicalRecordByIdAsync(newMedicalRecord.Id)
-                    ?? throw new Exception("Nie znaleziono utworzonej karty medycznej");
+                    ?? throw new Exception("Nie znaleziono utworzonej karty medycznej.");
             }
 
             return MapToDto(medicalRecord);
@@ -91,7 +91,7 @@ namespace MedicalCenter.Services
             var medicalRecord = await _medicalRecordRepository.GetMedicalRecordByIdAsync(id);
             if (medicalRecord == null)
             {
-                throw new Exception("Medical record not found");
+                throw new Exception("Nie znaleziono karty medycznej.");
             }
             else
             {
