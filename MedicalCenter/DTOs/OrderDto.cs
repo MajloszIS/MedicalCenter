@@ -7,6 +7,8 @@
         public string StatusName { get; set; }
         public string PatientFullName { get; set; } 
         public List<OrderItemDto> Items { get; set; } = new List<OrderItemDto>();
+        public int? Rating { get; set; }
+        public string? RatingComment { get; set; }
     }
 
     public class OrderItemDto

@@ -47,5 +47,15 @@ namespace MedicalCenter.Repositories
                     .ThenInclude(p => p.Address)
                 .FirstOrDefaultAsync(i => i.OrderId == orderId);
         }
+        public async Task AddOrderRatingAsync(OrderRating rating)
+        {
+            await _context.OrderRatings.AddAsync(rating);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Dictionary<Guid, OrderRating>> GetOrderRatingsMapAsync()
+        {
+            return await _context.OrderRatings.ToDictionaryAsync(r => r.OrderId);
+        }
     }
 }

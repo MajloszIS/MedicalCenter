@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -18,25 +19,31 @@ namespace MedicalCenter.Services
         public async Task<List<OrderDto>> GetPatientOrdersAsync(Guid patientId)
         {
             var orders = await _orderRepository.GetOrdersByPatientIdAsync(patientId);
-            return MapToDto(orders);
+            var ratings = await _orderRepository.GetOrderRatingsMapAsync();
+            return MapToDto(orders, ratings);
         }
 
         public async Task<List<OrderDto>> GetAllOrdersAsync()
         {
             var orders = await _orderRepository.GetAllOrdersAsync();
-            return MapToDto(orders);
+            var ratings = await _orderRepository.GetOrderRatingsMapAsync();
+            return MapToDto(orders, ratings);
+        }
+        public async Task AddOrderRatingAsync(OrderRating rating)
+        {
+            await _orderRepository.AddOrderRatingAsync(rating);
         }
 
-        private List<OrderDto> MapToDto(List<MedicalCenter.Models.Order> orders)
+        private List<OrderDto> MapToDto(List<MedicalCenter.Models.Order> orders, Dictionary<Guid, OrderRating> ratings)
         {
             return orders.Select(o => new OrderDto
             {
                 Id = o.Id,
                 TotalPrice = o.TotalPrice,
-
                 StatusName = o.Status?.Name ?? TranslateStatusId(o.StatusId.ToString()),
-
                 PatientFullName = o.Patient?.User != null ? $"{o.Patient.User.FirstName} {o.Patient.User.LastName}" : "Nieznany pacjent",
+                Rating = ratings.TryGetValue(o.Id, out var r) ? r.Rating : null,
+                RatingComment = ratings.TryGetValue(o.Id, out var rc) ? rc.Comment : null,
                 Items = o.Items?.Select(i => new OrderItemDto
                 {
                     MedicineName = i.Medicine?.Name ?? "Nieznany lek",
@@ -54,6 +61,7 @@ namespace MedicalCenter.Services
 
             return "Weryfikacja płatności"; 
         }
+
         public async Task<InvoiceDto?> GetInvoiceByOrderIdAsync(Guid orderId)
         {
             var invoice = await _orderRepository.GetInvoiceByOrderIdAsync(orderId);

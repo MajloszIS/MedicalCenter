@@ -9,5 +9,7 @@ namespace MedicalCenter.Repositories
         Task<List<Order>> GetAllOrdersAsync();
         Task<Order> GetOrderByIdAsync(Guid orderId);
         Task<Invoice> GetInvoiceByOrderIdAsync(Guid orderId);
+        Task AddOrderRatingAsync(OrderRating rating);
+        Task<Dictionary<Guid, OrderRating>> GetOrderRatingsMapAsync();
     }
 }

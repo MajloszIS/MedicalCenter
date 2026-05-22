@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.Models;
 using MedicalCenter.Repositories;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,32 @@ namespace MedicalCenter.Controllers
             var orders = await _orderService.GetPatientOrdersAsync(patient.Id);
             return View(orders);
         }
-        
+        [HttpGet]
+        public IActionResult Review(Guid orderId)
+        {
+            ViewBag.OrderId = orderId;
+            return View("OrderReview",new OrderRating { OrderId = orderId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Review(OrderRating model)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Challenge();
+
+            var patient = await _patientRepository.GetPatientByUserIdAsync(Guid.Parse(userIdStr));
+            if (patient == null) return NotFound("Nie znaleziono pacjenta.");
+
+            model.PatientId = patient.Id;
+            model.CreatedAt = DateTime.UtcNow;
+
+            await _orderService.AddOrderRatingAsync(model);
+
+            TempData["Success"] = "Dziękujemy za ocenę zamówienia!";
+            return RedirectToAction("MyOrders");
+        }
+
         [HttpGet]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> DownloadInvoice(Guid orderId)

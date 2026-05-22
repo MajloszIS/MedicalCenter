@@ -1,0 +1,55 @@
+﻿@model MedicalCenter.Models.OrderRating
+
+@{
+    ViewData["Title"] = "Oceń zamówienie";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-8">
+            <div class="medical-card">
+
+                <h4 class="page-title"><i class="fa-solid fa-star text-warning me-2"></i>Oceń zamówienie</h4>
+                <p class="text-muted mb-4">Twoja opinia pomaga nam ulepszać usługi apteczne i dostawy.</p>
+
+                <form asp-action="Review" asp-controller="Order" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+
+                    <div class="mb-3">
+                        <label asp-for="Rating" class="form-label fw-semibold">Oceń w skali 1 do 5</label>
+                        <select asp-for="Rating" class="form-control">
+                            <option value="5">5 - Doskonale</option>
+                            <option value="4">4 - Dobrze</option>
+                            <option value="3" selected>3 - Przeciętnie</option>
+                            <option value="2">2 - Słabo</option>
+                            <option value="1">1 - Tragedia</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Comment" class="form-label fw-semibold">Komentarz (opcjonalnie)</label>
+                        <textarea asp-for="Comment" class="form-control" rows="4" placeholder="Napisz kilka słów o dostawie..."></textarea>
+                    </div>
+
+                    <div>
+                        @if (ViewBag.Error != null)
+                        {
+                            <span class="text-danger fw-bold">@ViewBag.Error</span>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
+                        <i class="fa-solid fa-check me-2"></i>Dodaj opinię
+                    </button>
+
+                    <a asp-action="MyOrders" asp-controller="Order" class="btn btn-outline-secondary w-100 fw-bold mt-2">
+                        Anuluj
+                    </a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
