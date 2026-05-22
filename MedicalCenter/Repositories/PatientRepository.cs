@@ -16,7 +16,7 @@ namespace MedicalCenter.Repositories
         {     
             return _context.Patients.Include(p => p.User).ToListAsync(); 
         }
-        public async Task<Patient> GetPatientByIdAsync(Guid id)
+        public async Task<Patient?> GetPatientByIdAsync(Guid id)
         {     
             var patient = await _context.Patients
                 .Include(p => p.User)
