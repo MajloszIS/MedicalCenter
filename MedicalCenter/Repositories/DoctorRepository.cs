@@ -55,7 +55,7 @@ namespace MedicalCenter.Repositories
             await _context.SaveChangesAsync();
 
         }
-        public async Task<Doctor> GetDoctorByUserIdAsync(Guid userId)
+        public async Task<Doctor?> GetDoctorByUserIdAsync(Guid userId)
         {
             var doctor = await _context.Doctors
                 .Include(d => d.User)
