@@ -332,7 +332,7 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCourier(Guid courierId, UpdateProfileDto updateProfileDto)
+        public async Task<IActionResult> EditCourier(Guid courierId, UpdateCourierProfileDto updateProfileDto)
         {
             var courierUserId = await _userService.GetUserIdByCourierIdAsync(courierId);
             if (courierUserId == Guid.Empty)
