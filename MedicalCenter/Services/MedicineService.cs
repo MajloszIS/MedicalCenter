@@ -56,6 +56,15 @@ namespace MedicalCenter.Services
             await _medicineRepo.AddMedicineAsync(medicine);
             await _medicineRepo.SaveChangesAsync();
         }
+        public async Task DeleteMedicineAsync(Guid id)
+        {
+            var medicine = await _medicineRepo.GetByIdAsync(id);
+
+            if (medicine != null)
+            {
+                await _medicineRepo.DeleteMedicineAsync(medicine);
+            }
+        }
 
         public async Task<List<MedicineCategory>> GetAllCategoriesAsync()
         {

@@ -8,6 +8,7 @@ namespace MedicalCenter.Repositories
         Task<List<Medicine>> GetAllMedicinesAsync();
         Task<Medicine> GetByIdAsync(Guid id);
         Task AddMedicineAsync(Medicine medicine);
+        Task DeleteMedicineAsync(Medicine medicine);
         Task<List<MedicineCategory>> GetAllCategoriesAsync();
         Task SaveChangesAsync();
         Task AddCategoryAsync(MedicineCategory category);

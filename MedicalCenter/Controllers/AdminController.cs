@@ -396,6 +396,17 @@ namespace MedicalCenter.Controllers
 
             return RedirectToAction("Medicines", "Admin");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMedicine(Guid medicineId)
+        {
+            await _medicineService.DeleteMedicineAsync(medicineId);
+
+            TempData["SuccessMessage"] = "Lek został pomyślnie usunięty z bazy.";
+            return RedirectToAction("Medicines");
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditMedicine(Guid medicineId)
         {
