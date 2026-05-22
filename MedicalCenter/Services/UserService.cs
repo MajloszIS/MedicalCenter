@@ -26,13 +26,13 @@ namespace MedicalCenter.Services
         }
         public async Task<LoginResultDto> LoginAsync(LoginDto dto)
         {
-            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email) ?? throw new Exception("Nieprawidłowy adres e-mail lub hasło.");
 
             if (user.PasswordHash == null)
-                throw new Exception("Błąd");
+                throw new Exception("Konto nie posiada przypisanego hasła.");
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new Exception("Błąd");
+                throw new Exception("Nieprawidłowy adres e-mail lub hasło.");
 
             var result = new LoginResultDto
             {
@@ -138,7 +138,7 @@ namespace MedicalCenter.Services
         }
         public async Task<ProfileDto> GetUserProfileAsync(Guid userId)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Nie znaleziono konta użytkownika.");
 
 
             var userProfile = new ProfileDto
@@ -152,7 +152,7 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateProfileAsync(Guid userId, UpdateProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Nie znaleziono konta użytkownika.");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;

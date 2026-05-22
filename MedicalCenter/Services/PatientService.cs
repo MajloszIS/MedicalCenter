@@ -36,10 +36,10 @@ namespace MedicalCenter.Services
         public async Task RegisterAsync(PatientRegisterDto dto)
         {
             if (dto.BirthDate > DateTime.Today.AddYears(-13))
-                throw new Exception("Pacjent musi mieć ukończone 13 lat");
+                throw new Exception("Pacjent musi mieć ukończone 13 lat.");
 
             if (dto.BirthDate < DateTime.Today.AddYears(-120))
-                throw new Exception("Nieprawidłowa data urodzenia");
+                throw new Exception("Nieprawidłowa data urodzenia.");
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             var user = new User
@@ -91,7 +91,7 @@ namespace MedicalCenter.Services
 
         public async Task<PatientDto> GetPatientByIdAsync(Guid id)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(id) ?? throw new Exception("Nie znaleziono Pacjenta");
+            var patient = await _patientRepository.GetPatientByIdAsync(id) ?? throw new Exception("Nie znaleziono Pacjenta.");
 
             var patientDto = new PatientDto
             {
@@ -106,10 +106,10 @@ namespace MedicalCenter.Services
 
         public async Task<PatientDto> GetPatientByUserIdAsync(Guid userId)
         {
-            var patient = await _patientRepository.GetPatientByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono Pacjenta");
+            var patient = await _patientRepository.GetPatientByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono Pacjenta.");
 
             if (patient.User == null)
-                throw new Exception("Pacjent nie ma przypisanego konta użytkownika");
+                throw new Exception("Pacjent nie ma przypisanego konta użytkownika.");
 
             var patientDto = new PatientDto
             {
@@ -149,9 +149,9 @@ namespace MedicalCenter.Services
         }
         public async Task<PatientProfileDto> GetPatientProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
 
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Błąd");
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Nie znaleziono pacjenta.");
 
             var patientProfileDto = new PatientProfileDto
             {
@@ -168,8 +168,8 @@ namespace MedicalCenter.Services
 
         public async Task UpdatePatientProfileAsync(Guid id, UpdatePatientProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Nie znaleziono pacjenta.");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;
@@ -185,8 +185,8 @@ namespace MedicalCenter.Services
 
         public async Task DeletePatientAsync(Guid patientId)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Nie znaleziono pacjenta");
-            var user = await _userRepository.GetUserByIdAsync(patient.UserId) ?? throw new Exception("Nie znaleziono użytkownika");
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Nie znaleziono pacjenta.");
+            var user = await _userRepository.GetUserByIdAsync(patient.UserId) ?? throw new Exception("Nie znaleziono użytkownika.");
 
             await _appointmentRepository.DeleteAppointmentsByPatientIdAsync(patientId);
             await _patientRepository.DeletePatientAsync(patientId);

@@ -28,7 +28,7 @@ namespace MedicalCenter.Services
         {
             if (await _departmentRepository.ExistsAsnyc(departmentDto.Name))
             {
-                throw new Exception("Departament o podanej nazwie już istnieje");
+                throw new Exception("Departament o podanej nazwie już istnieje.");
             }
 
             var departament = new Department
@@ -42,7 +42,7 @@ namespace MedicalCenter.Services
             var department = await _departmentRepository.GetDepartmentByIdAsync(departmentId);
             if (department == null)
             {
-                throw new Exception("Nie znaleziono Departamentu o podanym ID");
+                throw new Exception("Nie znaleziono Departamentu o podanym ID.");
             }
 
             var departamentDto = new DepartmentDto 
@@ -59,7 +59,7 @@ namespace MedicalCenter.Services
             var department = await _departmentRepository.GetDepartmentByIdAsync(departmentId);
             if (department == null)
             {
-                throw new NullReferenceException("Nie znaleziono departamentu");
+                throw new NullReferenceException("Nie znaleziono departamentu.");
             }
             await _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
@@ -68,7 +68,7 @@ namespace MedicalCenter.Services
             var department = await _departmentRepository.GetDepartmentByIdAsync((Guid)departmentDto.Id);
             if(department == null)
             {
-                throw new NullReferenceException("Nie znaleziono departamentu");
+                throw new NullReferenceException("Nie znaleziono departamentu.");
             }
 
             department.Name = departmentDto.Name;

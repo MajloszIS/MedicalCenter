@@ -45,7 +45,7 @@ namespace MedicalCenter.Services
 
         public async Task<CourierDto> GetCourierByIdAsync(Guid id)
         {
-            var courier = await _courierRepository.GetCourierByIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera");
+            var courier = await _courierRepository.GetCourierByIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera.");
             return MapToCourierDto(courier);
         }
 
@@ -84,15 +84,15 @@ namespace MedicalCenter.Services
             var courier = await _courierRepository.GetCourierByIdAsync(CourierId);
             if (courier == null)
             {
-                throw new Exception("Courier not found");
+                throw new Exception("Nie znaleziono kuriera.");
             }
             await _courierRepository.DeleteCourierAsync(CourierId);
         }
 
         public async Task<CourierProfileDto> GetCourierProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika");
-            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
+            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera.");
 
             var courierProfileDto = new CourierProfileDto
             {
@@ -108,8 +108,8 @@ namespace MedicalCenter.Services
 
         public async Task UpdateCourierProfileAsync(Guid id, UpdateCourierProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika");
-            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
+            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Nie znaleziono kuriera.");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;

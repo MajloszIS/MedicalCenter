@@ -34,7 +34,7 @@ namespace MedicalCenter.Services
         }
         public async Task<DoctorDto> GetDoctorByIdAsync(Guid id)
         {
-            var doctor = await _doctorRepository.GetDoctorByIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza");
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza.");
 
             var doctorDto = new DoctorDto
             {
@@ -49,7 +49,7 @@ namespace MedicalCenter.Services
 
         public async Task<DoctorDto> GetDoctorByUserIdAsync(Guid userId)
         {
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono lekarza");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono lekarza.");
             var doctorDto = new DoctorDto
             {
                 Id = doctor.Id,
@@ -79,19 +79,19 @@ namespace MedicalCenter.Services
             var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName);
             if (specialization == null)
             {
-                throw new Exception("Nie znaleziono takiej specjalizacji");
+                throw new Exception("Nie znaleziono takiej specjalizacji.");
             }
 
             if (dto.SelectedDepartmentIds == null || !dto.SelectedDepartmentIds.Any())
             {
-                throw new Exception("Nie podano żadnego departamnetu");
+                throw new Exception("Nie podano żadnego departamnetu.");
             }
 
             var selectedDepartments = await _departmentRepository.GetDepartmentsByIdsAsync(dto.SelectedDepartmentIds);
 
             if (selectedDepartments.Count != dto.SelectedDepartmentIds.Count)
             {
-                throw new Exception("Jeden lub więcej departamentów nie istnieje");
+                throw new Exception("Jeden lub więcej departamentów nie istnieje.");
             }
 
             var doctor = new Doctor
@@ -112,8 +112,8 @@ namespace MedicalCenter.Services
         }
         public async Task DeleteDoctorAsync(Guid DoctorId)
         {
-            var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId) ?? throw new Exception("Nie znaleziono lekarza");
-            var user = await _userRepository.GetUserByIdAsync(doctor.UserId) ?? throw new Exception("Nie znaleziono użytkownika");
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(DoctorId) ?? throw new Exception("Nie znaleziono lekarza.");
+            var user = await _userRepository.GetUserByIdAsync(doctor.UserId) ?? throw new Exception("Nie znaleziono użytkownika.");
             
             await _doctorRepository.DeleteDoctorAsync(doctor.Id);
             await _userRepository.DeleteUserAsync(user.Id);
@@ -121,8 +121,8 @@ namespace MedicalCenter.Services
         }
         public async Task<DoctorProfileDto> GetDoctorProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika");
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Nie znaleziono lekarza.");
 
             var doctorProfileDto = new DoctorProfileDto
             {
@@ -143,8 +143,8 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Błąd");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Nie znaleziono doktora.");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;
@@ -154,7 +154,7 @@ namespace MedicalCenter.Services
 
             if (dto.SpecializationName != null)
             {
-                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName) ?? throw new Exception("Błąd");
+                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName) ?? throw new Exception("Nie znaleziono specjalizacji.");
                 doctor.SpecializationId = specialization.Id;
             }
 

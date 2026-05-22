@@ -68,7 +68,7 @@ namespace MedicalCenter.Services
 
             if (diagnoses == null || !diagnoses.Any())
             {
-                throw new Exception("Nie znaleziono diagnoz");
+                throw new Exception("Nie znaleziono diagnoz.");
             }
 
             var diagnosesDto = diagnoses.Select(diagnosis => new DiagnosisDto
