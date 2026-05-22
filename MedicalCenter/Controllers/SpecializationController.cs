@@ -58,11 +58,11 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSpecialization(Guid specializationId, SpecializationDto dto)
+        public async Task<IActionResult> EditSpecialization(SpecializationDto dto)
         {    
             try
             {
-                await _specializationService.UpdateSpecializationAsync(specializationId, dto);
+                await _specializationService.UpdateSpecializationAsync(dto.Id, dto);
                 return RedirectToAction("Specializations");
             }
             catch (InvalidOperationException ex)

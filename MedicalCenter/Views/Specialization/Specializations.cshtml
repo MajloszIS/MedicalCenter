@@ -58,29 +58,31 @@
                                     </td>
                                     <td class="text-center justify-content-around d-flex"> 
                                         <div class="fw-bold">
+
                                             <form asp-action="EditSpecialization" asp-controller="Specialization" method="post">
                                                 @Html.AntiForgeryToken()
 
-										    	<input type="hidden" name="specializationId" value="@item.Id" />
+										    	<input type="hidden" name="Id" value="@item.Id" />
                                                 <div class="d-flex align-items-center mb-3">
 
-                                                    <span id="name-text"></span>
+                                                    <span id="@item.Id-text"></span>
 
-                                                    <input id="name-input" name="Name" value="@item.Name"
+                                                    <input id="@item.Id-input" name="Name" value="@item.Name"
                                                            class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
 
-                                                    <button type="button" id="name-edit" onclick="enableEdit('name')"
+                                                    <button type="button" id="@item.Id-edit" onclick="enableEdit('@item.Id')"
                                                             class="btn btn-sm btn-link ms-2">
 
                                                         <i class="fa-solid fa-pen text-primary"></i>
                                                     </button>
-                                                    <button type="submit" id="name-save" class="btn btn-sm btn-success ms-2"
+                                                    <button type="submit" id="@item.Id-save" class="btn btn-sm btn-success ms-2"
                                                             style="display:none;">
                                                         <i class="fa-solid fa-check"></i>
                                                     </button>
 
                                                 </div>
                                             </form>
+
                                         </div>
                                         <div class="fw-bold">
                                             <form asp-action="DeleteSpecialization" asp-controller="Specialization" method="post">
@@ -116,11 +118,6 @@
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline';
         }
-
-        document.getElementById('profilePicture').addEventListener('change', function() {
-            const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
-            document.getElementById('fileName').textContent = fileName;
-        });
     </script>
 }
 
