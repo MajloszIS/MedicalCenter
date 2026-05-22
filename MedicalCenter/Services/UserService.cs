@@ -36,17 +36,17 @@ namespace MedicalCenter.Services
             var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email);
             if (user == null)
             {
-                return null;
+                throw new Exception("Błąd");
             }
 
             if (user.PasswordHash == null)
             {
-                return null; // konto Google - nie można logować przez formularz
+                throw new Exception("Błąd");
             }
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
-                return null;
+                throw new Exception("Błąd");
             }
 
             var result = new LoginResultDto

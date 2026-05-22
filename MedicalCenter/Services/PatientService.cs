@@ -106,15 +106,18 @@ namespace MedicalCenter.Services
 
         public async Task<PatientDto> GetPatientByUserIdAsync(Guid userId)
         {
-            var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
+            var patient = await _patientRepository.GetPatientByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono Pacjenta");
+
+            if (patient.User == null)
+                throw new Exception("Pacjent nie ma przypisanego konta użytkownika");
 
             var patientDto = new PatientDto
             {
                 Id = patient.Id,
+                Pesel = patient.Pesel,
                 FirstName = patient.User.FirstName,
                 LastName = patient.User.LastName,
                 Phone = patient.User.Phone,
-                Pesel = patient.Pesel
             };
 
             return patientDto;
@@ -144,11 +147,13 @@ namespace MedicalCenter.Services
 
             return patientDto;
         }
-        public async Task<UpdatePatientProfileDto> GetPatientProfileAsync(Guid id)
+        public async Task<PatientProfileDto> GetPatientProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
-            var patientProfileDto = new UpdatePatientProfileDto
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Błąd");
+
+            var patientProfileDto = new PatientProfileDto
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -163,8 +168,8 @@ namespace MedicalCenter.Services
 
         public async Task UpdatePatientProfileAsync(Guid id, UpdatePatientProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var patient = await _patientRepository.GetPatientByUserIdAsync(id) ?? throw new Exception("Błąd");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;

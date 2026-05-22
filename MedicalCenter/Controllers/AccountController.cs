@@ -45,15 +45,10 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var result = await _userService.LoginAsync(dto);
+            try
+            {
+                var result = await _userService.LoginAsync(dto);
 
-            if (result == null)
-            {
-                ViewBag.Error = "Nieprawidłowy email lub hasło";
-                return View();
-            }
-            else
-            {
                 var identity = new ClaimsIdentity(new Claim[]
                 {
                     new (ClaimTypes.NameIdentifier, result.UserId.ToString()),
@@ -66,6 +61,11 @@ namespace MedicalCenter.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Nieprawidłowy email lub hasło";
+                return View();
             }
         }
 
@@ -124,11 +124,18 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> PatientProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
+            if (userId == null) return RedirectToAction("Logout");
 
-            var patientProfile = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
-
-            return View(patientProfile);
+            try
+            {
+                var patientProfile = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
+                return View(patientProfile);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Logout");
+            }
         }
 
         [HttpPost]
@@ -136,34 +143,55 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> UpdatePatientProfile(UpdatePatientProfileDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
-            await _patientService.UpdatePatientProfileAsync(Guid.Parse(userId), dto);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userId == null || userRole == null) return RedirectToAction("Logout");
 
-            var updatedUser = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
+            try
+            {
+                await _patientService.UpdatePatientProfileAsync(Guid.Parse(userId), dto);
 
-            var identity = new ClaimsIdentity(new Claim[]
-                {
+                var updatedUser = await _patientService.GetPatientProfileAsync(Guid.Parse(userId));
+                if (updatedUser == null)
+                    return RedirectToAction("Logout");
+
+                var identity = new ClaimsIdentity(new Claim[]
+                    {
                     new (ClaimTypes.NameIdentifier, userId),
                     new (ClaimTypes.Email, updatedUser.Email),
                     new Claim(ClaimTypes.Name, $"{updatedUser.FirstName} {updatedUser.LastName}"),
-                    new (ClaimTypes.Role, User.FindFirstValue(ClaimTypes.Role))
-                }, "login");
+                    new (ClaimTypes.Role, userRole)
+                    }, "login");
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            return RedirectToAction("PatientProfile");
+                return RedirectToAction("PatientProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Logout");
+            }
+
         }
 
         public async Task<IActionResult> PatientAddress()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
+            if (userId == null) 
+                return RedirectToAction("Logout");
 
-            var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
+            try
+            {
+                var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
+                var patientAddress = await _addressService.GetAddressByPatientIdAsync(patient.Id);
+                return View(patientAddress);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Logout");
+            }
 
-            var patientAddress = await _addressService.GetAddressByPatientIdAsync(patient.Id);
-
-            return View(patientAddress);
         }
 
         [HttpPost]
@@ -171,12 +199,20 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> UpdatePatientAddress(AddressDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
+            if (userId == null) 
+                return RedirectToAction("Logout");
 
-            var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
-            await _addressService.UpdateAddressAsync(patient.Id, dto);
-
-            return RedirectToAction("PatientProfile");
+            try
+            {
+                var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
+                await _addressService.UpdateAddressAsync(patient.Id, dto);
+                return RedirectToAction("PatientProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Logout");
+            }
         }
 
         // Akcje dla profilu lekarza

@@ -14,11 +14,7 @@ namespace MedicalCenter.Services
 
         public async Task<AddressDto> GetAddressByPatientIdAsync(Guid patientId)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-            if (patient == null)
-            {
-                return null;
-            }
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Błąd");
 
             var addressDto = new AddressDto
             {
@@ -33,18 +29,30 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateAddressAsync(Guid patientId, AddressDto dto)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId) ?? throw new Exception("Błąd");
 
-            if(dto == null)
+            if (dto == null)
+                throw new Exception("Wprowadź dane do adresu");
+
+            if (patient.Address == null)
             {
-                throw new Exception("Address data is required for update.");
+                patient.Address = new Address
+                {
+                    Street = dto.Street,
+                    HouseNumber = dto.HouseNumber,
+                    ApartmentNumber = dto.ApartmentNumber,
+                    PostalCode = dto.PostalCode,
+                    City = dto.City
+                };
             }
-
-            patient.Address.Street = dto.Street;
-            patient.Address.HouseNumber = dto.HouseNumber;
-            patient.Address.ApartmentNumber = dto.ApartmentNumber;
-            patient.Address.PostalCode = dto.PostalCode;
-            patient.Address.City = dto.City;
+            else
+            {
+                patient.Address.Street = dto.Street;
+                patient.Address.HouseNumber = dto.HouseNumber;
+                patient.Address.ApartmentNumber = dto.ApartmentNumber;
+                patient.Address.PostalCode = dto.PostalCode;
+                patient.Address.City = dto.City;
+            }
 
             await _patientRepository.UpdatePatientAsync(patient);
         }
