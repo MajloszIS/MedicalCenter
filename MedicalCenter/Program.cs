@@ -39,6 +39,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IMedicalLeaveRepository, MedicalLeaveRepository>();
+builder.Services.AddScoped<IReferralRepository, ReferralRepository>();
 
 
 // dodanie serwisu
@@ -60,6 +61,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, MedicalCenter.Services.ReviewService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IMedicalLeaveService, MedicalLeaveService>();
+builder.Services.AddScoped<IReferralService, ReferralService>();
 
 
 // dodanie JWT Authentication
