@@ -102,11 +102,8 @@ namespace MedicalCenter.Services
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found");
-            }
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+
             var appointmentDto = new AppointmentDto
             {
                 Id = appointment.Id,
@@ -129,28 +126,21 @@ namespace MedicalCenter.Services
                 AppointmentDate = appointment.AppointmentDate,
                 StatusName = appointment.Status.Name,
                 Description = appointment.Description,
-                Notes = appointment.Notes ?? "Brak notatek",
+                Notes = appointment.Notes,
                 DurationMinutes = appointment.DurationMinutes
             };
             return appointmentDto;
         }
         public async Task CancelAppointmentAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found");
-            }
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
             appointment.StatusId = 3;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
         public async Task AddNoteAsync(Guid appointmentId, string note)
         { 
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found");
-            }
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
+
             appointment.Notes = note;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
@@ -165,18 +155,13 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateAppointmentStatusAsync(Guid appointmentId, int statusId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found");
-            }
-            
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
             appointment.StatusId = statusId;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }
         public async Task RescheduleAppointmentAsync(Guid appointmentId, DateTime newDate, int DurationTime)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
             var appointments = await _appointmentRepository.GetAppointmentsForDoctorInRangeAsync(appointment.DoctorId, newDate, newDate.AddMinutes(DurationTime));
 
             if (appointments.Any())
@@ -185,21 +170,13 @@ namespace MedicalCenter.Services
             }
             else
             { 
-                if (appointment == null)
-                {
-                    throw new Exception("Appointment not found");
-                }
                 appointment.AppointmentDate = newDate;
                 await _appointmentRepository.UpdateAppointmentAsync(appointment);
             }
         }
         public async Task UpdateAppointmentDescriptionAsync(Guid appointmentId, string description)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found");
-            }
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId) ?? throw new Exception("Nie znaleziono Wizyty");
             appointment.Description = description;
             await _appointmentRepository.UpdateAppointmentAsync(appointment);
         }

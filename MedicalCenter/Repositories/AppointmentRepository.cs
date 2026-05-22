@@ -21,7 +21,7 @@ namespace MedicalCenter.Repositories
                 .Include(a => a.Status)
                 .ToListAsync();
         }
-        public Task<Appointment> GetAppointmentByIdAsync(Guid id)
+        public Task<Appointment?> GetAppointmentByIdAsync(Guid id)
         {
             return _context.Appointments
                 .Include(a => a.Patient)

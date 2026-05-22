@@ -5,7 +5,7 @@ namespace MedicalCenter.Repositories
     public interface IAppointmentRepository
     {
         public Task<List<Appointment>> GetAllAppointmentsAsync();
-        public Task<Appointment> GetAppointmentByIdAsync(Guid id);
+        public Task<Appointment?> GetAppointmentByIdAsync(Guid id);
         public Task<List<Appointment>> GetAppointmentsByDoctorIdAsync(Guid doctorId);
         public Task CreateAppointmentAsync(Appointment appointment);
         public Task UpdateAppointmentAsync(Appointment appointment);
