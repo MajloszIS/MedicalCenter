@@ -20,7 +20,10 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Adres Email</label>
-                            <input type="email" name="Email" class="form-control" placeholder="przyklad@poczta.pl" required />
+                            <input type="email" name="Email" class="form-control" placeholder="przyklad@poczta.pl" 
+                                pattern="^[a-zA-Z0-9._%+\-]+@@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" 
+                                title="Wprowadź poprawny adres e-mail, zawierający znak '@@' oraz domenę (np. .pl, .com)." 
+                                required />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Hasło</label>
@@ -34,19 +37,30 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Imię</label>
-                            <input type="text" name="FirstName" class="form-control" required />
+                            <input type="text" name="FirstName" class="form-control"
+                                   pattern="^[A-ZĄĆĘŁŃÓŚŹŻ][a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s\-]*$"
+                                   title="Imię musi zaczynać się z wielkiej litery i nie może zawierać cyfr."
+                                   required />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Nazwisko</label>
-                            <input type="text" name="LastName" class="form-control" required />
+                            <input type="text" name="LastName" class="form-control"
+                                   pattern="^[A-ZĄĆĘŁŃÓŚŹŻ][a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s\-]*$"
+                                   title="Nazwisko musi zaczynać się z wielkiej litery i nie może zawierać cyfr."
+                                   required />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">PESEL</label>
-                            <input type="text" name="Pesel" class="form-control" maxlength="11" pattern="[0-9]{11}" placeholder="11 cyfr" required />
+                            <input type="text" name="Pesel" class="form-control" maxlength="11" pattern="[0-9]{11}" title="PESEL składać się z 11 cyfr." placeholder="11 cyfr" required />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Numer telefonu</label>
-                            <input type="tel" name="Phone" class="form-control" placeholder="np. 123456789" required />
+                            <input type="tel" name="Phone" class="form-control" placeholder="np. 123456789"
+                                   minlength="9"
+                                   maxlength="9"
+                                   pattern="[0-9]{9}"
+                                   title="Numer telefonu musi składać się z dokładnie 9 cyfr (bez spacji i kierunkowego)."
+                                   required />
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-bold">Data urodzenia</label>
