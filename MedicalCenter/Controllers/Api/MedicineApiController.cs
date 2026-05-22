@@ -29,14 +29,15 @@ namespace MedicalCenter.Controllers.Api
         [HttpGet("{id}")]
         public async Task<ActionResult<UpdateMedicineDto>> GetMedicineById(Guid id)
         {
-            var medicine = await _medicineService.GetMedicineForEditAsync(id);
-
-            if (medicine == null)
+            try
             {
-                return StatusCode(420,"Nie znaleziono leku o podanym identyfikatorze.");
+                var medicine = await _medicineService.GetMedicineForEditAsync(id);
+                return Ok(medicine);
             }
-
-            return Ok(medicine);
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // POST: api/medicine
@@ -56,7 +57,7 @@ namespace MedicalCenter.Controllers.Api
             }
             catch (Exception ex)
             {
-                return StatusCode(418,"Jestem czajnikiem");
+                return StatusCode(418,$"Jestem czajnikiem {ex.Message}");
             }
         }
 
@@ -97,15 +98,17 @@ namespace MedicalCenter.Controllers.Api
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMedicine(Guid id)
         {
-            var medicine = await _medicineService.GetMedicineForEditAsync(id);
-            if (medicine == null)
+            try
             {
-                return StatusCode(420,"Nie znaleziono leku do usunięcia.");
+                await _medicineService.GetMedicineForEditAsync(id);
+
+                await _medicineService.DeleteMedicineAsync(id);
+                return Ok("Lek został usunięty z bazy.");
             }
-
-            await _medicineService.DeleteMedicineAsync(id);
-
-            return Ok("Lek został usunięty z bazy.");
+            catch (Exception ex)
+            {
+                return StatusCode(420,ex.Message);
+            }
         }
     }
 }

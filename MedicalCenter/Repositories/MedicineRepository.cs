@@ -49,7 +49,7 @@ namespace MedicalCenter.Repositories
         }
         public async Task<MedicineCategory> GetCategoryByIdAsync(Guid id)
         {
-            return await _context.MedicineCategories.FindAsync(id);
+            return await _context.MedicineCategories.FindAsync(id) ?? throw new Exception("Nie znaleziono kategorii leku.");
         }
 
         public async Task UpdateCategoryAsync(MedicineCategory category)
