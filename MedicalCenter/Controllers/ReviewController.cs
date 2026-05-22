@@ -30,7 +30,7 @@ namespace MedicalCenter.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Nie udało się załadować danych lekarza.";
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Index", "Doctors");
             }
         }

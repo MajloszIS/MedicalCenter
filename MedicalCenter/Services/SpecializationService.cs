@@ -71,7 +71,7 @@ namespace MedicalCenter.Services
             var specialization = await _specializationRepository.GetSpecializationByIdAsync(id);
             if (specialization == null)
             {
-                return;
+                throw new Exception("Nie znaleziono specjalizacji.");
             }
             await _specializationRepository.DeleteSpecializationAsync(id);
         }
