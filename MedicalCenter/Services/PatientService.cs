@@ -69,8 +69,8 @@ namespace MedicalCenter.Services
             var user = new User
             {
                 Email = email,
-                FirstName = firstName ?? "Użytkownik",
-                LastName = lastName ?? "Google",
+                FirstName = firstName,
+                LastName = lastName,
                 PasswordHash = null, // Google user doesn't have a password
                 RoleId = 3
             };

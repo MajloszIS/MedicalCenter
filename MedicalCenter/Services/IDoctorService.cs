@@ -9,7 +9,7 @@ namespace MedicalCenter.Services
         public Task <DoctorDto> GetDoctorByUserIdAsync(Guid userId);
         public Task CreateDoctorAsync(AdminCreateDoctorDto dto);
         public Task DeleteDoctorAsync(Guid DoctorId);
-        public Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id);
+        public Task<DoctorProfileDto> GetDoctorProfileAsync(Guid id);
         public Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto);
         public Task<List<SpecializationDto>> GetAllSpecializationsAsync();
         public Task<List<DoctorDto>> GetDoctorsBySpecializationAsync(string specializationName);

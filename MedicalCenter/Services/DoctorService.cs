@@ -132,15 +132,12 @@ namespace MedicalCenter.Services
                 }
             }
         }
-        public async Task<UpdateDoctorProfileDto> GetDoctorProfileAsync(Guid id)
+        public async Task<DoctorProfileDto> GetDoctorProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id);
-            if (doctor == null)
-            {
-                return null;
-            }
-            var doctorProfileDto = new UpdateDoctorProfileDto
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Błąd");
+ 
+            var doctorProfileDto = new DoctorProfileDto
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -159,21 +156,19 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(id) ?? throw new Exception("Błąd");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;
             user.Phone = dto.Phone ?? user.Phone;
             user.Email = dto.Email ?? user.Email;
             doctor.LicenseNumber = dto.LicenseNumber ?? doctor.LicenseNumber;
+
             if (dto.SpecializationName != null)
             {
-                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName);
-                if (specialization != null)
-                {
-                    doctor.SpecializationId = specialization.Id;
-                }
+                var specialization = await _specializationsRepository.GetSpecializationByNameAsync(dto.SpecializationName) ?? throw new Exception("Błąd");
+                doctor.SpecializationId = specialization.Id;
             }
 
             if (dto.SelectedDepartmentIds != null)

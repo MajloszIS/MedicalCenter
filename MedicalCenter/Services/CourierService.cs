@@ -87,15 +87,12 @@ namespace MedicalCenter.Services
             await _courierRepository.DeleteCourierAsync(CourierId);
         }
 
-        public async Task<UpdateProfileDto> GetCourierProfileAsync(Guid id)
+        public async Task<CourierProfileDto> GetCourierProfileAsync(Guid id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var courier = await _courierRepository.GetCourierByUserIdAsync(id);
-            if (courier == null)
-            {
-                throw new Exception("Courier not found");
-            }
-            var courierProfileDto = new UpdateProfileDto
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Błąd");
+
+            var courierProfileDto = new CourierProfileDto
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -107,10 +104,10 @@ namespace MedicalCenter.Services
             return courierProfileDto;
         }
 
-        public async Task UpdateCourierProfileAsync(Guid id, UpdateProfileDto dto)
+        public async Task UpdateCourierProfileAsync(Guid id, UpdateCourierProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            var courier = await _courierRepository.GetCourierByUserIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Błąd");
+            var courier = await _courierRepository.GetCourierByUserIdAsync(id) ?? throw new Exception("Błąd");
 
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;

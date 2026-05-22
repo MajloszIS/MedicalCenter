@@ -23,6 +23,6 @@ namespace MedicalCenter.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Patient Patient { get; set; } = null!;
-        public Doctor Doctor { get; set; } = null!;
+        public Order Order { get; set; } = null!;
     }
 }

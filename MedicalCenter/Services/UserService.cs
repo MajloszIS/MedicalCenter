@@ -33,21 +33,13 @@ namespace MedicalCenter.Services
         }
         public async Task<LoginResultDto> LoginAsync(LoginDto dto)
         {
-            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email);
-            if (user == null)
-            {
-                throw new Exception("Błąd");
-            }
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(dto.Email) ?? throw new Exception("Błąd");
 
             if (user.PasswordHash == null)
-            {
                 throw new Exception("Błąd");
-            }
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            {
                 throw new Exception("Błąd");
-            }
 
             var result = new LoginResultDto
             {
@@ -84,11 +76,7 @@ namespace MedicalCenter.Services
         }
         public async Task<UserWithRoleDto> GetUserByEmailWithRoleAsync(string email)
         {
-            var user = await _userRepository.GetUserByEmailWithRoleAsync(email);
-            if (user == null)
-            {
-                return null;
-            }
+            var user = await _userRepository.GetUserByEmailWithRoleAsync(email) ?? throw new Exception("Błąd");
 
             var result = new UserWithRoleDto
             {
@@ -167,12 +155,12 @@ namespace MedicalCenter.Services
                 RoleName = user.RoleName
             };
         }
-        public async Task<UpdateProfileDto> GetUserProfileAsync(Guid userId)
+        public async Task<ProfileDto> GetUserProfileAsync(Guid userId)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null) return null;
+            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Błąd");
 
-            var userProfile = new UpdateProfileDto
+
+            var userProfile = new ProfileDto
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -183,12 +171,13 @@ namespace MedicalCenter.Services
         }
         public async Task UpdateProfileAsync(Guid userId, UpdateProfileDto dto)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null) return;
+            var user = await _userRepository.GetUserByIdAsync(userId) ?? throw new Exception("Błąd");
+
             user.FirstName = dto.FirstName ?? user.FirstName;
             user.LastName = dto.LastName ?? user.LastName;
             user.Phone = dto.Phone ?? user.Phone;
             user.Email = dto.Email ?? user.Email;
+
             await _userRepository.UpdateUserAsync(user);
         }
     }
