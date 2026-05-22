@@ -86,16 +86,24 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(PatientRegisterDto dto)
         {
-            if (await _userService.IsUserWithThisEmailExists(dto.Email))
-            {
-                ViewBag.Error = "Konto z tym Email już istnieje";
-                return View();
-            }
-
             if (ModelState.IsValid)
             {
-                await _patientService.RegisterAsync(dto);
-                return RedirectToAction("Index", "Home");
+                if (await _userService.IsUserWithThisEmailExists(dto.Email))
+                {
+                    ViewBag.Error = "Konto z tym Email już istnieje";
+                    return View();
+                }
+
+                try
+                {
+                    await _patientService.RegisterAsync(dto);
+                    return RedirectToAction("Login");
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Error = ex.Message; 
+                    return View(dto); 
+                }
             }
 
             return View();
@@ -397,6 +405,11 @@ namespace MedicalCenter.Controllers
                 return RedirectToAction("Logout");
 
             var result = await _userService.ChangePasswordAsync(Guid.Parse(userId), oldPassword, newPassword);
+            if (result)
+                TempData["Success"] = "Pomyślnie zmieniono hasło";
+            else
+                TempData["ErrorMessage"] = "Nie udało się zmienić hasła";
+
             return RedirectToAction("Profile");
         }
 
@@ -406,7 +419,7 @@ namespace MedicalCenter.Controllers
         {
             if (profilePicture == null || profilePicture.Length == 0)
             {
-                ViewBag.Error = "Nie wybrano pliku";
+                TempData["ErrorMessage"] = "Nie wybrano pliku";
                 return RedirectToAction("Profile");
             }
 
@@ -415,7 +428,7 @@ namespace MedicalCenter.Controllers
             var extension = Path.GetExtension(profilePicture.FileName).ToLower();
             if (!allowedExtensions.Contains(extension))
             {
-                ViewBag.Error = "Dozwolone tylko JPG i PNG";
+                 TempData["ErrorMessage"] = "Dozwolone tylko JPG i PNG";
                 return RedirectToAction("Profile");
             }
 

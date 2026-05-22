@@ -38,6 +38,12 @@ namespace MedicalCenter.Services
 
         public async Task RegisterAsync(PatientRegisterDto dto)
         {
+            if (dto.BirthDate > DateTime.Today.AddYears(-13))
+                throw new Exception("Pacjent musi mieć ukończone 13 lat");
+
+            if (dto.BirthDate < DateTime.Today.AddYears(-120))
+                throw new Exception("Nieprawidłowa data urodzenia");
+
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             var user = new User
             {

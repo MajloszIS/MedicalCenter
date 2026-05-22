@@ -23,13 +23,9 @@ namespace MedicalCenter.Services
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(email);
             if (existingUser != null)
-            {
                 return true;
-            }
             else
-            {
                 return false;
-            }
         }
         public async Task<LoginResultDto> LoginAsync(LoginDto dto)
         {

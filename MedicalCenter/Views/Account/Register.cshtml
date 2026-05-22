@@ -50,7 +50,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-bold">Data urodzenia</label>
-                            <input type="date" name="BirthDate" class="form-control" required />
+                            <input id="birthDate" name="BirthDate" class="form-control" required placeholder="Wybierz datę urodzenia" />
                         </div>
                     </div>
                 </div>
@@ -70,3 +70,15 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#birthDate", {
+        dateFormat: "Y-m-d",
+        maxDate: new Date().fp_incr(-13 * 365),
+        disableMobile: true
+        });
+    </script>
+}

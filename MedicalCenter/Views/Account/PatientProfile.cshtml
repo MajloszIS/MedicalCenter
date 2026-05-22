@@ -133,6 +133,7 @@
                         </span>
                         <input id="birthDate-input" name="BirthDate" type="date" value="@Model.BirthDate"
                                class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+
                         <button type="button" id="birthDate-edit" onclick="enableEdit('birthDate')"
                                 class="btn btn-sm btn-link ms-2">
 
@@ -154,7 +155,7 @@
                             { <text>@Model.Pesel</text> }
                         </span>
                         <input id="pesel-input" name="Pesel" value="@Model.Pesel"
-                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" />
+                               class="form-control form-control-sm ms-2" style="display:none; width:200px;" value="@(Model.BirthDate?.ToString("yyyy-MM-dd"))" />
                         <button type="button" id="pesel-edit" onclick="enableEdit('pesel')"
                                 class="btn btn-sm btn-link ms-2">
 
@@ -205,6 +206,17 @@
 
 
 @section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#birthDate-input", {
+        dateFormat: "Y-m-d",
+        maxDate: new Date().fp_incr(-13 * 365),
+        defaultDate: "@(Model.BirthDate?.ToString("yyyy-MM-dd"))",
+        disableMobile: true
+        });
+    </script>
+
 
     <script>
         function enableEdit(fieldId) {
@@ -225,4 +237,3 @@
         });
     </script>
 }
-
