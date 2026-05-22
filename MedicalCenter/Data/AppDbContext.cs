@@ -178,8 +178,7 @@ namespace MedicalCenter.Data
 
             // ADDRESSES
             var adresPacjenta = Guid.Parse("55555555-1111-1111-1111-111111111111");
-            var adresLekarza = Guid.Parse("55555555-2222-2222-2222-222222222222");
-            var adresKuriera = Guid.Parse("55555555-3333-3333-3333-333333333333");
+           
 
             modelBuilder.Entity<Address>().HasData(
                 new Address
@@ -190,24 +189,6 @@ namespace MedicalCenter.Data
                     ApartmentNumber = "5",
                     PostalCode = "15-424",
                     City = "Białystok"
-                },
-                new Address
-                {
-                    Id = adresLekarza,
-                    Street = "Warszawska",
-                    HouseNumber = "88",
-                    ApartmentNumber = "2",
-                    PostalCode = "15-077",
-                    City = "Białystok"
-                },
-                new Address
-                {
-                    Id = adresKuriera,
-                    Street = "Sienkiewicza",
-                    HouseNumber = "3",
-                    ApartmentNumber = "10",
-                    PostalCode = "18-300",
-                    City = "Zambrów"
                 }
             );
 
@@ -222,7 +203,7 @@ namespace MedicalCenter.Data
                 {
                     Id = adminUserId,
                     Email = "admin@medical.pl",
-                    PasswordHash = "admin123",
+                    PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e",
                     FirstName = "Adam",
                     LastName = "Nowak",
                     Phone = "111222333",
@@ -233,7 +214,7 @@ namespace MedicalCenter.Data
                 {
                     Id = doctorUserId,
                     Email = "lekarz@medical.pl",
-                    PasswordHash = "doctor123",
+                    PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e",
                     FirstName = "Jan",
                     LastName = "Kowalski",
                     Phone = "222333444",
@@ -244,7 +225,7 @@ namespace MedicalCenter.Data
                 {
                     Id = patientUserId,
                     Email = "pacjent@medical.pl",
-                    PasswordHash = "patient123",
+                    PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e",
                     FirstName = "Anna",
                     LastName = "Wiśniewska",
                     Phone = "333444555",
@@ -255,8 +236,8 @@ namespace MedicalCenter.Data
                 {
                     Id = courierUserId,
                     Email = "kurier@medical.pl",
-                    PasswordHash = "courier123",
-                    FirstName = "Piotr",
+                    PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e",
+                    FirstName = "Wiesław",
                     LastName = "Szybki",
                     Phone = "999888777",
                     RoleId = 4,
@@ -363,6 +344,15 @@ namespace MedicalCenter.Data
                 new Medicine
                 {
                     Id = Guid.Parse("bbbbbbbb-3333-3333-3333-333333333333"),
+                    Name = "Maść na Ból Dupy",
+                    Price = 999999.99m,
+                    StockQuantity = 1,
+                    Description = "Silny lek przeciwbólowy",
+                    CategoryId = przeciwboloweId
+                },
+                new Medicine
+                {
+                    Id = Guid.Parse("bbbbbbbb-4444-4444-4444-444444444444"),
                     Name = "Amotaks",
                     Price = 29.99m,
                     StockQuantity = 40,
@@ -371,7 +361,7 @@ namespace MedicalCenter.Data
                 },
                 new Medicine
                 {
-                    Id = Guid.Parse("bbbbbbbb-4444-4444-4444-444444444444"),
+                    Id = Guid.Parse("bbbbbbbb-5555-5555-5555-555555555555"),
                     Name = "Syrop na kaszel",
                     Price = 21.30m,
                     StockQuantity = 65,
@@ -379,7 +369,6 @@ namespace MedicalCenter.Data
                     CategoryId = syropyId
                 }
             );
-
         }
     }
 }
