@@ -1,4 +1,6 @@
-﻿namespace MedicalCenter.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MedicalCenter.DTOs
 {
     public class PrescriptionItemDto
     {
@@ -8,6 +10,9 @@
         public Guid MedicineId { get; set; }
 
         public int Quantity { get; set; }
+
+        [StringLength(100)]
+        public string? Notes { get; set; }
 
         public MedicineDto Medicine { get; set; }
     }

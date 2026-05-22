@@ -47,6 +47,7 @@ namespace MedicalCenter.Services
                         PrescriptionId = i.PrescriptionId,
                         MedicineId = i.MedicineId,
                         Quantity = i.Quantity,
+                        Notes = i.Notes,
                         Medicine = i.Medicine != null ? new MedicineDto
                         {
                             Id = i.Medicine.Id,

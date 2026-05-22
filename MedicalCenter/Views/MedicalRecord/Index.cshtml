@@ -6,7 +6,7 @@
     <div class="row g-4">
         
         <!-- lewa kolumna -->
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <!-- info o pacjencie -->
             <div class="medical-card mb-4">
 
@@ -140,7 +140,7 @@
         </div>
 
         <!-- prawa kolumna -->
-        <div class="col-lg-4">
+        <div class="col-lg-5">
             <!-- dodaj receptę -->
             <div class="medical-card mb-4">
 				<div>
@@ -164,6 +164,10 @@
 
 							<label class="">Ilość:</label>
 							<input type="number" id="quantityInput" class="form-control mb-3" min="1" value="1" />
+
+							<div class="mb-3 col-12">
+								<textarea class="form-control form-control-sm" rows="2" id="notes" name="notes" placeholder="Dodaj wskazówki do leku"></textarea>
+							</div>
 
 							<button class="btn btn-outline-primary btn-sm mb-3" type="button" onclick="addMedicine()">
 								<i class="fa-solid fa-plus me-1"></i>Dodaj lek
@@ -224,6 +228,12 @@
 									<i class="fa-solid fa-pills text-primary me-2"></i>
 									<span class="fw-semibold">@item.Medicine.Name</span>
 									<span class="text-muted ms-2">— @item.Quantity szt.</span>
+										@if (!string.IsNullOrEmpty(item.Notes))
+										{
+											<span class="text-muted small mt-1">
+												<i class="fa-solid fa-circle-info me-1"></i>@item.Notes
+											</span>
+										}
 								</div>
 									<form asp-action="RemovePrescriptionItem" asp-controller="MedicalRecord" method="post">
 										@Html.AntiForgeryToken()
@@ -253,6 +263,7 @@
 		function addMedicine() {
 			const select = document.getElementById('medicineSelect');
 			const quantity = document.getElementById('quantityInput').value;
+			const notes = document.getElementById('notes').value;
 			const medicineId = select.value;
 			const medicineName = select.options[select.selectedIndex].dataset.name;
 
@@ -267,6 +278,7 @@
 						<i class="fa-solid fa-pills text-primary me-2"></i>
 						<span class="fw-semibold">${medicineName}</span>
 						<span class="text-muted ms-2">— ${quantity} szt.</span>
+						${notes ? `<span class="text-muted small">${notes}</span>` : ''}
 					</div>
 					<button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem('item-${itemCount}')">
 						<i class="fa-solid fa-xmark"></i>
