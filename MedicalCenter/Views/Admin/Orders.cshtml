@@ -12,6 +12,7 @@
                 <th>ID Zamówienia</th>
                 <th>Pacjent</th>
                 <th>Status</th>
+                <th>Ocena</th>
                 <th>Kwota</th>
                 <th>Leki</th>
             </tr>
@@ -20,9 +21,30 @@
             @foreach (var order in Model)
             {
                 <tr>
-                    <td><small class="text-muted">@order.Id</small></td>
+                    <td><small class="text-muted">@order.Id.ToString().Substring(0, 8)...</small></td>
                     <td class="fw-bold">@order.PatientFullName</td>
                     <td><span class="badge bg-secondary">@order.StatusName</span></td>
+
+                    <td>
+                        @if (order.Rating.HasValue)
+                        {
+                            <div class="text-warning mb-1">
+                                @for (int i = 0; i < order.Rating.Value; i++)
+                                {
+                                    <i class="fa-solid fa-star"></i>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(order.RatingComment))
+                            {
+                                <small class="text-muted d-block" style="max-width: 150px; font-style: italic;">"@order.RatingComment"</small>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Brak</span>
+                        }
+                    </td>
+
                     <td class="fw-bold text-success">@order.TotalPrice.ToString("C")</td>
                     <td>
                         @foreach (var item in order.Items)

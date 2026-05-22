@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Services
 {
@@ -7,6 +8,7 @@ namespace MedicalCenter.Services
         Task<List<OrderDto>> GetPatientOrdersAsync(Guid patientId);
         Task<List<OrderDto>> GetAllOrdersAsync();
         Task<InvoiceDto> GetInvoiceByOrderIdAsync(Guid orderId);
+        Task AddOrderRatingAsync(OrderRating rating);
         byte[] GenerateInvoicePdf(InvoiceDto invoice);
     }
 }

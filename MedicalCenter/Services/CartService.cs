@@ -146,6 +146,8 @@ namespace MedicalCenter.Services
                     StatusId = 1
                 };
 
+                await _cartRepository.AddDeliveryAsync(delivery);
+
                 decimal vatRate = 0.08m;
                 decimal netAmount = order.TotalPrice / (1 + vatRate);
                 decimal taxAmount = order.TotalPrice - netAmount;

@@ -31,12 +31,24 @@ else
                     </div>
 
                     <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                        <div>
+                        <div class="d-flex gap-2">
                             @if (order.StatusName != "Nowe")
                             {
                                 <a asp-controller="Order" asp-action="DownloadInvoice" asp-route-orderId="@order.Id" class="btn btn-sm btn-outline-primary fw-bold">
-                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                    <i class="fa-solid fa-file-pdf"></i> Faktura
                                 </a>
+                            }
+                            @if (order.StatusName == "Zakończone" && !order.Rating.HasValue)
+                            {
+                                <a asp-controller="Order" asp-action="Review" asp-route-orderId="@order.Id" class="btn btn-sm btn-warning fw-bold text-dark">
+                                    <i class="fa-solid fa-star"></i> Oceń
+                                </a>
+                            }
+                            else if (order.StatusName == "Zakończone" && order.Rating.HasValue)
+                            {
+                                <span class="badge bg-light text-success border border-success fw-bold py-2">
+                                    <i class="fa-solid fa-circle-check me-1"></i> Oceniono (@order.Rating/5)
+                                </span>
                             }
                         </div>
                         <div class="text-success fw-bold">
