@@ -72,15 +72,6 @@ namespace MedicalCenter.Services
         public async Task<MedicalRecordDto> GetOrCreateAsync(Guid doctorId, Guid patientId)
         {
             var medicalRecord = await _medicalRecordRepository.GetByDoctorAndPatientAsync(doctorId, patientId);
-            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-            var patientDto = new PatientDto
-            {
-                Id = patientId,
-                FirstName = patient.User.FirstName,
-                LastName = patient.User.LastName,
-                Phone = patient.User.Phone,
-                Pesel = patient.Pesel
-            };
 
             if (medicalRecord == null)
             {
@@ -90,7 +81,8 @@ namespace MedicalCenter.Services
                     PatientId = patientId
                 };
                 await _medicalRecordRepository.CreateMedicalRecordAsync(newMedicalRecord);
-                medicalRecord = await _medicalRecordRepository.GetMedicalRecordByIdAsync(newMedicalRecord.Id);
+                medicalRecord = await _medicalRecordRepository.GetMedicalRecordByIdAsync(newMedicalRecord.Id)
+                    ?? throw new Exception("Nie znaleziono utworzonej karty medycznej");
             }
 
             return MapToDto(medicalRecord);

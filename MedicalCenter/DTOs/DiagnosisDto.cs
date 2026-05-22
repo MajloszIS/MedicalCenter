@@ -8,7 +8,7 @@
 
         public string Description { get; set; }
 
-        public List<TreatmentDto> Treatments { get; set; }
+        public List<TreatmentDto> Treatments { get; set; } = new List<TreatmentDto>();
         public DateTime DiagnosedAt { get; set; }
     }
 }

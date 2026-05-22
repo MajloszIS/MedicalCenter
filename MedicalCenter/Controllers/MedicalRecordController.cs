@@ -1,11 +1,15 @@
-﻿using MedicalCenter.Services;
-using MedicalCenter.DTOs;
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
+using MedicalCenter.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {
+    [Authorize(Roles = "Doctor")]
     public class MedicalRecordController : Controller
     {
         private readonly IMedicalRecordService _medicalRecordService;
@@ -33,22 +37,39 @@ namespace MedicalCenter.Controllers
             _treatmentService = treatmentService;
         }
 
-        [Authorize(Roles = "Doctor")]
+        private async Task<IActionResult> LogoutAndRedirect()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
         public async Task<IActionResult> Index(Guid patientId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+            if (userId == null)
+            {
+                TempData["ErrorMessage"] = "Wylogowano";
+                return await LogoutAndRedirect();
+            }
 
-            var medicalRecord = await _medicalRecordService.GetOrCreateAsync(doctor.Id, patientId);
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+                var medicalRecord = await _medicalRecordService.GetOrCreateAsync(doctor.Id, patientId);
+                var medicines = await _medicineService.GetAvailableMedicinesAsync();
+                ViewBag.Medicines = medicines;
 
-            var medicines = await _medicineService.GetAvailableMedicinesAsync();
-            ViewBag.Medicines = medicines;
+                return View(medicalRecord);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients", "Doctor");
+            }
 
-            return View(medicalRecord);
         }
 
         // Metoda do dodawania Diagnozy
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddDiagnosis(Guid medicalRecordId, Guid patientId)
         {
             ViewBag.MedicalRecordId = medicalRecordId;
@@ -56,18 +77,15 @@ namespace MedicalCenter.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDiagnosis(Guid patientId, DiagnosisDto diagnosisDto)
         {
             await _diagnosisService.CreateDiagnosisAsync(diagnosisDto);
-
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
 
         // Metoda do usuwania Diagnozy
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveDiagnosis(Guid diagnosisId, Guid patientId)
@@ -77,7 +95,6 @@ namespace MedicalCenter.Controllers
         }
 
         // Metoda do dodawnia leczenia do diagnozy
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddTreatment(Guid medicalRecordId, Guid patientId)
         {
             ViewBag.MedicalRecordId = medicalRecordId;
@@ -85,23 +102,15 @@ namespace MedicalCenter.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTreatment(Guid diagnosisId, Guid patientId, string description)
+        public async Task<IActionResult> AddTreatment(Guid patientId, TreatmentDto treatmentDto)
         {
-            var treatmentDto = new TreatmentDto
-            {
-                Description = description,
-                DiagnosisId = diagnosisId   
-            };
             await _treatmentService.CreateTreatmentAsync(treatmentDto);
-
             return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
         }
 
         // Metoda do usuwania leczenia z diagnozy
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveTreatment(Guid treatmentId, Guid patientId)
@@ -111,7 +120,6 @@ namespace MedicalCenter.Controllers
         }
 
         // Metoda do dodawnia recepty
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId)
         {
             ViewBag.MedicalRecordId = medicalRecordId;
@@ -120,48 +128,69 @@ namespace MedicalCenter.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId, List<Guid> medicineIds, List<int> quantities, List<string> notes)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
-
-            foreach (var id in medicineIds)
+            if (userId == null)
             {
-                Console.WriteLine($"MedicineId: {id}");
+                TempData["ErrorMessage"] = "Wylogowano";
+                return await LogoutAndRedirect();
             }
 
-            var prescriptionDto = new PrescriptionDto
+            try
             {
-                MedicalRecordId = medicalRecordId,
-                DoctorId = doctor.Id,
-                Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index],  Notes = notes[index] }).ToList()
-            };
-            await _prescriptionService.CreatePrescription(prescriptionDto);
+                var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+                var prescriptionDto = new PrescriptionDto
+                {
+                    MedicalRecordId = medicalRecordId,
+                    DoctorId = doctor.Id,
+                    Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index], Notes = notes[index] }).ToList()
+                };
+                await _prescriptionService.CreatePrescription(prescriptionDto);
 
-            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { patientId = patientId });
+            }
         }
 
         // Metoda do usuwania recepty
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePrescription(Guid prescriptionId, Guid patientId)
         {
-            await _prescriptionService.DeletePrescription(prescriptionId);
-            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+            try
+            {
+                await _prescriptionService.DeletePrescription(prescriptionId);
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { patientId = patientId });
+            }
         }
 
         // Metoda do dodawnia leków z recept
-        [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePrescriptionItem(Guid itemId, Guid patientId)
         {
-            await _prescriptionService.DeletePrescriptionItemAsync(itemId);
-            return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+            try
+            {
+                await _prescriptionService.DeletePrescriptionItemAsync(itemId);
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { patientId = patientId });
+            }
         }
     }
 }

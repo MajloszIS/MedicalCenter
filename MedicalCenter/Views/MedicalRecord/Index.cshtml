@@ -98,11 +98,11 @@
 								<form asp-action="AddTreatment" asp-controller="MedicalRecord" method="post">
 									@Html.AntiForgeryToken()
 
-									<input type="hidden" name="diagnosisId" value="@diagnosis.Id" />
+									<input type="hidden" name="DiagnosisId" value="@diagnosis.Id" />
 									<input type="hidden" name="patientId" value="@Model.PatientId" />
 
 									<div class="mb-3 col-4">
-										<textarea class="form-control form-control-sm" rows="2" name="description" placeholder="Dodaj opis leczenia" required></textarea>
+										<textarea class="form-control form-control-sm" rows="2" name="Description" placeholder="Dodaj opis leczenia" required></textarea>
 									</div>
 
 									<div>

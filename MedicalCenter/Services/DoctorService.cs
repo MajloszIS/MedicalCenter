@@ -50,7 +50,7 @@ namespace MedicalCenter.Services
 
         public async Task<DoctorDto> GetDoctorByUserIdAsync(Guid userId)
         {
-            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(userId);
+            var doctor = await _doctorRepository.GetDoctorByUserIdAsync(userId) ?? throw new Exception("Nie znaleziono lekarza");
             var doctorDto = new DoctorDto
             {
                 Id = doctor.Id,

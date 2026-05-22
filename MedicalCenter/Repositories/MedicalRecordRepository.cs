@@ -16,9 +16,9 @@ namespace MedicalCenter.Repositories
         {
             return await _context.MedicalRecords
                 .Include(mr => mr.Patient)
+                    .ThenInclude(p => p.User)
                 .Include(mr => mr.Doctor)
-                .Include(mr => mr.Patient)
-                .Include(mr => mr.Doctor)
+                    .ThenInclude(p => p.User)
                 .Include(mr => mr.Diagnoses)
                     .ThenInclude(d => d.Treatments)
                 .Include(mr => mr.Prescriptions)
@@ -37,11 +37,13 @@ namespace MedicalCenter.Repositories
         {
             return await _context.MedicalRecords.FirstOrDefaultAsync(mr => mr.DoctorId == doctorId);
         }
-        public async Task<MedicalRecord> GetMedicalRecordByIdAsync(Guid id)
+        public async Task<MedicalRecord?> GetMedicalRecordByIdAsync(Guid id)
         {
             return await _context.MedicalRecords
                 .Include(mr => mr.Patient)
+                    .ThenInclude(p => p.User)
                 .Include(mr => mr.Doctor)
+                    .ThenInclude(p => p.User)
                 .Include(mr => mr.Diagnoses)
                     .ThenInclude(d => d.Treatments)
                 .Include(mr => mr.Prescriptions)

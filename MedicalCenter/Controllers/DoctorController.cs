@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Doctor")]
     public class DoctorController : Controller
     {
         private readonly IDoctorService _doctorService;
@@ -23,25 +23,54 @@ namespace MedicalCenter.Controllers
             _appointmentService = appointmentService;
         }
 
-        [Authorize(Roles = "Doctor")]
+        private async Task<IActionResult> LogoutAndRedirect()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
-            var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctor.Id);
+            if (userId == null)
+            {
+                TempData["ErrorMessage"] = "Wylogowano";
+                return await LogoutAndRedirect();
+            }
 
-            return View(appointments);
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+                var appointments = await _appointmentService.GetAppointmentsByDoctorIdAsync(doctor.Id);
+                return View(appointments);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
         }
 
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Patients()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+            if (userId == null)
+            {
+                TempData["ErrorMessage"] = "Wylogowano";
+                return await LogoutAndRedirect();
+            }
 
-            var patients = await _appointmentService.GetPatientsByDoctorIdAsync(doctor.Id);
-
-            return View(patients);
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
+                var patients = await _appointmentService.GetPatientsByDoctorIdAsync(doctor.Id);
+                return View(patients);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }
