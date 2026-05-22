@@ -16,7 +16,7 @@ namespace MedicalCenter.Services
         public async Task<List<MedicineDto>> GetAllMedicineAsync()
         {
             var medicines = await _medicineRepo.GetAllMedicinesAsync();
-            var medicineDtos = medicines.Select(m => new MedicineDto
+            return medicines.Select(m => new MedicineDto
             {
                 Id = m.Id,
                 Name = m.Name,
@@ -24,13 +24,12 @@ namespace MedicalCenter.Services
                 CategoryName = m.Category?.Name ?? "Brak kategorii",
                 StockQuantity = m.StockQuantity
             }).ToList();
-            return medicineDtos;
         }
+
         public async Task<List<MedicineDto>> GetAvailableMedicinesAsync()
         {
             var medicines = await _medicineRepo.GetAllMedicinesAsync();
-
-            var medicineDtos = medicines.Select(m => new MedicineDto
+            return medicines.Select(m => new MedicineDto
             {
                 Id = m.Id,
                 Name = m.Name,
@@ -38,11 +37,13 @@ namespace MedicalCenter.Services
                 CategoryName = m.Category?.Name ?? "Brak kategorii",
                 StockQuantity = m.StockQuantity
             }).ToList();
-
-            return medicineDtos;
         }
+
         public async Task AddMedicineAsync(MedicineCreateDto dto)
         {
+            var category = await _medicineRepo.GetCategoryByIdAsync(dto.CategoryId)
+                           ?? throw new Exception("Nie znaleziono podanej kategorii leku.");
+
             var medicine = new Medicine
             {
                 Id = Guid.NewGuid(),
@@ -56,23 +57,23 @@ namespace MedicalCenter.Services
             await _medicineRepo.AddMedicineAsync(medicine);
             await _medicineRepo.SaveChangesAsync();
         }
+
         public async Task DeleteMedicineAsync(Guid id)
         {
-            var medicine = await _medicineRepo.GetByIdAsync(id);
+            var medicine = await _medicineRepo.GetByIdAsync(id)
+                           ?? throw new Exception("Nie znaleziono leku do usunięcia.");
 
-            if (medicine != null)
-            {
-                await _medicineRepo.DeleteMedicineAsync(medicine);
-            }
+            await _medicineRepo.DeleteMedicineAsync(medicine);
         }
 
         public async Task<List<MedicineCategory>> GetAllCategoriesAsync()
         {
             return await _medicineRepo.GetAllCategoriesAsync();
         }
+
         public async Task<UpdateMedicineDto> GetMedicineForEditAsync(Guid id)
         {
-            var medicine = await _medicineRepo.GetByIdAsync(id) ?? throw new Exception("Nie znaleziono leku"); 
+            var medicine = await _medicineRepo.GetByIdAsync(id) ?? throw new Exception("Nie znaleziono leku o podanym identyfikatorze.");
 
             return new UpdateMedicineDto
             {
@@ -85,11 +86,12 @@ namespace MedicalCenter.Services
                 CategoryName = medicine.Category?.Name
             };
         }
-
         public async Task UpdateMedicineAsync(UpdateMedicineDto dto)
         {
-            var medicine = await _medicineRepo.GetByIdAsync(dto.Id) ?? throw new Exception("Nie znaleziono leku");
-            
+            var medicine = await _medicineRepo.GetByIdAsync(dto.Id)
+                           ?? throw new Exception("Nie znaleziono leku o podanym identyfikatorze.");
+            var category = await _medicineRepo.GetCategoryByIdAsync(dto.CategoryId)
+                           ?? throw new Exception("Nie znaleziono podanej kategorii leku.");
             medicine.Name = dto.Name;
             medicine.Price = dto.Price;
             medicine.StockQuantity = dto.StockQuantity;
@@ -98,6 +100,7 @@ namespace MedicalCenter.Services
 
             await _medicineRepo.SaveChangesAsync();
         }
+
         public async Task AddCategoryAsync(MedicineCreateCategoryDTO dto)
         {
             var category = new MedicineCategory
@@ -108,31 +111,28 @@ namespace MedicalCenter.Services
 
             await _medicineRepo.AddCategoryAsync(category);
         }
+
         public async Task UpdateCategoryAsync(Guid id, string name)
         {
-            var category = await _medicineRepo.GetCategoryByIdAsync(id);
-            if (category != null)
-            {
-                category.Name = name;
-                await _medicineRepo.UpdateCategoryAsync(category);
-            }
+            var category = await _medicineRepo.GetCategoryByIdAsync(id)
+                           ?? throw new Exception("Nie znaleziono kategorii do aktualizacji.");
+
+            category.Name = name;
+            await _medicineRepo.UpdateCategoryAsync(category);
         }
 
-        public async Task<bool> DeleteCategoryAsync(Guid id)
+        public async Task DeleteCategoryAsync(Guid id)
         {
             bool hasMedicines = await _medicineRepo.HasMedicinesInCategoryAsync(id);
             if (hasMedicines)
             {
-                return false;
+                throw new Exception("Nie można usunąć tej kategorii, ponieważ są do niej przypisane leki. Najpierw zmień kategorię przypisanym lekom, lub usuń leki.");
             }
 
-            var category = await _medicineRepo.GetCategoryByIdAsync(id);
-            if (category != null)
-            {
-                await _medicineRepo.DeleteCategoryAsync(category);
-            }
+            var category = await _medicineRepo.GetCategoryByIdAsync(id)
+                           ?? throw new Exception("Nie znaleziono kategorii do usunięcia.");
 
-            return true;
+            await _medicineRepo.DeleteCategoryAsync(category);
         }
     }
 }

@@ -22,87 +22,115 @@ namespace MedicalCenter.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdString == null) return Unauthorized();
-            var userId = Guid.Parse(userIdString);
+            try
+            {
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userIdString == null || !Guid.TryParse(userIdString, out var userId))
+                    return Unauthorized();
 
-            var patient = await _patientService.GetPatientByUserIdAsync(userId);
-            if (patient == null) return NotFound();
+                var patient = await _patientService.GetPatientByUserIdAsync(userId);
+                if (patient == null) return NotFound();
 
-            var cart = await _cartService.GetCartAsync(patient.Id);
-
-            return View(cart);
+                var cart = await _cartService.GetCartAsync(patient.Id);
+                return View(cart);
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Wystąpił problem z załadowaniem koszyka. Spróbuj ponownie później.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdString == null) return Unauthorized();
-            var userId = Guid.Parse(userIdString);
-
-            var patient = await _patientService.GetPatientByUserIdAsync(userId);
-            if (patient == null) return NotFound();
-
-            // Weryfikacja magazynu przed płatnością
-            var stockCheck = await _cartService.ValidateCartStockAsync(patient.Id);
-
-            if (!stockCheck.valid)
+            try
             {
-                // Towar został wykupiony w międzyczasie! 
-                // Koszyk został już skorygowany w bazie, więc cofamy pacjenta z komunikatem błędu.
-                TempData["ErrorMessage"] = stockCheck.message;
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userIdString == null || !Guid.TryParse(userIdString, out var userId))
+                    return Unauthorized();
+
+                var patient = await _patientService.GetPatientByUserIdAsync(userId);
+                if (patient == null) return NotFound();
+
+                var stockCheck = await _cartService.ValidateCartStockAsync(patient.Id);
+                if (!stockCheck.valid)
+                {
+                    TempData["ErrorMessage"] = stockCheck.message;
+                    return RedirectToAction("Index");
+                }
+
+                var cart = await _cartService.GetCartAsync(patient.Id);
+                if (cart == null || !cart.Items.Any()) return RedirectToAction("Index");
+
+                var domain = "http://localhost:5029";
+                var lineItems = new List<SessionLineItemOptions>();
+
+                foreach (var item in cart.Items)
+                {
+                    lineItems.Add(new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.Medicine.Price * 100),
+                            Currency = "pln",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Medicine.Name,
+                            },
+                        },
+                        Quantity = item.Quantity,
+                    });
+                }
+
+                var options = new SessionCreateOptions
+                {
+                    PaymentMethodTypes = new List<string> { "card", "blik", "p24" },
+                    LineItems = lineItems,
+                    Mode = "payment",
+                    SuccessUrl = domain + "/Cart/OrderSuccess?sessionId={CHECKOUT_SESSION_ID}",
+                    CancelUrl = domain + "/Cart/OrderCancel",
+                };
+
+                var service = new SessionService();
+                Session session = service.Create(options);
+
+                await _cartService.CreateOrderFromCartAsync(patient.Id, session.Id);
+
+                return Redirect(session.Url);
+            }
+            catch (StripeException)
+            {
+                TempData["ErrorMessage"] = "Wystąpił problem z bramką płatniczą. Spróbuj ponownie później.";
                 return RedirectToAction("Index");
             }
-
-            // Jeśli walidacja przeszła pomyślnie, pobieramy koszyk do wygenerowania sesji Stripe
-            var cart = await _cartService.GetCartAsync(patient.Id);
-            if (cart == null || !cart.Items.Any()) return RedirectToAction("Index");
-
-            var domain = "http://localhost:5029";
-
-            var lineItems = new List<SessionLineItemOptions>();
-            foreach (var item in cart.Items)
+            catch
             {
-                lineItems.Add(new SessionLineItemOptions
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(item.Medicine.Price * 100),
-                        Currency = "pln",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = item.Medicine.Name,
-                        },
-                    },
-                    Quantity = item.Quantity,
-                });
+                TempData["ErrorMessage"] = "Nie udało się rozpocząć procesu płatności. Skontaktuj się z obsługą.";
+                return RedirectToAction("Index");
             }
-
-            var options = new SessionCreateOptions
-            {
-                PaymentMethodTypes = new List<string> { "card", "blik", "p24" },
-                LineItems = lineItems,
-                Mode = "payment",
-                SuccessUrl = domain + "/Cart/OrderSuccess?sessionId={CHECKOUT_SESSION_ID}",
-                CancelUrl = domain + "/Cart/OrderCancel",
-            };
-            var service = new SessionService();
-            Session session = service.Create(options);
-
-            await _cartService.CreateOrderFromCartAsync(patient.Id, session.Id);
-
-            Response.Headers.Add("Location", session.Url);
-
-            return new StatusCodeResult(303);
         }
+
         [HttpGet]
         public async Task<IActionResult> OrderSuccess(string sessionId)
         {
-            await _cartService.ConfirmPaymentAsync(sessionId);
+            try
+            {
+                if (string.IsNullOrEmpty(sessionId))
+                {
+                    TempData["ErrorMessage"] = "Brak identyfikatora sesji płatności.";
+                    return RedirectToAction("Index", "Home");
+                }
 
-            return View();
+                await _cartService.ConfirmPaymentAsync(sessionId);
+                return View();
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Wystąpił problem z potwierdzeniem Twojego zamówienia. Jeśli środki zostały pobrane, skontaktuj się z nami.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
@@ -115,17 +143,25 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveItem(Guid medicineId)
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdString == null) return Unauthorized();
-            var userId = Guid.Parse(userIdString);
+            try
+            {
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userIdString == null || !Guid.TryParse(userIdString, out var userId))
+                    return Unauthorized();
 
-            var patient = await _patientService.GetPatientByUserIdAsync(userId);
-            if (patient == null) return NotFound();
+                var patient = await _patientService.GetPatientByUserIdAsync(userId);
+                if (patient == null) return NotFound();
 
-            await _cartService.RemoveFromCartAsync(patient.Id, medicineId);
+                await _cartService.RemoveFromCartAsync(patient.Id, medicineId);
 
-            TempData["SuccessMessage"] = "Przedmiot został usunięty z koszyka.";
-            return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Przedmiot został usunięty z koszyka.";
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Nie udało się usunąć przedmiotu z koszyka.";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

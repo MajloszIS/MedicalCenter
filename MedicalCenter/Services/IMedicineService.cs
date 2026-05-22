@@ -14,6 +14,6 @@ namespace MedicalCenter.Services
         Task UpdateMedicineAsync(UpdateMedicineDto dto);
         Task AddCategoryAsync(MedicineCreateCategoryDTO dto);
         Task UpdateCategoryAsync(Guid id, string name);
-        Task<bool> DeleteCategoryAsync(Guid id);
+        Task DeleteCategoryAsync(Guid id);
     }
 }
