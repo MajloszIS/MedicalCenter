@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using MedicalCenter.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,14 +9,16 @@ using System.Security.Claims;
 
 namespace MedicalCenter.Controllers
 {
-    public class MedicalLeaveController : Controller
+    public class ReferralController : Controller
     {
         private readonly IMedicalLeaveService _medicalLeaveService;
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
+        private readonly IReferralService _referralService;
 
-        public MedicalLeaveController(IMedicalLeaveService medicalLeaveService, IPatientService patientService, IDoctorService doctorService) 
-        { 
+        public ReferralController(IMedicalLeaveService medicalLeaveService, IPatientService patientService, IDoctorService doctorService, IReferralService referralService)
+        {
+            _referralService = referralService;
             _medicalLeaveService = medicalLeaveService;
             _patientService = patientService;
             _doctorService = doctorService;
@@ -39,14 +42,14 @@ namespace MedicalCenter.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId} );
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = patientId });
             }
         }
 
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Create(MedicalLeaveDto medicalLeaveDto)
+        public async Task<IActionResult> Create(ReferralDto referralDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
@@ -55,24 +58,24 @@ namespace MedicalCenter.Controllers
             var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
             if (doctor == null)
                 return await LogoutAndRedirect();
-            medicalLeaveDto.DoctorId = doctor.Id;
+            referralDto.DoctorId = doctor.Id;
 
             try
             {
-                await _medicalLeaveService.CreateMedicalLeaveAsync(medicalLeaveDto);
-                TempData["Succes"] = "Pomyślnie dodano zwolnienie";
-                return RedirectToAction("Index", "MedicalRecord", new { patientId = medicalLeaveDto.PatientId });
+                await _referralService.CreateReferralAsync(referralDto);
+                TempData["Succes"] = "Pomyślnie dodano skierowanie";
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = referralDto.PatientId });
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index", "MedicalRecord", new { patientId = medicalLeaveDto.PatientId });
+                return RedirectToAction("Index", "MedicalRecord", new { patientId = referralDto.PatientId });
             }
         }
 
         [Authorize(Roles = "Patient")]
         [HttpGet]
-        public async Task<IActionResult> MedicalLeaves()
+        public async Task<IActionResult> Referrals()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
@@ -84,8 +87,8 @@ namespace MedicalCenter.Controllers
 
             try
             {
-                var medicalLeaves = await _medicalLeaveService.GetMedicalLeavesByPatientIdAsync(patient.Id);
-                return View(medicalLeaves);
+                var referrals = await _referralService.GetReferralsByPatientIdAsync(patient.Id);
+                return View(referrals);
             }
             catch (Exception ex)
             {
@@ -101,8 +104,8 @@ namespace MedicalCenter.Controllers
         {
             try
             {
-                var pdfBytes = await _medicalLeaveService.GenerateMedicalLeavePdfAsync(id);
-                return File(pdfBytes, "application/pdf", $"zwolnienie-{id}.pdf");
+                var pdfBytes = await _referralService.GenerateReferralPdfAsync(id);
+                return File(pdfBytes, "application/pdf", $"skierowanie-{id}.pdf");
             }
             catch (Exception ex)
             {

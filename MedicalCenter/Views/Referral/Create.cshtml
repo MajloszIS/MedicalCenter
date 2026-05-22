@@ -1,0 +1,40 @@
+﻿@model MedicalCenter.DTOs.PatientDto;
+
+@{
+    ViewData["Title"] = $"Wystaw skierowanie dla {Model.FirstName} {Model.LastName}";
+}
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="medical-card">
+                <h4 class="page-title">Wybierz termi</h4>
+                <form asp-action="Create" asp-controller="Referral" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="PatientId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Specjalizacja</label>
+                        <input type="text" name="TargetSpecialization" class="form-control" required placeholder="Wpisz wybraną specjalizacje" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Opis</label>
+                        <textarea name="Description" class="form-control" rows="4" placeholder="Opisz powód skierowania"></textarea>
+                    </div>
+
+                    <div>
+                        @if (ViewBag.Error != null)
+                        {
+                            <span>@ViewBag.Error</span>
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
+                        <i class="fa-regular fa-calendar-check me-2"></i>Potwierdź
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

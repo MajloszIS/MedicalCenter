@@ -1,0 +1,55 @@
+﻿@model List<MedicalCenter.DTOs.ReferralDto>
+
+@{
+    ViewData["Title"] = "Skierowania";
+}
+
+@if (!Model.Any())
+{
+    <div class="medical-card text-center py-5">
+        <i class="fa-solid fa-bandage text-muted mb-3" style="font-size: 3rem;"></i>
+        <h4>Brak Zwolnień</h4>
+        <p class="text-muted">Nie masz jeszcze żadnych skierowań.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-custom align-middle">
+            <thead>
+                <tr>
+                    <th>Lekarz</th>
+                    <th>Specjalizacja</th>
+                    <th>Opis</th>
+                    <th>Ważne do</th>
+                    <th class="text-center">Akcje</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@item.DoctorFullName</div>
+                        </td>
+                        <td>
+                            <div class="">@item.TargetSpecialization</div>
+                        </td>
+                        <td>
+                            <div class="">@item.Description</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold">@item.ExpiryDate.ToString("dd-MM-yyyy")</div>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="DownloadPdf" asp-controller="Referral" asp-route-id="@item.Id" class="btn btn-primary">
+                                Pobierz Skierowanie
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

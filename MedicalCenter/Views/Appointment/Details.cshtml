@@ -40,13 +40,16 @@
 			</div>
 
 			<div class="row g-4">
-				<div class="medical-card mb-4">
-					<div>
-						<a asp-action="Index" asp-controller="MedicalRecord"
-							   asp-route-patientId="@Model.Patient.Id" class="btn btn-medical w-100 fw-bold">
-							<i class="fa-solid fa-circle-info me-2"></i> Karta Medyczna
-						</a>
-					</div>
+				<div class="medical-card mb-4 d-flex justify-content-around">
+					<a asp-action="Index" asp-controller="MedicalRecord"
+						   asp-route-patientId="@Model.Patient.Id" class="btn btn-medical w-40 fw-bold">
+						<i class="fa-solid fa-circle-info me-2"></i> Karta Medyczna
+					</a>
+
+					<a asp-action="Create" asp-controller="Referral"
+						   asp-route-patientId="@Model.Patient.Id" class="btn btn-medical w-40 fw-bold">
+						<i class="fa-solid fa-circle-info me-2"></i> Dodaj Skierowanie
+					</a>
 				</div>
 			</div>
 		}
