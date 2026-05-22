@@ -51,8 +51,15 @@ namespace MedicalCenter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSpecialization(Guid SpecializationId)
         {
-            await _specializationService.DeleteSpecializationAsync(SpecializationId);
-
+            try
+            {
+                await _specializationService.DeleteSpecializationAsync(SpecializationId);
+                TempData["Success"] = "Specjalizacja usunięta.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
             return RedirectToAction("Specializations");
         }
 

@@ -23,8 +23,16 @@ namespace MedicalCenter.Controllers
         [HttpGet]
         public async Task<IActionResult> AddReview(Guid doctorId)
         {
-            var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
-            return View(doctor);
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
+                return View(doctor);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Nie udało się załadować danych lekarza.";
+                return RedirectToAction("Index", "Doctors");
+            }
         }
 
         [Authorize(Roles = "Patient")]
