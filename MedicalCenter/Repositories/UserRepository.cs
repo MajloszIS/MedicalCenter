@@ -17,15 +17,15 @@ namespace MedicalCenter.Repositories
         {
             return _context.Users.ToListAsync();
         }
-        public Task<User> GetUserByIdAsync(Guid id)
+        public Task<User?> GetUserByIdAsync(Guid id)
         {
             return _context.Users.SingleOrDefaultAsync(u => u.Id == id);  
         }
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
-        public async Task<User> GetUserByEmailWithRoleAsync(string email)
+        public async Task<User?> GetUserByEmailWithRoleAsync(string email)
         {
             return await _context.Users.Include(u => u.Role).Include(u => u.Patient).FirstOrDefaultAsync(u => u.Email == email);
         }
