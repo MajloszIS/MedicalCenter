@@ -123,7 +123,7 @@ namespace MedicalCenter.Controllers
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId, List<Guid> medicineIds, List<int> quantities)
+        public async Task<IActionResult> AddPrescription(Guid medicalRecordId, Guid patientId, List<Guid> medicineIds, List<int> quantities, List<string> notes)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var doctor = await _doctorService.GetDoctorByUserIdAsync(Guid.Parse(userId));
@@ -137,7 +137,7 @@ namespace MedicalCenter.Controllers
             {
                 MedicalRecordId = medicalRecordId,
                 DoctorId = doctor.Id,
-                Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index] }).ToList()
+                Items = medicineIds.Select((id, index) => new PrescriptionItemDto { MedicineId = id, Quantity = quantities[index],  Notes = notes[index] }).ToList()
             };
             await _prescriptionService.CreatePrescription(prescriptionDto);
 

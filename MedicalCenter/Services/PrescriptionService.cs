@@ -34,6 +34,7 @@ namespace MedicalCenter.Services
                     Id = i.Id,
                     PrescriptionId = i.PrescriptionId,
                     Quantity = i.Quantity,
+                    Notes = i.Notes,
                 }).ToList()
             };
 
@@ -50,6 +51,7 @@ namespace MedicalCenter.Services
                     Id = i.Id,
                     MedicineId = i.MedicineId,
                     PrescriptionId = i.PrescriptionId,
+                    Notes = i.Notes,
                     Quantity = i.Quantity,
                 }).ToList()
             });
@@ -116,6 +118,7 @@ namespace MedicalCenter.Services
                     Id = i.Id,
                     PrescriptionId = i.PrescriptionId,
                     Quantity = i.Quantity,
+                    Notes = i.Notes,
                     Medicine = new MedicineDto
                     {
                         Id = i.Medicine.Id,
@@ -166,7 +169,8 @@ namespace MedicalCenter.Services
 
                         foreach (var item in prescription.Items)
                         {
-                            column.Item().Text($"- {item.Medicine.Name}, ilość: {item.Quantity}");
+                            column.Item().Text($"- {item.Medicine.Name}, ilość: {item.Quantity}, ℹ️ {item.Notes}");
+
                         }
                     });
 

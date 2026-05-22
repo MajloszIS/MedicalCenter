@@ -73,6 +73,12 @@
 						<i class="fa-solid fa-pills text-primary me-2"></i>
 						<span class="fw-semibold">@item.Medicine.Name</span>
 						<span class="text-muted ms-2">— @item.Quantity szt.</span>
+						@if (!string.IsNullOrEmpty(item.Notes))
+						{
+							<span class="text-muted small mt-1">
+								<i class="fa-solid fa-circle-info me-1"></i>@item.Notes
+							</span>
+						}
 					</div>
 
 					<input type="hidden" name="medicineIds" value="@item.MedicineId" />

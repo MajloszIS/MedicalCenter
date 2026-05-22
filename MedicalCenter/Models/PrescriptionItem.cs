@@ -17,6 +17,9 @@ namespace MedicalCenter.Models
         [Range(1, 100)]
         public int Quantity { get; set; }
 
+        [StringLength(100)]
+        public string? Notes { get; set; }
+
         public Prescription Prescription { get; set; } = null!;
         public Medicine Medicine { get; set; } = null!;
     }
