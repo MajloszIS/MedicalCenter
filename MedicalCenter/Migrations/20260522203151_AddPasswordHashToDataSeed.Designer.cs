@@ -4,6 +4,7 @@ using MedicalCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalCenter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260522203151_AddPasswordHashToDataSeed")]
+    partial class AddPasswordHashToDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,6 +64,24 @@ namespace MedicalCenter.Migrations
                             HouseNumber = "12",
                             PostalCode = "15-424",
                             Street = "Lipowa"
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-2222-2222-2222-222222222222"),
+                            ApartmentNumber = "2",
+                            City = "Białystok",
+                            HouseNumber = "88",
+                            PostalCode = "15-077",
+                            Street = "Warszawska"
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-3333-3333-3333-333333333333"),
+                            ApartmentNumber = "10",
+                            City = "Zambrów",
+                            HouseNumber = "3",
+                            PostalCode = "18-300",
+                            Street = "Sienkiewicza"
                         });
                 });
 
@@ -552,15 +573,6 @@ namespace MedicalCenter.Migrations
                         new
                         {
                             Id = new Guid("bbbbbbbb-3333-3333-3333-333333333333"),
-                            CategoryId = new Guid("aaaaaaaa-1111-1111-1111-111111111111"),
-                            Description = "Silny lek przeciwbólowy",
-                            Name = "Maść na Ból Dupy",
-                            Price = 999999.99m,
-                            StockQuantity = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("bbbbbbbb-4444-4444-4444-444444444444"),
                             CategoryId = new Guid("aaaaaaaa-2222-2222-2222-222222222222"),
                             Description = "Antybiotyk",
                             Name = "Amotaks",
@@ -569,7 +581,7 @@ namespace MedicalCenter.Migrations
                         },
                         new
                         {
-                            Id = new Guid("bbbbbbbb-5555-5555-5555-555555555555"),
+                            Id = new Guid("bbbbbbbb-4444-4444-4444-444444444444"),
                             CategoryId = new Guid("aaaaaaaa-3333-3333-3333-333333333333"),
                             Description = "Syrop łagodzący kaszel",
                             Name = "Syrop na kaszel",
@@ -1069,7 +1081,7 @@ namespace MedicalCenter.Migrations
                         {
                             Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             Email = "kurier@medical.pl",
-                            FirstName = "Wiesław",
+                            FirstName = "Piotr",
                             LastName = "Szybki",
                             PasswordHash = "$2a$11$wHXCchTbS3pO/OujL1VHQebwwG.cPIncjS2w7JHidEZqzLT05tg7e",
                             Phone = "999888777",
