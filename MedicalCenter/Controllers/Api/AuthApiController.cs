@@ -20,14 +20,16 @@ namespace MedicalCenter.Controllers.Api
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var result = await _userService.LoginAsync(dto);
-            if (result == null)
+            try
             {
-                return Unauthorized(new { message = "Nieprawidłowy email lub hasło" });
+                var result = await _userService.LoginAsync(dto);
+                var response = _userService.GenerateJwtToken(result);
+                return Ok(response);
             }
-
-            var response = _userService.GenerateJwtToken(result);
-            return Ok(response);
+            catch (Exception ex)
+            {
+                return StatusCode(420,ex.Message);
+            }
         }
     }
 }
