@@ -70,7 +70,33 @@
                         </button>
                     </div>
 
-                    <input type="hidden" name="CategoryId" value="@Model.CategoryId" />
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="fw-semibold me-2" style="width: 140px;">Kategoria</label>
+
+                        <span id="category-text">@Model.CategoryName</span>
+
+                        <select id="category-input" name="CategoryId" class="form-select form-select-sm ms-2" style="display:none; width:200px;" required>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                if (category.Id == Model.CategoryId)
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            }
+                        </select>
+
+                        <button type="button" id="category-edit" onclick="enableEdit('category')" class="btn btn-sm btn-link ms-2">
+                            <i class="fa-solid fa-pen text-primary"></i>
+                        </button>
+                        <button type="submit" id="category-save" class="btn btn-sm btn-success ms-2" style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
                     <input type="hidden" name="Description" value="@Model.Description" />
                 </form>
             </div>
@@ -90,7 +116,7 @@
             input.style.display = 'inline';
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline';
-            
+
             if (fieldId === 'price') {
                 input.addEventListener('input', function() {
                     this.value = this.value.replace('.', ',');

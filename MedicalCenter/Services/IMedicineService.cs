@@ -8,6 +8,7 @@ namespace MedicalCenter.Services
         Task<List<MedicineDto>> GetAllMedicineAsync();
         Task<List<MedicineDto>> GetAvailableMedicinesAsync();
         Task AddMedicineAsync(MedicineCreateDto dto);
+        Task DeleteMedicineAsync(Guid id);
         Task<List<MedicineCategory>> GetAllCategoriesAsync();
         Task<UpdateMedicineDto> GetMedicineForEditAsync(Guid id);
         Task UpdateMedicineAsync(UpdateMedicineDto dto);

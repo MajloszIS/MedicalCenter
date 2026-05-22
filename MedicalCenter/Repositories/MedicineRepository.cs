@@ -27,6 +27,11 @@ namespace MedicalCenter.Repositories
         {
             await _context.Medicines.AddAsync(medicine);
         }
+        public async Task DeleteMedicineAsync(Medicine medicine)
+        {
+            _context.Medicines.Remove(medicine);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<List<MedicineCategory>> GetAllCategoriesAsync()
         {
