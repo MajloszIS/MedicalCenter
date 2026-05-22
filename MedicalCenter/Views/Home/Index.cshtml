@@ -25,9 +25,13 @@
                 {
                     <a asp-controller="Doctor" asp-action="Index" class="btn btn-medical btn-lg px-4 fw-bold shadow-sm">Otwórz Panel Lekarza</a>
                 }
-                else
+                else if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Admin" asp-action="Index" class="btn btn-dark btn-lg px-4 fw-bold shadow-sm">Panel Administracyjny</a>
+                }
+                else if (User.IsInRole("Courier"))
+                {
+                    <a asp-controller="Courier" asp-action="Index" class="btn btn-success btn-lg px-4 fw-bold shadow-sm">Panel Kuriera</a>
                 }
             </div>
         }
