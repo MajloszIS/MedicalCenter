@@ -1,158 +1,265 @@
 # MedicalCenter
- 
-Aplikacja webowa centrum medycznego zbudowana w ASP.NET Core MVC z wykorzystaniem Entity Framework Core.
- 
+
+Aplikacja webowa centrum medycznego zbudowana w ASP.NET Core MVC z modułem sprzedaży leków i obsługą dostaw.
+
+<img src="./images/MedicalCenterLogo.png" alt="Logo" width="200" />
+
 ## Technologie
- 
-- **.NET 9.0**
-- **ASP.NET Core MVC**
-- **Entity Framework Core 9.0** — ORM do obsługi bazy danych
-- **SQL Server** — baza danych w kontenerze Docker (Azure SQL Edge)
-- **BCrypt.Net-Next 4.1.0** — hashowanie haseł
-- **Swashbuckle.AspNetCore 10.1.7** — dokumentacja API (Swagger)
-- **Bootstrap 5** — framework CSS
-- **Font Awesome 6.4.0** — ikony
-- **Stripe** — obsługa płatności online
-- **Flatpickr** — kalendarz do wyboru daty wizyty
+
+| Pakiet | Wersja | Zastosowanie |
+|--------|--------|--------------|
+| .NET / ASP.NET Core MVC | 9.0 | Framework webowy |
+| Entity Framework Core | 9.0 | ORM |
+| MS SQL Server (Azure SQL Edge) | Docker | Baza danych |
+| BCrypt.Net-Next | 4.1.0 | Hashowanie haseł |
+| Microsoft.AspNetCore.Authentication.Google | 9.0.0 | Logowanie przez Google OAuth |
+| Microsoft.AspNetCore.Authentication.JwtBearer | 9.0.0 | Autoryzacja JWT dla API |
+| Stripe.net | 51.1.0 | Płatności online |
+| QuestPDF | 2026.5.0 | Generowanie PDF |
+| QRCoder | 1.8.0 | Kody QR na receptach |
+| Swashbuckle.AspNetCore | 6.9.0 | Swagger UI |
+| Bootstrap | 5 | Stylowanie UI |
+| Font Awesome | 6.4.0 | Ikony |
+| Flatpickr | — | Kalendarz dat wizyt |
+
 ## Architektura
- 
-Aplikacja wykorzystuje architekturę warstwową:
- 
+
+Klasyczna warstwowa architektura MVC:
+
 ```
 Controllers → Services → Repositories → Database
 ```
- 
-- **Controllers** — obsługa żądań HTTP, zwracanie widoków i odpowiedzi API
-- **Services** — logika biznesowa
-- **Repositories** — dostęp do bazy danych
-- **DTOs** — obiekty transferu danych
+
+```
+Controllers/
+  Api/          → endpointy REST API (JWT)
+  *.cs          → kontrolery MVC (cookie auth)
+Services/       → logika biznesowa + mapowanie DTO
+Repositories/   → dostęp do bazy przez EF Core
+Models/         → encje bazy danych
+DTOs/           → obiekty transferowe między warstwami
+Views/          → widoki Razor (.cshtml)
+Data/           → AppDbContext
+Migrations/     → migracje EF Core
+```
+
+Wzorce: **Repository**, **Service**, **Dependency Injection**, **DTO**.
+
+## Encje (modele)
+
+`User`, `Doctor`, `Patient`, `Courier`, `Appointment`, `MedicalRecord`, `Diagnosis`, `Treatment`, `Prescription`, `PrescriptionItem`, `Medicine`, `MedicineCategory`, `Cart`, `CartItem`, `Order`, `OrderItem`, `OrderRating`, `Delivery`, `Address`, `Review`, `MedicalLeave`, `Referral`, `Specializations`, `Department`, `DoctorDepartment`, `Invoice`, `AppointmentStatus`, `OrderStatus`, `Deliverytatus`, `Role`
+
+![Diagram](./docs/RelacyjnyDiagramTabelwBazieDanych.png)
+
 ## Funkcjonalności
- 
+
 ### Uwierzytelnianie i autoryzacja
-- Rejestracja nowego konta pacjenta
-- Logowanie i wylogowanie
-- Autoryzacja oparta na rolach (Admin, Doctor, Patient, Courier)
-- Sesja oparta na ciasteczkach (Cookie Authentication)
+- Rejestracja konta pacjenta
+- Logowanie i wylogowanie (cookie-based)
+- Logowanie przez **Google OAuth**
+- Autoryzacja oparta na rolach: `Admin`, `Doctor`, `Patient`, `Courier`
 - Hashowanie haseł przez BCrypt
+- JWT dla REST API
+
 ### Panel pacjenta
-- Przeglądanie listy lekarzy ze specjalizacjami
-- Umawianie wizyt u lekarzy z wyborem daty, godziny i opisu
-- Przeglądanie własnych wizyt i ich szczegółów
-- Anulowanie wizyt
-- Profil użytkownika — edycja danych, zmiana hasła, zdjęcie profilow
+- Przeglądanie listy lekarzy ze specjalizacjami i ocenami
+- Umawianie wizyt (wybór daty, godziny, opis — kalendarz Flatpickr)
+- Przeglądanie i anulowanie własnych wizyt
+- Karta medyczna — historia diagnoz, leczenia, recept
+- Recepty — lista i pobieranie PDF z kodem QR
+- Skierowania — lista i pobieranie PDF
+- Zwolnienia lekarskie — lista i pobieranie PDF
+- Wystawianie opinii o lekarzach
+- Historia zamówień i ocenianie dostawy
+- Pobieranie faktury PDF za zamówienie
+- Profil — edycja danych, zmiana hasła, zdjęcie profilowe
+
 ### Panel lekarza
-- Przeglądanie własnych wizyt
-- Przeglądanie listy swoich pacjentów
-- Karta medyczna pacjenta
-- Dodawanie diagnoz i planów leczenia
+- Własne wizyty i zarządzanie nimi
+- Lista swoich pacjentów
+- Karta medyczna pacjenta — dodawanie diagnoz i planów leczenia
 - Wystawianie recept z lekami
-- Profil użytkownika — edycja danych, zmiana hasła, zdjęcie profilowe
+- Wystawianie skierowań do innych specjalistów
+- Wystawianie zwolnień lekarskich
+- Profil — edycja danych, zmiana hasła, zdjęcie profilowe
+
+### Panel kuriera
+- Lista dostępnych dostaw do przyjęcia
+- Lista własnych aktywnych dostaw
+- Zmiana statusu dostawy
+- Profil — edycja danych
+
 ### Panel admina
-- Dodawanie i usuwanie lekarzy
-- Przeglądanie listy pacjentów
+- Pełny CRUD lekarzy (tworzenie, edycja, usuwanie, przeglądanie wizyt)
+- Pełny CRUD pacjentów (edycja, usuwanie, przeglądanie wizyt)
+- Pełny CRUD kurierów (tworzenie, edycja, usuwanie, przeglądanie dostaw)
+- Pełny CRUD leków (tworzenie, edycja, usuwanie)
+- Pełny CRUD specjalizacji Lekarzy (tworzenie, edycja, usuwanie)
+- Pełny CRUD departamentów (tworzenie, edycja, usuwanie)
+- Pełny CRUD kategorii leków (tworzenie, edycja, usuwanie)
+- Przeglądanie wszystkich zamówień
+- Zarządzanie opiniami lekarzy (przeglądanie, usuwanie)
+
 ### Sklep i płatności
-- Przeglądanie leków w aptece
+- Przeglądanie leków w aptece z kategoriami
 - Koszyk zakupów
-- Płatności online przez Stripe
-### API
-- Endpointy REST API udokumentowane przez Swagger UI (`/swagger`)
-- Pobieranie listy lekarzy
-- Pobieranie lekarza po ID
+- Płatności online przez **Stripe** (tryb testowy)
+- Automatyczne generowanie faktury PDF po opłaceniu zamówienia
 
+### REST API (JWT Bearer)
 
-## 🖥️ Demo
-![demo](./images/HomeView.png)
-![demo](./images/LoginView.png)
-![demo](./images/PatientDoctorsView.png)
-![demo](./images/AdminHomeView.png)
+| Endpoint | Metoda | Opis | Rola |
+|----------|--------|------|------|
+| `POST /api/auth/login` | POST | Logowanie, zwraca JWT | Publiczny |
+| `GET /api/doctors` | GET | Lista wszystkich lekarzy | Zalogowany |
+| `GET /api/doctors/specializations/{specializationName}` | GET | Lekarze wg specjalizacji | Zalogowany |
+| `GET /api/medicines` | GET | Lista leków | Zalogowany |
+| `GET /api/medicines/{id}` | GET | Lek po ID | Zalogowany |
+| `POST /api/medicines` | POST | Dodaj lek | Admin |
+| `PUT /api/medicines/{id}` | PUT | Edytuj lek | Admin |
+| `DELETE /api/medicines/{id}` | DELETE | Usuń lek | Admin |
+| `GET /api/deliveries/unassigned` | GET | Nieprzypisane dostawy | Admin/Courier |
+| `POST /api/deliveries/{id}/accept` | POST | Przyjmij dostawę | Admin/Courier |
+| `PATCH /api/deliveries/{id}/status` | PATCH | Zmień status dostawy | Admin/Courier |
 
-- Repository: https://github.com/MajloszIS/MedicalCenter
+Dokumentacja interaktywna: `/swagger`
+
+### Generowanie dokumentów PDF
+- **Recepta** — z kodem QR, generowana przez QuestPDF
+- **Skierowanie** — pobieralne przez pacjenta
+- **Zwolnienie lekarskie** — pobieralne przez pacjenta
+- **Faktura** — pobieralne przez pacjenta po opłaceniu zamówienia
+
+## Demo
+
+![Strona główna](./images/HomeView.png)
+![Logowanie](./images/LoginView.png)
+![Lista lekarzy](./images/PatientDoctorsView.png)
+![Panel admina](./images/AdminHomeView.png)
+
+Repozytorium: https://github.com/MajloszIS/MedicalCenter
 
 ---
 
-## Instalacja i konfiguracja
+## Instalacja i uruchomienie
 
-## Wymagania
- 
+### Wymagania
+
 - .NET 9.0 SDK
-- Git
 - Docker Desktop
-- IDE: Visual Studio / Rider / VS Code
+- Git
+- IDE: Visual Studio 2022 / Rider / VS Code
 
-## Pierwsze uruchomienie
+### Pierwsze uruchomienie
 
-1. Sklonuj repo:
+**1. Sklonuj repozytorium:**
 ```bash
-   git clone 
-   cd MedicalCenter
+git clone https://github.com/MajloszIS/MedicalCenter.git
+cd MedicalCenter
 ```
 
-2. Postaw bazę w Dockerze:
+**2. Uruchom bazę danych w Dockerze:**
 ```bash
-   docker compose up -d
+docker compose up -d
 ```
 
-3. Puść migracje (utworzą tabele i wstawią dane testowe):
+Kontener: `medicalcenter-db`, port: `1433`.
+
+**3. Zastosuj migracje EF Core (tworzy tabele i seed data):**
 ```bash
-   dotnet ef database update --project MedicalCenter
+dotnet ef database update --project MedicalCenter
 ```
 
-4. Skonfiguruj klucze Stripe (test mode):
+**4. Skonfiguruj user secrets:**
 ```bash
-   cd MedicalCenter
-   dotnet user-secrets set "Stripe:SecretKey" "sk_test_..."
-   dotnet user-secrets set "Stripe:PublishableKey" "pk_test_..."
-```
-   (Każdy członek zespołu używa własnego konta Stripe — patrz sekcja "Stripe" niżej.)
+cd MedicalCenter
 
-5. Odpal aplikację:
+# Stripe (własne konto testowe — patrz sekcja niżej)
+dotnet user-secrets set "Stripe:SecretKey" "sk_test_..."
+dotnet user-secrets set "Stripe:PublishableKey" "pk_test_..."
+
+# Google OAuth
+dotnet user-secrets set "Authentication:Google:ClientId" "..."
+dotnet user-secrets set "Authentication:Google:ClientSecret" "..."
+
+# JWT
+dotnet user-secrets set "Jwt:Key" "twój-tajny-klucz-min-32-znaki"
+```
+
+**5. Uruchom aplikację:**
 ```bash
-   dotnet run --project MedicalCenter
+dotnet run --project MedicalCenter
 ```
 
-6. Otwórz przeglądarkę pod adresem `https://localhost:<port>`
+**6.** Otwórz przeglądarkę pod adresem `https://localhost:<port>`
 
+---
 
-## Codzienna praca
+### Codzienna praca
 
-- Start bazy: `docker compose up -d`
-- Stop bazy: `docker compose down` (dane zostają)
-- Reset bazy od zera: `docker compose down -v && docker compose up -d && dotnet ef database update --project MedicalCenter`
+```bash
+# Start bazy
+docker compose up -d
 
+# Stop bazy (dane zostają)
+docker compose down
 
-## Stripe (klucze testowe)
+# Pełny reset bazy od zera
+docker compose down -v && docker compose up -d && dotnet ef database update --project MedicalCenter
+```
 
-Każdy programista używa własnego konta Stripe w trybie testowym.
+---
+
+## Konfiguracja sekretów
+
+Sekrety **nie są commitowane** do repozytorium. Każdy developer ustawia je lokalnie przez `dotnet user-secrets`. `UserSecretsId` projektu: `1ba36229-4108-4c94-b3e2-6ad97553c7ad`.
+
+### Stripe (płatności)
 
 1. Załóż darmowe konto na https://stripe.com
-2. Tryb "Test mode" → https://dashboard.stripe.com/test/apikeys
+2. Włącz **Test mode** → https://dashboard.stripe.com/test/apikeys
 3. Skopiuj `Secret key` (`sk_test_...`) i `Publishable key` (`pk_test_...`)
-4. Wpisz przez `dotnet user-secrets set ...` jak wyżej
+4. Ustaw przez `dotnet user-secrets set` jak wyżej
 
+Testowa karta kredytowa: `4242 4242 4242 4242`, dowolna przyszła data, dowolny CVC.
+
+### Google OAuth
+
+1. Wejdź na https://console.cloud.google.com
+2. Utwórz projekt
+3. Typ: **Web application**
+4. Authorized redirect URI: `https://localhost:<port>/signin-google`
+5. Skopiuj **Client ID** i **Client Secret**
+
+### JWT
+
+Klucz powinien mieć minimum 32 znaki. Przykład generowania:
+```bash
+# PowerShell
+[System.Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
+```
 
 ---
 
 ## Domyślne konta (seed data)
- 
+
 | Email | Hasło | Rola |
 |-------|-------|------|
 | admin@medical.pl | admin123 | Admin |
-| doktor@medical.pl | doktor123 | Doctor |
-| pacjent@medical.pl | pacjent123 | Patient |
- 
+| lekarz@medical.pl | admin123 | Doctor |
+| kurier@medical.pl | admin123 | Courier |
+| pacjent@medical.pl | admin123 | Patient |
+
+---
+
 ## Dokumentacja API
- 
-Po uruchomieniu aplikacji dokumentacja API dostępna jest pod adresem:
+
+Po uruchomieniu aplikacji, Swagger UI dostępny jest pod:
 ```
 https://localhost:<port>/swagger
 ```
- 
-## TODO
- 
-- [ ] Rozbudowa API — więcej endpointów dla wizyt i pacjentów
-- [ ] Frontend/CSS — poprawa wyglądu aplikacji
-- [x] Przesyłanie plików — zdjęcie profilowe użytkownika
-- [x] Zewnętrzne API — stripe
-- [ ] Generowanie dokumentów PDF — np. recepta
-- [ ] Testy automatyczne — pokrycie głównej logiki aplikacji
-- [ ] Wdrożenie na produkcji
+
+Aby przetestować chronione endpointy:
+1. Wywołaj `POST /api/auth/login` z danymi konta
+2. Skopiuj zwrócony token JWT
+3. Kliknij przycisk **Authorize** w Swagger UI i wklej token w formacie: `Bearer <token>`
