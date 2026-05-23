@@ -4,10 +4,14 @@
     ViewData["Title"] = "Zwolnienia";
 }
 
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <h2 class="page-title mb-0"><i class="fa-solid fa-bed-pulse me-2"></i>Twoje Zwolnienia</h2>
+</div>
+
 @if (!Model.Any())
 {
     <div class="medical-card text-center py-5">
-        <i class="fa-solid fa-bandage text-muted mb-3" style="font-size: 3rem;"></i>
+        <i class="fa-solid fa-bed-pulse text-muted mb-3" style="font-size: 3rem;"></i>
         <h4>Brak Zwolnień</h4>
         <p class="text-muted">Nie masz jeszcze żadnych zwolnień.</p>
     </div>

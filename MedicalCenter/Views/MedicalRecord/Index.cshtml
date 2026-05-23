@@ -204,22 +204,24 @@
 				@foreach (var prescription in Model.Prescriptions)
 				{
 					<div class="medical-card">
-					@if (prescription.Items != null && prescription.Items.Any())
-					{
 						<div class="d-flex align-items-center justify-content-between mb-3">
 							<div class="d-flex align-items-center">
 								<i class="fa-solid fa-file-medical text-primary me-2"></i>
 								<h6 class="fw-bold mb-0">Recepta ważna do @prescription.IssuedAt.ToString("dd.MM.yyyy")</h6>
 							</div>
-								<form asp-action="RemovePrescription" asp-controller="MedicalRecord" method="post">
-									@Html.AntiForgeryToken()
-									<input type="hidden" name="prescriptionId" value="@prescription.Id" />
-									<input type="hidden" name="patientId" value="@Model.PatientId" />
-									<button type="submit" class="btn btn-sm btn-outline-danger">
-										<i class="fa-solid fa-xmark"></i>
-									</button>
-								</form>
+
+							<form asp-action="RemovePrescription" asp-controller="MedicalRecord" method="post">
+								@Html.AntiForgeryToken()
+								<input type="hidden" name="prescriptionId" value="@prescription.Id" />
+								<input type="hidden" name="patientId" value="@Model.PatientId" />
+								<button type="submit" class="btn btn-sm btn-outline-danger">
+									<i class="fa-solid fa-xmark"></i>
+								</button>
+							</form>
 						</div>
+					@if (prescription.Items != null && prescription.Items.Any())
+					{
+						
 						<hr class="mt-0">
 						@foreach (var item in prescription.Items)
 						{
@@ -246,7 +248,12 @@
 								<input type="hidden" name="medicineIds" value="@item.MedicineId" />
 								<input type="hidden" name="quantities" value="@item.Quantity" />
 							</div>
+							}
 						}
+					else
+					{
+						<i class="fa-solid fa-pills text-muted mb-3" style="font-size: 1rem;"></i>
+						<p class="text-muted">Ta recepta nie ma żadnych produktów.</p>
 					}
 					</div>
 				}

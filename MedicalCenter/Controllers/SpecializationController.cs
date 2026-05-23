@@ -35,13 +35,13 @@ namespace MedicalCenter.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    TempData["Error"] = ex.Message;
+                    TempData["ErrorMessage"] = ex.Message;
                     return RedirectToAction("Specializations");
                 }
             }
             else
             {
-                TempData["Error"] = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+                TempData["ErrorMessage"] = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
                 return RedirectToAction("Specializations");
             }
         }
@@ -58,7 +58,7 @@ namespace MedicalCenter.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
             }
             return RedirectToAction("Specializations");
         }
@@ -74,7 +74,7 @@ namespace MedicalCenter.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Specializations");
             }
         }

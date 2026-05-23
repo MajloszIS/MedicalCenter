@@ -60,7 +60,7 @@ namespace MedicalCenter.Controllers
 
                 if (result.success)
                 {
-                    TempData["SuccessMessage"] = result.message;
+                    TempData["Success"] = result.message;
                 }
                 else
                 {

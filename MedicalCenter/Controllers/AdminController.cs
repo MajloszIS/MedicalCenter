@@ -69,7 +69,10 @@ namespace MedicalCenter.Controllers
                 if (await _userService.IsUserWithThisEmailExists(dto.Email))
                 {
                     ViewBag.Error = "Konto z tym Email już istnieje";
-                    return View();
+                    var specs = await _doctorService.GetAllSpecializationsAsync();
+                    var departments = await _departmentService.GetAllDepartmentsAsync();
+                    ViewBag.Departments = departments;
+                    return View(specs);
                 }
 
                 try
@@ -267,7 +270,7 @@ namespace MedicalCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourier(AdminCreateDto dto)
+        public async Task<IActionResult> CreateCourier(AdminCreateCourierDto dto)
         {
             if (ModelState.IsValid)
             {
@@ -308,7 +311,7 @@ namespace MedicalCenter.Controllers
             }
             catch 
             {
-                TempData["Error"] = "Nie można znaleźć kuriera.";
+                TempData["ErrorMessage"] = "Nie można znaleźć kuriera.";
                 return RedirectToAction("Couriers");
             }
         }
@@ -417,12 +420,12 @@ namespace MedicalCenter.Controllers
             try
             {
                 await _medicineService.DeleteMedicineAsync(medicineId);
-                TempData["SuccessMessage"] = "Lek został pomyślnie usunięty z bazy.";
+                TempData["Success"] = "Lek został pomyślnie usunięty z bazy.";
                 return RedirectToAction("Medicines");
             }
             catch
             {
-                TempData["Error"] = "Nie można znaleźć leku";
+                TempData["ErrorMessage"] = "Nie można znaleźć leku";
                 return RedirectToAction("Medicines");
             }
         }
@@ -457,7 +460,7 @@ namespace MedicalCenter.Controllers
                     dto.Id = medicineId;
                     await _medicineService.UpdateMedicineAsync(dto);
 
-                    TempData["SuccessMessage"] = "Dane leku zostały zaktualizowane!";
+                    TempData["Success"] = "Dane leku zostały zaktualizowane!";
                     return RedirectToAction("Medicines");
                 }
                 catch (Exception ex)
@@ -471,7 +474,7 @@ namespace MedicalCenter.Controllers
                 var categories = await _medicineService.GetAllCategoriesAsync();
                 ViewBag.Categories = categories;
                 ViewBag.MedicineId = medicineId;
-                TempData["Error"] = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
+                TempData["ErrorMessage"] = "Niepoprawne dane. Proszę poprawić błędy i spróbować ponownie.";
 
                 return View(dto);
             }

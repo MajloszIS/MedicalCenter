@@ -69,3 +69,58 @@ main {
         background-color: #004494;
         color: white;
     }
+
+/* Styl do nawigacji */
+.nav-pill {
+    border-radius: 12px;
+    padding: 10px 16px !important;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+    .nav-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+.nav-patient {
+    background: #e8f1ff;
+    color: #0d6efd !important;
+}
+
+    .nav-patient:hover {
+        background: #0d6efd;
+        color: white !important;
+    }
+
+.nav-doctor {
+    background: #eafaf1;
+    color: #198754 !important;
+}
+
+    .nav-doctor:hover {
+        background: #198754;
+        color: white !important;
+    }
+
+.nav-admin {
+    background: #fff3cd;
+    color: #b58105 !important;
+}
+
+    .nav-admin:hover {
+        background: #ffc107;
+        color: white !important;
+    }
+
+.nav-courier {
+    background: #f3e8ff;
+    color: #7c3aed !important;
+}
+
+    .nav-courier:hover {
+        background: #7c3aed;
+        color: white !important;
+    }

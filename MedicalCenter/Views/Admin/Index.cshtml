@@ -2,8 +2,122 @@
     ViewData["Title"] = "Panel Administracyjny";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Witaj</h1>
-    <a asp-controller="Admin" asp-action="Doctors">Lekarze</a>
-    <a asp-controller="Admin" asp-action="Patients">Pacjenci</a>
+<div class="container py-4">
+
+    <div class="text-center mb-5">
+        <h1 class="page-title border-0 d-inline-block">
+            <i class="fa-solid fa-gauge-high text-primary me-2"></i>Panel Administracyjny
+        </h1>
+        <p class="text-muted">Zarządzaj wszystkimi obszarami systemu Centrum Medycznego.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Pacjenci -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Admin" asp-action="Patients" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-users tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Pacjenci</h5>
+                    <p class="text-muted small mb-0">Przeglądaj listę pacjentów</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Lekarze -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Admin" asp-action="Doctors" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-user-md tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Lekarze</h5>
+                    <p class="text-muted small mb-0">Dodawaj i zarządzaj lekarzami</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Kurierzy -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Admin" asp-action="Couriers" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-truck-fast tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Kurierzy</h5>
+                    <p class="text-muted small mb-0">Zarządzaj kurierami i dostawami</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Specjalizacje -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Specialization" asp-action="Specializations" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-stethoscope tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Specjalizacje</h5>
+                    <p class="text-muted small mb-0">Definiuj specjalizacje lekarskie</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Zamówienia -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Admin" asp-action="Orders" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-box tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Zamówienia</h5>
+                    <p class="text-muted small mb-0">Przeglądaj zamówienia apteki</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Leki -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Admin" asp-action="Medicines" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-pills tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Leki</h5>
+                    <p class="text-muted small mb-0">Zarządzaj asortymentem apteki</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Departamenty -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-hospital tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Departamenty</h5>
+                    <p class="text-muted small mb-0">Zarządzaj oddziałami</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Kategorie leków -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="MedicineCategories" asp-action="Index" class="text-decoration-none">
+                <div class="medical-card admin-tile h-100 text-center p-4">
+                    <i class="fa-solid fa-tags tile-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Kategorie leków</h5>
+                    <p class="text-muted small mb-0">Porządkuj leki w kategorie</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
 </div>
+
+@section Styles {
+    <style>
+        .admin-tile {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+        }
+
+            .admin-tile:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            }
+
+        .tile-icon {
+            font-size: 2.5rem;
+        }
+    </style>
+}
