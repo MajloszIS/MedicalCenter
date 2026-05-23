@@ -36,7 +36,7 @@ namespace MedicalCenter.Services
         {
             var referrals = await _referralRepository.GetReferralsByPatientIdAsync(patientId);
 
-            if (referrals == null || !referrals.Any())
+            if (referrals == null)
                 throw new Exception("Nie znaleziono zwolnień");
 
             var referralsDto = referrals.Select(r => new ReferralDto

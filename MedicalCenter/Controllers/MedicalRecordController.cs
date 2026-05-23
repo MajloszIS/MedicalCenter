@@ -137,6 +137,11 @@ namespace MedicalCenter.Controllers
                 TempData["ErrorMessage"] = "Wylogowano";
                 return await LogoutAndRedirect();
             }
+            if (medicineIds == null || !medicineIds.Any())
+            {
+                TempData["ErrorMessage"] = "Recepta musi zawierać przynajmniej jeden lek.";
+                return RedirectToAction("Index", new { patientId });
+            }
 
             try
             {

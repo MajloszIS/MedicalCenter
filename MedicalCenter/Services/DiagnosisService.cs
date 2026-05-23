@@ -65,7 +65,7 @@ namespace MedicalCenter.Services
         {
             var diagnoses = await _diagnosisRepository.GetPatientDiagnosisAsync(patientId);
 
-            if (diagnoses == null || !diagnoses.Any())
+            if (diagnoses == null)
             {
                 throw new Exception("Nie znaleziono diagnoz.");
             }

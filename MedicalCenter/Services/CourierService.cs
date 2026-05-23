@@ -55,7 +55,7 @@ namespace MedicalCenter.Services
             return MapToCourierDto(courier);
         }
 
-        public async Task CreateCourierAsync(AdminCreateDto dto)
+        public async Task CreateCourierAsync(AdminCreateCourierDto dto)
         {
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             var user = new User
@@ -66,14 +66,15 @@ namespace MedicalCenter.Services
                 LastName = dto.LastName,
                 Phone = dto.Phone,
                 PasswordHash = passwordHash,
-                RoleId = 4
+                RoleId = 4,
             };
 
             await _userRepository.CreateUserAsync(user);
 
             var courier = new Courier
             {
-                UserId = user.Id
+                UserId = user.Id,
+                VehicleRegistration = dto.VehicleRegistration
             };
 
             await _courierRepository.CreateCourierAsync(courier);
