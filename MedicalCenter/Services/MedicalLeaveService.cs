@@ -37,7 +37,7 @@ namespace MedicalCenter.Services
         public async Task<List<MedicalLeaveDto>> GetMedicalLeavesByPatientIdAsync(Guid patientId)
         {
             var medicalLeaves = await _medicalLeaveRepository.GetMedicalLeavesByPatientIdAsync(patientId);
-            if (medicalLeaves == null || !medicalLeaves.Any())
+            if (medicalLeaves == null)
                 throw new Exception("Nie znaleziono zwolnień.");
 
             var medicalLeavesDto = medicalLeaves.Select(ml => new MedicalLeaveDto

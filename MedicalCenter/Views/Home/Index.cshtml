@@ -7,34 +7,15 @@
         <h1 class="display-4 fw-bold text-dark mb-3">Twoje Zdrowie,<br><span class="text-primary">Nasza Kaska</span></h1>
         <p class="lead text-muted mb-4">Nowoczesne Centrum Medyczne niezarejestrowane. Zostaw u nas wypłatę w kilka sekund, wygoogluj swoje objawy razem z nami i miej dostęp do rachunków za leczenie w jednym, bardzo drogim miejscu.</p>
 
-        @if (!User.Identity.IsAuthenticated)
+
+        @if (User.Identity?.IsAuthenticated != true)
         {
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <a asp-controller="Account" asp-action="Register" class="btn btn-medical btn-lg px-4 me-md-2 fw-bold shadow-sm">Zarejestruj się</a>
                 <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4 fw-bold shadow-sm">Zaloguj do systemu</a>
             </div>
         }
-        else
-        {
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                @if (User.IsInRole("Patient"))
-                {
-                    <a asp-controller="Appointment" asp-action="Index" class="btn btn-medical btn-lg px-4 fw-bold shadow-sm">Przejdź do moich wizyt</a>
-                }
-                else if (User.IsInRole("Doctor"))
-                {
-                    <a asp-controller="Doctor" asp-action="Index" class="btn btn-medical btn-lg px-4 fw-bold shadow-sm">Otwórz Panel Lekarza</a>
-                }
-                else if (User.IsInRole("Admin"))
-                {
-                    <a asp-controller="Admin" asp-action="Index" class="btn btn-dark btn-lg px-4 fw-bold shadow-sm">Panel Administracyjny</a>
-                }
-                else if (User.IsInRole("Courier"))
-                {
-                    <a asp-controller="Courier" asp-action="Index" class="btn btn-success btn-lg px-4 fw-bold shadow-sm">Panel Kuriera</a>
-                }
-            </div>
-        }
+       
     </div>
     <div class="col-lg-6">
         <div class="medical-card text-center p-5 border-0" style="background: linear-gradient(135deg, var(--medical-primary), #00d2ff); color: white;">

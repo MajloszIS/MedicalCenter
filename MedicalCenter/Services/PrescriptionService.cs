@@ -4,6 +4,7 @@ using MedicalCenter.Repositories;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QRCoder;
 
 namespace MedicalCenter.Services
 {
@@ -140,6 +141,9 @@ namespace MedicalCenter.Services
                         column.Item().LineHorizontal(1).LineColor(Colors.Grey.Medium);
                         column.Spacing(10);
                         column.Item().Text($"Numer recepty: {prescription.Id}");
+                        column.Item().Width(2, Unit.Centimetre).Image(GenerateQrCode(prescription.Id.ToString()));
+                        column.Item().LineHorizontal(1).LineColor(Colors.Grey.Medium);
+                        column.Spacing(10);
                         column.Item().Text($"Ważna do: {prescription.IssuedAt.ToString("dd.MM.yyyy")}");
                         column.Item().Text($"Liczba leków: {prescription.Items.Count}");
 
@@ -158,6 +162,12 @@ namespace MedicalCenter.Services
 
             return document.GeneratePdf();
         }
-
+        private  byte[] GenerateQrCode(string text)
+        {
+            using var generator = new QRCodeGenerator();
+            using var data = generator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new PngByteQRCode(data);
+            return qrCode.GetGraphic(20);
+        }
     }
 }

@@ -154,7 +154,7 @@ namespace MedicalCenter.Controllers
 
                 await _cartService.RemoveFromCartAsync(patient.Id, medicineId);
 
-                TempData["SuccessMessage"] = "Przedmiot został usunięty z koszyka.";
+                TempData["Success"] = "Przedmiot został usunięty z koszyka.";
                 return RedirectToAction("Index");
             }
             catch

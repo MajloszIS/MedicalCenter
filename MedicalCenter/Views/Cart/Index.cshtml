@@ -8,14 +8,6 @@
     <h2>Twój Koszyk</h2>
     <hr />
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
     @if (Model == null || !Model.Items.Any())
     {
         <div class="alert alert-info">Twój koszyk jest pusty.</div>

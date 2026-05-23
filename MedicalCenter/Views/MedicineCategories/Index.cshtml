@@ -16,17 +16,6 @@
                        class="form-control" required placeholder="np. Suplementy" />
             </div>
 
-            <div>
-                @if (TempData["Error"] != null)
-                {
-                    <span class="text-danger small fw-bold">@TempData["Error"]</span>
-                }
-                @if (TempData["SuccessMessage"] != null)
-                {
-                    <span class="text-success small fw-bold">@TempData["SuccessMessage"]</span>
-                }
-            </div>
-
             <button type="submit" class="btn btn-medical w-100 fw-bold mt-3">
                 <i class="fa-solid fa-plus me-2"></i>Dodaj
             </button>

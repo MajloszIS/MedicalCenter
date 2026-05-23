@@ -25,7 +25,7 @@ namespace MedicalCenter.Controllers
             }
             catch
             {
-                TempData["Error"] = "Wystąpił problem z pobraniem listy kategorii. Spróbuj ponownie później.";
+                TempData["ErrorMessage"] = "Wystąpił problem z pobraniem listy kategorii. Spróbuj ponownie później.";
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -39,18 +39,18 @@ namespace MedicalCenter.Controllers
                 if (ModelState.IsValid)
                 {
                     await _medicineService.AddCategoryAsync(dto);
-                    TempData["SuccessMessage"] = $"Kategoria '{dto.Name}' została dodana!";
+                    TempData["Success"] = $"Kategoria '{dto.Name}' została dodana!";
                 }
                 else
                 {
-                    TempData["Error"] = "Nazwa kategorii jest niepoprawna.";
+                    TempData["ErrorMessage"] = "Nazwa kategorii jest niepoprawna.";
                 }
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                TempData["Error"] = "Wystąpił błąd podczas dodawania kategorii.";
+                TempData["ErrorMessage"] = "Wystąpił błąd podczas dodawania kategorii.";
                 return RedirectToAction("Index");
             }
         }
@@ -63,18 +63,18 @@ namespace MedicalCenter.Controllers
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    TempData["Error"] = "Nazwa kategorii nie może być pusta.";
+                    TempData["ErrorMessage"] = "Nazwa kategorii nie może być pusta.";
                     return RedirectToAction("Index");
                 }
 
                 await _medicineService.UpdateCategoryAsync(id, name);
 
-                TempData["SuccessMessage"] = $"Nazwa kategorii została zmieniona na '{name}'.";
+                TempData["Success"] = $"Nazwa kategorii została zmieniona na '{name}'.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Index");
             }
         }
@@ -87,12 +87,12 @@ namespace MedicalCenter.Controllers
             {
                 await _medicineService.DeleteCategoryAsync(id);
 
-                TempData["SuccessMessage"] = "Kategoria została pomyślnie usunięta.";
+                TempData["Success"] = "Kategoria została pomyślnie usunięta.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Index");
             }
         }

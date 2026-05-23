@@ -27,11 +27,6 @@ namespace MedicalCenter.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public IActionResult Login()
         {
             return View();
@@ -56,7 +51,15 @@ namespace MedicalCenter.Controllers
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                return RedirectToAction("Index", "Home");
+
+                return result.RoleName switch
+                {
+                    "Admin" => RedirectToAction("Index", "Admin"),
+                    "Doctor" => RedirectToAction("Index", "Doctor"),
+                    "Courier" => RedirectToAction("Index", "Courier"),
+                    "Patient" => RedirectToAction("Index", "Appointment"),
+                    _ => RedirectToAction("Index", "Appointment")
+                };
             }
             catch (Exception)
             {

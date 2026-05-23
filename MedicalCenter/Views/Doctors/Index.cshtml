@@ -18,6 +18,16 @@
 </div>
 
 <div class="row g-4">
+@if (!Model.Any())
+{
+    <div class="medical-card text-center py-5">
+        <i class="fa-solid fa-user-doctor text-muted mb-3" style="font-size: 3rem;"></i>
+        <h4>Brak Lekarzy</h4>
+        <p class="text-muted">W naszym cetrum nie ma jeszcze lekarzy.</p>
+    </div>
+}
+else
+{
     @foreach (var item in Model)
     {
         <div class="col-md-6 col-lg-4 doctor-item">
@@ -53,6 +63,7 @@
             </div>
         </div>
     }
+}
 </div>
 
 @section Scripts {

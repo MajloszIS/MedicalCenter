@@ -26,103 +26,197 @@
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
-                    @if (User.Identity.IsAuthenticated)
+                    @if(User.Identity?.IsAuthenticated == true)
                     {
                         <ul class="navbar-nav">
                             <li class="nav-item d-flex align-items-center">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">
-                                    <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity.Name</span>
+                                    <span class="navbar-text me-3 fw-semibold">Witaj, @User.Identity?.Name</span>
                                 </a>
+                            </li>
+                        </ul>
+                    }
+
+                    <div class="d-flex align-items-center">
+                        @if (User.IsInRole("Courier"))
+                        {
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-courier"
+                                           asp-controller="Courier"
+                                           asp-action="Index">
+                                        <i class="fa-solid fa-truck-fast me-2"></i>Panel Kuriera
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <ul class="navbar-nav flex-row gap-2">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-doctor"
+                                           asp-controller="Doctor"
+                                           asp-action="Index">
+                                        <i class="fa-solid fa-calendar-check me-1"></i>Wizyty
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-doctor"
+                                           asp-controller="Doctor"
+                                           asp-action="Patients">
+                                        <i class="fa-solid fa-user-injured me-1"></i>Pacjenci
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+
+                        @if (User.IsInRole("Patient"))
+                        {
+                            <ul class="navbar-nav flex-row flex-wrap gap-2">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Doctors" asp-action="Index">
+                                        <i class="fa-solid fa-user-doctor me-1"></i>Lekarze
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Appointment" asp-action="Index">
+                                        <i class="fa-solid fa-calendar-days me-1"></i>Wizyty
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Diagnosis" asp-action="Index">
+                                        <i class="fa-solid fa-notes-medical me-1"></i>Diagnozy
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Prescription" asp-action="Index">
+                                        <i class="fa-solid fa-file-prescription me-1"></i>Recepty
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="MedicalLeave" asp-action="MedicalLeaves">
+                                        <i class="fa-solid fa-bed me-1"></i>Zwolnienia
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Referral" asp-action="Referrals">
+                                        <i class="fa-solid fa-share-from-square me-1"></i>Skierowania
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Medicines" asp-action="Index">
+                                        <i class="fa-solid fa-capsules me-1"></i>Apteka
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Cart" asp-action="Index">
+                                        <i class="fa-solid fa-cart-shopping me-1"></i>Koszyk
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-patient" asp-controller="Order" asp-action="MyOrders">
+                                        <i class="fa-solid fa-box me-1"></i>Zamówienia
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <ul class="navbar-nav flex-row flex-wrap gap-2">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Index">
+                                        <i class="fa-solid fa-list me-1"></i>Panel
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Patients">
+                                        <i class="fa-solid fa-users me-1"></i>Pacjenci
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Doctors">
+                                        <i class="fa-solid fa-user-doctor me-1"></i>Lekarze
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Couriers">
+                                        <i class="fa-solid fa-truck-fast me-1"></i>Kurierzy
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Specialization"
+                                           asp-action="Specializations">
+                                        <i class="fa-solid fa-stethoscope me-1"></i>Specjalizacje
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Orders">
+                                        <i class="fa-solid fa-box me-1"></i>Zamówienia
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Admin"
+                                           asp-action="Medicines">
+                                        <i class="fa-solid fa-capsules me-1"></i>Leki
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="Department"
+                                           asp-action="Index">
+                                        <i class="fa-solid fa-building me-1"></i>Departamenty
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-pill nav-admin"
+                                           asp-controller="MedicineCategories"
+                                           asp-action="Index">
+                                        <i class="fa-solid fa-tags me-1"></i>Kategorie leków
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </div>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item d-flex align-items-center">
                                 <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-outline-danger btn-sm m-lg-3">Wyloguj</button>
                                 </form>
-                            </li>
-
-                            @if (User.IsInRole("Courier"))
-                            {
-                                <li class="nav-item d-flex align-items-center">
-                                    <a class="btn btn-success btn-sm ms-2 fw-bold" asp-area="" asp-controller="Courier" asp-action="Index">
-                                        <i class="fa-solid fa-truck-fast me-1"></i> Panel Kuriera
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    }
-
-                    @if (User.IsInRole("Doctor"))
-                    {
-                        <ul class="navbar-nav flex-grow-1">
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Index">Wizyty</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">Pacjenci</a>
-                            </li>
-                        </ul>
-                    }
-
-
-                    @if (User.IsInRole("Patient"))
-                    {
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Lekarze</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Wizyty</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="Diagnosis" asp-action="Index">Diagnozy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Prescription" asp-action="Index">Recepty</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="MedicalLeave" asp-action="MedicalLeaves">Zwolnienia</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="Referral" asp-action="Referrals">Skierowania</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Medicines" asp-action="Index">Apteka</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Cart" asp-action="Index">Koszyk</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="Order" asp-action="MyOrders">Moje Zamówienia</a>
-                            </li>
-                        </ul>
-                    }
-
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Patients">Pacjenci</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Doctors">Lekarze</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Couriers">Kurierzy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Specialization" asp-action="Specializations">Specjalizacje</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Orders">Zamówienia Apteki</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Admin" asp-action="Medicines">Leki</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Department" asp-action="Index">Departamenty</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="MedicineCategories" asp-action="Index">Kategorie leków</a>
                             </li>
                         </ul>
                     }
