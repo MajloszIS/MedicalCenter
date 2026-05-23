@@ -15,7 +15,7 @@ namespace MedicalCenter.Repositories
         {
             return _context.Specializations.ToListAsync();
         }
-        public Task<Specialization> GetSpecializationByIdAsync(Guid id)
+        public Task<Specialization?> GetSpecializationByIdAsync(Guid id)
         {
             return _context.Specializations.FirstOrDefaultAsync(s => s.Id == id);
         }

@@ -122,31 +122,6 @@ namespace MedicalCenter.Services
 
             return patientDto;
         }
-        public async Task<PatientDto> GetUserByEmailAsync(string email)
-        {
-            var user = await _userRepository.GetUserByEmailWithRoleAsync(email);
-            if (user == null)
-            {
-                return null;
-            }
-
-            var patient = await _patientRepository.GetPatientByUserIdAsync(user.Id);
-            if (patient == null)
-            {
-                return null;
-            }
-
-            var patientDto = new PatientDto
-            {
-                Id = patient.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Phone = user.Phone,
-                Pesel = patient.Pesel
-            };
-
-            return patientDto;
-        }
         public async Task<PatientProfileDto> GetPatientProfileAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Nie znaleziono użytkownika.");

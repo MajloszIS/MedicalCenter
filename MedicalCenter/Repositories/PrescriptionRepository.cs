@@ -11,7 +11,7 @@ namespace MedicalCenter.Repositories
         {
             _context = context;
         }
-        public async Task<Prescription> GetByIdAsync(Guid id)
+        public async Task<Prescription?> GetByIdAsync(Guid id)
         {
             return await _context.Prescriptions
                 .Include(p => p.Items)
@@ -23,7 +23,7 @@ namespace MedicalCenter.Repositories
                     .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
-        public async Task<PrescriptionItem> GetPrescriptionItemByIdAsync(Guid id)
+        public async Task<PrescriptionItem?> GetPrescriptionItemByIdAsync(Guid id)
         {
             return await _context.PrescriptionItems
                 .Include(i => i.Medicine)

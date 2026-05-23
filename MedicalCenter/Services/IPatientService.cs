@@ -7,7 +7,6 @@ namespace MedicalCenter.Services
         public Task<List<PatientDto>> GetAllPatientsAsync();
         public Task RegisterAsync(PatientRegisterDto dto);
         public Task RegisterGoogleUserAsync(string email, string firstName, string lastName);
-        public Task<PatientDto> GetUserByEmailAsync(string email);
         public Task<PatientDto> GetPatientByIdAsync(Guid id);
         public Task<PatientDto> GetPatientByUserIdAsync(Guid userId);
         public Task<PatientProfileDto> GetPatientProfileAsync(Guid id);

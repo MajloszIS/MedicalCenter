@@ -100,10 +100,10 @@ namespace MedicalCenter.Services
         }
         public LoginResponseDto GenerateJwtToken(LoginResultDto user)
         {
-            var jwtKey = _configuration["Jwt:Key"];
+            var jwtKey = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key nie jest skonfigurowany");
             var jwtIssuer = _configuration["Jwt:Issuer"];
             var jwtAudience = _configuration["Jwt:Audience"];
-            var expiryMinutes = int.Parse(_configuration["Jwt:ExpiryMinutes"]);
+            var expiryMinutes = int.Parse(_configuration["Jwt:ExpiryMinutes"] ?? throw new InvalidOperationException("Jwt:Key nie jest skonfigurowany"));
 
             var claims = new[]
             {

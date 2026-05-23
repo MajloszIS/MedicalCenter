@@ -26,17 +26,6 @@ namespace MedicalCenter.Repositories
                         .ThenInclude(i => i.Medicine)
                 .FirstOrDefaultAsync(mr => mr.DoctorId == doctorId && mr.PatientId == patientId);
         }
-        public async Task<MedicalRecord> GetByPatientAsync(Guid patientId)
-        {
-            return await _context.MedicalRecords
-                .Include(mr => mr.Patient)
-                .Include(mr => mr.Doctor)
-                .FirstOrDefaultAsync(mr => mr.PatientId == patientId);
-        }
-        public async Task<MedicalRecord> GetByDoctorIdAsync(Guid doctorId)
-        {
-            return await _context.MedicalRecords.FirstOrDefaultAsync(mr => mr.DoctorId == doctorId);
-        }
         public async Task<MedicalRecord?> GetMedicalRecordByIdAsync(Guid id)
         {
             return await _context.MedicalRecords

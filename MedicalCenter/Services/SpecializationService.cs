@@ -27,7 +27,7 @@ namespace MedicalCenter.Services
             var specialization = await _specializationRepository.GetSpecializationByIdAsync(id);
             if (specialization == null)
             {
-                return null;
+                throw new InvalidOperationException("Specjalizacja o podanym ID nie istnieje.");
             }
             return new SpecializationDto
             {

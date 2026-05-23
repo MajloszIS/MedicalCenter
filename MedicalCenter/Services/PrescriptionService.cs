@@ -16,11 +16,7 @@ namespace MedicalCenter.Services
         }
         public async Task<PrescriptionDto> GetByIdAsync(Guid id)
         {
-            var prescription = await _prescriptionRepository.GetByIdAsync(id);
-            if (prescription == null)
-            {
-                throw new Exception("Prescription not found");
-            }
+            var prescription = await _prescriptionRepository.GetByIdAsync(id) ?? throw new Exception("Nie znaleziono recepty");
 
             var prescriptionDto = new PrescriptionDto
             {
@@ -57,11 +53,8 @@ namespace MedicalCenter.Services
         }
         public async Task UpdatePrescription(PrescriptionDto prescriptionDto)
         {
-            var prescription = await _prescriptionRepository.GetByIdAsync(prescriptionDto.Id);
-            if (prescription == null)
-            {
-                throw new Exception("Prescription not found");
-            }
+            var prescription = await _prescriptionRepository.GetByIdAsync(prescriptionDto.Id) ?? throw new Exception("Nie znaleziono recepty");
+
             prescription.Items = prescriptionDto.Items.Select(i => new PrescriptionItem
             {
                 Id = i.Id,
@@ -109,15 +102,14 @@ namespace MedicalCenter.Services
                         Name = i.Medicine.Name,
                         Price = i.Medicine.Price
                     }
-                }).ToList()
+                }).ToList(),
+                ProfilePicturePath = p.Doctor.User.ProfilePicturePath
             }).ToList();
         }
 
         public async Task<byte[]> GeneratePrescriptionPdfAsync(Guid prescriptionId)
         {
-            var prescription = await _prescriptionRepository.GetByIdAsync(prescriptionId);
-            if (prescription == null)
-                throw new Exception("Prescription not found");
+            var prescription = await _prescriptionRepository.GetByIdAsync(prescriptionId) ?? throw new Exception("Nie znaleziono recepty");
 
             var document = Document.Create(container =>
             {

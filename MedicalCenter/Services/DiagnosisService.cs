@@ -15,8 +15,7 @@ namespace MedicalCenter.Services
 
         public async Task<DiagnosisDto> GetByIdAsync(Guid id)
         {
-            var diagnosis = await _diagnosisRepository.GetByIdAsync(id);
-            if (diagnosis == null) return null;
+            var diagnosis = await _diagnosisRepository.GetByIdAsync(id) ?? throw new Exception("Nie znaleziono diagnoz");
 
             return new DiagnosisDto
             {

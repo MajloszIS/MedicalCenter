@@ -12,7 +12,7 @@ namespace MedicalCenter.Repositories
             _context = context;
         }
 
-        public async Task<Diagnosis> GetByIdAsync(Guid id)
+        public async Task<Diagnosis?> GetByIdAsync(Guid id)
         {
             return await _context.Diagnoses
                 .Include(d => d.Treatments)
