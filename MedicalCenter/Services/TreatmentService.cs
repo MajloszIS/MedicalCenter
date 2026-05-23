@@ -22,7 +22,7 @@ namespace MedicalCenter.Services
         }
         public async Task<TreatmentDto> GetTreatmentByIdAsync(Guid id)
         {
-            var treatment = await _treatmentRepository.GetTreatmentByIdAsync(id);
+            var treatment = await _treatmentRepository.GetTreatmentByIdAsync(id) ?? throw new Exception("Nie znaleziono leczenia");
             var treatmentDto = new TreatmentDto
             {
                 Id = treatment.Id,

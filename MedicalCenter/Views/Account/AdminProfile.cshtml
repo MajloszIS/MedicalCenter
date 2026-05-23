@@ -113,11 +113,6 @@
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline';
         }
-
-        document.getElementById('profilePicture').addEventListener('change', function() {
-            const fileName = this.files[0]?.name ?? 'Nie wybrano pliku';
-            document.getElementById('fileName').textContent = fileName;
-        });
     </script>
 }
 

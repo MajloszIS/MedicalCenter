@@ -1,4 +1,6 @@
 ﻿using MedicalCenter.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,6 +17,12 @@ namespace MedicalCenter.Controllers
             _patientService = patientService;
         }
 
+        private async Task<IActionResult> LogoutAndRedirect()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Index()
         {
@@ -22,17 +30,12 @@ namespace MedicalCenter.Controllers
             if (userId == null)
             {
                 TempData["ErrorMessage"] = "Nie znaleziono Użytkownika";
-                return RedirectToAction("Logout", "Account");
-            }
-            var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
-            if (patient == null)
-            {
-                TempData["ErrorMessage"] = "Nie znaleziono Pacjenta";
-                return RedirectToAction("Logout", "Account");
+                return await LogoutAndRedirect();
             }
 
             try
             {
+                var patient = await _patientService.GetPatientByUserIdAsync(Guid.Parse(userId));
                 var diagnoses = await _diagnosisService.GetPatientDiagnosisAsync(patient.Id);
                 return View(diagnoses);
             }

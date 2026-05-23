@@ -10,5 +10,6 @@
 
         public List<PrescriptionItemDto> Items { get; set; }
         public DateTime IssuedAt { get; set; }
+        public string? ProfilePicturePath { get; set; }
     }
 }

@@ -123,7 +123,8 @@ namespace MedicalCenter.Services
                 StatusName = appointment.Status.Name,
                 Description = appointment.Description,
                 Notes = appointment.Notes,
-                DurationMinutes = appointment.DurationMinutes
+                DurationMinutes = appointment.DurationMinutes,
+                ProfilePicturePath = appointment.Patient.User.ProfilePicturePath
             };
             return appointmentDto;
         }

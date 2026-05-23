@@ -10,5 +10,6 @@
         public string Description { get; set; }
         public string? Notes { get; set; }
         public int DurationMinutes { get; set; }
+        public string? ProfilePicturePath { get; set; }
     }
 }

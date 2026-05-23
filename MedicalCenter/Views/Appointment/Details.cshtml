@@ -8,10 +8,10 @@
 		{
 			<div class="medical-card mb-4">
 				<h3>
-					@if (/*Model.ProfilePicturePath != null*/ false)
+					@if (Model.ProfilePicturePath != null)
 					{
-						//<img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
-						//style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+						<img src="@Model.ProfilePicturePath" alt="Zdjęcie profilowe"
+						style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
 					}
 					else
 					{

@@ -16,7 +16,7 @@ namespace MedicalCenter.Repositories
             _context.Treatments.Add(treatment);
             await _context.SaveChangesAsync();
         }
-        public async Task<Treatment> GetTreatmentByIdAsync(Guid id)
+        public async Task<Treatment?> GetTreatmentByIdAsync(Guid id)
         {
             return await _context.Treatments.FindAsync(id);
         }

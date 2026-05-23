@@ -20,6 +20,16 @@ namespace MedicalCenter.Services
                 Id = medicalRecord.Id,
                 PatientId = medicalRecord.PatientId,
                 DoctorId = medicalRecord.DoctorId,
+
+                Patient = new PatientDto
+                {
+                    Id = medicalRecord.Patient.Id,
+                    FirstName = medicalRecord.Patient.User.FirstName,
+                    LastName = medicalRecord.Patient.User.LastName,
+                    Phone = medicalRecord.Patient.User.Phone,
+                    Pesel = medicalRecord.Patient.Pesel
+                },
+
                 Diagnoses = medicalRecord.Diagnoses.Select(d => new DiagnosisDto
                 {
                     Id = d.Id,
@@ -33,6 +43,7 @@ namespace MedicalCenter.Services
                         Description = t.Description
                     }).ToList()
                 }).ToList(),
+
                 Prescriptions = medicalRecord.Prescriptions.Select(p => new PrescriptionDto
                 {
                     Id = p.Id,
@@ -46,22 +57,15 @@ namespace MedicalCenter.Services
                         MedicineId = i.MedicineId,
                         Quantity = i.Quantity,
                         Notes = i.Notes,
-                        Medicine = i.Medicine != null ? new MedicineDto
+                        Medicine = new MedicineDto
                         {
                             Id = i.Medicine.Id,
                             Name = i.Medicine.Name,
                             Price = i.Medicine.Price
-                        } : null
+                        }
                     }).ToList()
-                }).ToList(),
-                Patient = medicalRecord.Patient != null ? new PatientDto
-                {
-                    Id = medicalRecord.Patient.Id,
-                    FirstName = medicalRecord.Patient.User.FirstName,
-                    LastName = medicalRecord.Patient.User.LastName,
-                    Phone = medicalRecord.Patient.User.Phone,
-                    Pesel = medicalRecord.Patient.Pesel
-                } : null
+                }).ToList()
+
             };
 
             return medicalRecordDto;
