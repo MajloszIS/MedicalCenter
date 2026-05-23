@@ -1,8 +1,11 @@
 # MedicalCenter
 
+<p align="center">
+  <img src="./images/MedicalCenterLogo.png" alt="Logo" width="200" />
+</p>
+
 Aplikacja webowa centrum medycznego zbudowana w ASP.NET Core MVC z modułem sprzedaży leków i obsługą dostaw.
 
-<img src="./images/MedicalCenterLogo.png" alt="Logo" width="200" />
 
 ## Technologie
 
@@ -132,10 +135,7 @@ Dokumentacja interaktywna: `/swagger`
 
 ## Demo
 
-![Strona główna](./images/HomeView.png)
-![Logowanie](./images/LoginView.png)
-![Lista lekarzy](./images/PatientDoctorsView.png)
-![Panel admina](./images/AdminHomeView.png)
+![Widok Pacjenta](./images/PatientDemo.gif)
 
 Repozytorium: https://github.com/MajloszIS/MedicalCenter
 
