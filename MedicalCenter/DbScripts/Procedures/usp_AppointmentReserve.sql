@@ -13,19 +13,15 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- 1. Walidacja: termin w przyszłości
         IF @AppointmentDate <= SYSDATETIME()
             THROW 50001, 'Termin wizyty musi być w przyszłości.', 1;
 
-        -- 2. Walidacja: pacjent istnieje
         IF NOT EXISTS (SELECT 1 FROM dbo.Patients WHERE Id = @PatientId)
             THROW 50002, 'Pacjent o podanym Id nie istnieje.', 1;
 
-        -- 3. Walidacja: lekarz istnieje
         IF NOT EXISTS (SELECT 1 FROM dbo.Doctors WHERE Id = @DoctorId)
             THROW 50003, 'Lekarz o podanym Id nie istnieje.', 1;
 
-        -- 4. Walidacja: lekarz nie ma już wizyty w tym terminie
         IF EXISTS (
             SELECT 1
             FROM dbo.Appointments a
@@ -36,7 +32,6 @@ BEGIN
         )
             THROW 50004, 'Lekarz ma już wizytę w tym terminie.', 1;
 
-        -- 5. Walidacja: pacjent nie ma już wizyty w tym terminie
         IF EXISTS (
             SELECT 1
             FROM dbo.Appointments a
@@ -47,8 +42,8 @@ BEGIN
         )
             THROW 50005, 'Pacjent ma już wizytę w tym terminie.', 1;
 
-        -- 6. Pobierz Id statusu "Zaplanowana"
-        DECLARE @StatusId UNIQUEIDENTIFIER;
+        -- TYLKO ta zmienna zmienia typ na INT
+        DECLARE @StatusId INT;
         SELECT @StatusId = Id
           FROM dbo.AppointmentStatuses
          WHERE Name = N'Zaplanowana';
@@ -56,7 +51,6 @@ BEGIN
         IF @StatusId IS NULL
             THROW 50006, 'Brak statusu "Zaplanowana" w słowniku statusów.', 1;
 
-        -- 7. Wstaw wizytę
         SET @AppointmentId = NEWID();
 
         INSERT INTO dbo.Appointments (Id, PatientId, DoctorId, StatusId, AppointmentDate, Description, Notes)
