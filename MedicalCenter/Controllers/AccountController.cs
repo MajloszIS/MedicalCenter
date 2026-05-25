@@ -10,6 +10,7 @@ namespace MedicalCenter.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IWebHostEnvironment _env;
 
         private readonly IUserService _userService;
         private readonly IPatientService _patientService;
@@ -17,7 +18,7 @@ namespace MedicalCenter.Controllers
         private readonly IAddressService _addressService;
         private readonly ICourierService _courierService;
         private readonly IDepartmentService _departmentService;
-        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService, ICourierService courierService, IDepartmentService departmentService)
+        public AccountController(IUserService userService, IPatientService patientService, IDoctorService doctorService, IAddressService addressService, ICourierService courierService, IDepartmentService departmentService, IWebHostEnvironment env)
         {
             _userService = userService;
             _patientService = patientService;
@@ -25,6 +26,7 @@ namespace MedicalCenter.Controllers
             _addressService = addressService;
             _courierService = courierService;
             _departmentService = departmentService;
+            _env = env;
         }
 
         public IActionResult Login()
@@ -438,7 +440,7 @@ namespace MedicalCenter.Controllers
 
             // unikalna nazwa pliku
             var fileName = $"{Guid.NewGuid()}{extension}";
-            var uploadsFolder = Path.Combine("wwwroot", "images", "profiles");
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "images", "profiles");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -464,9 +466,10 @@ namespace MedicalCenter.Controllers
         // Logowanie się przez Google
         public IActionResult GoogleLogin()
         {
+            var redirectUrl = Url.Action("GoogleCallback", "Account", null, Request.Scheme);
             var properties = new AuthenticationProperties
             {
-                RedirectUri = "/Account/GoogleCallback"
+                RedirectUri = redirectUrl
             };
             return Challenge(properties, "Google");
         }
@@ -474,6 +477,10 @@ namespace MedicalCenter.Controllers
         public async Task<IActionResult> GoogleCallback()
         {
             var result = await HttpContext.AuthenticateAsync("Google");
+            foreach (var claim in result.Principal.Claims)
+            {
+                Console.WriteLine($"{claim.Type} = {claim.Value}");
+            }
             if (!result.Succeeded) return RedirectToAction("Login");
 
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
@@ -484,11 +491,12 @@ namespace MedicalCenter.Controllers
             }
             var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName);
             var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-            {
-                TempData["ErrorMessage"] = "Konto Google nie udostępniło adresu Imienia lub Nazwiska";
-                return RedirectToAction("Login");
-            }
+
+            if (string.IsNullOrEmpty(firstName))
+                firstName = result.Principal.FindFirstValue(ClaimTypes.Name) ?? "Użytkownik";
+
+            if (string.IsNullOrEmpty(lastName))
+                lastName = "Google";
 
             var user = await _userService.IsUserWithThisEmailExists(email);
 

@@ -7,6 +7,7 @@ using System.Data;
 
 [ApiController]
 [Route("api/appointments")]
+[Authorize(AuthenticationSchemes = "Bearer")]
 public class AppointmentsApiController : ControllerBase
 {
     private readonly AppDbContext _context;
