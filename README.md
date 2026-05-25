@@ -134,10 +134,12 @@ Dokumentacja interaktywna: `/swagger`
 - **Faktura** — pobieralne przez pacjenta po opłaceniu zamówienia
 
 ## Demo
-
+Widok Pacjenta
 ![Widok Pacjenta](./images/PatientDemo.gif)
 
-Repozytorium: https://github.com/MajloszIS/MedicalCenter
+**Demo:** [medicalcenter-app...azurewebsites.net](https://medicalcenter-app-hwb2dqgfcpfub3b5.germanywestcentral-01.azurewebsites.net/)
+
+**Repozytorium:** https://github.com/MajloszIS/MedicalCenter
 
 ---
 
