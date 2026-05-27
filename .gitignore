@@ -17,6 +17,10 @@ Claude.md
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# DocFX
+_site/
+api/
+
 # Mono auto generated files
 mono_crash.*
 

@@ -52,7 +52,7 @@ Wzorce: **Repository**, **Service**, **Dependency Injection**, **DTO**.
 
 `User`, `Doctor`, `Patient`, `Courier`, `Appointment`, `MedicalRecord`, `Diagnosis`, `Treatment`, `Prescription`, `PrescriptionItem`, `Medicine`, `MedicineCategory`, `Cart`, `CartItem`, `Order`, `OrderItem`, `OrderRating`, `Delivery`, `Address`, `Review`, `MedicalLeave`, `Referral`, `Specializations`, `Department`, `DoctorDepartment`, `Invoice`, `AppointmentStatus`, `OrderStatus`, `Deliverytatus`, `Role`
 
-![Diagram](./docs/RelacyjnyDiagramTabelwBazieDanych.png)
+![Diagram](/docs/RelacyjnyDiagramTabelwBazieDanych.png)
 
 ## Funkcjonalności
 
