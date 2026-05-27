@@ -51,4 +51,34 @@ public class AppointmentsApiController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+    [HttpPost("cancel-unpaid")]
+    public async Task<IActionResult> CancelUnpaidOrders()
+    {
+        // Parametr OUTPUT
+        var cancelledCount = new SqlParameter("@CancelledCount", SqlDbType.Int)
+        { Direction = ParameterDirection.Output };
+
+        try
+        {
+            // Wywołanie procedury z dedykowanego schematu shop przy użyciu surowego SQL
+            await _context.Database.ExecuteSqlRawAsync(
+                @"EXEC dbo.usp_CancelUnpaidOrders 
+                    @CancelledCount OUTPUT",
+                cancelledCount);
+
+            // Odczyt liczby zmodyfikowanych rekordów zwróconej przez kursor w bazie
+            var count = (int)cancelledCount.Value;
+
+            return Ok(new
+            {
+                cancelledOrdersCount = count,
+                message = $"Proces czyszczenia bazy zakończony. Pomyślnie anulowano przeterminowane zamówienia: {count} szt."
+            });
+        }
+        catch (SqlException ex)
+        {
+            // Przechwytywanie ewentualnych błędów wykonania zapytania po stronie MS SQL
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }
