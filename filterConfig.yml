@@ -1,0 +1,5 @@
+apiRules:
+  - exclude:
+      uidRegex: ^MedicalCenter\.Migrations
+  - exclude:
+      uidRegex: ^MedicalCenter\.DTOs
