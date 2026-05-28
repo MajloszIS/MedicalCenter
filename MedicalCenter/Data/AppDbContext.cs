@@ -118,7 +118,8 @@ namespace MedicalCenter.Data
                 new OrderStatus { Id = 1, Name = "Nowe" },
                 new OrderStatus { Id = 2, Name = "W realizacji" },
                 new OrderStatus { Id = 3, Name = "Wysłane" },
-                new OrderStatus { Id = 4, Name = "Zakończone" }
+                new OrderStatus { Id = 4, Name = "Zakończone" },
+                new OrderStatus { Id = 5, Name = "Anulowane" }
             );
 
             modelBuilder.Entity<DeliveryStatus>().HasData(
