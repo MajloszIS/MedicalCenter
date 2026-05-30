@@ -140,6 +140,17 @@ QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var app = builder.Build();
 
+// w Program.cs, po app.Build()
+if (args.Contains("--seed"))
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var seeder = new DataSeeder(context);
+    await seeder.SeedAsync(5000, 30);
+    Console.WriteLine("Done.");
+    return;
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
