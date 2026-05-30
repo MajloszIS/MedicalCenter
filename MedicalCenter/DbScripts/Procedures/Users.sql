@@ -100,3 +100,15 @@ CREATE ROLE db_analyst;
 -- Dodajemy konto do roli — uprawnienia nadajemy roli, nie kontu
 ALTER ROLE db_analyst ADD MEMBER MedAnalyst;
 GO
+
+GRANT SELECT ON rpt.vw_DoctorPerformance TO db_analyst;
+GRANT SELECT ON rpt.fn_DoctorWorkloadInPeriod TO db_analyst;
+GRANT EXECUTE ON rpt.usp_MonthlySpecializationReport TO db_analyst;
+GRANT SELECT  ON rpt.SpecializationMonthlyReports     TO db_analyst;
+GRANT SELECT ON rpt.fn_PatientDemographics TO db_analyst;
+GRANT SELECT ON rpt.fn_DoctorWorkloadInPeriod TO db_analyst;
+GRANT SELECT ON rpt.fn_GetMedicineSalesStats TO db_analyst;
+GRANT SELECT ON rpt.fn_GetCategorySalesStats TO db_analyst;
+GRANT EXECUTE ON rpt.usp_GetLowStockMedicines TO db_analyst;
+GRANT EXECUTE ON rpt.usp_GetPatientSpendingReport TO db_analyst;
+GRANT SELECT ON rpt.fn_GetActivePatientOrders TO db_analyst;
