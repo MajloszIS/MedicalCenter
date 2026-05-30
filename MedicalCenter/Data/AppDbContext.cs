@@ -101,6 +101,12 @@ namespace MedicalCenter.Data
                 .HasIndex(r => new { r.PatientId, r.OrderId })
                 .IsUnique();
 
+            modelBuilder.Entity<Appointment>()
+                .ToTable(tb => tb.HasTrigger("trg_Appointment_StatusHistory"));
+
+            modelBuilder.Entity<Order>()
+                .ToTable(tb => tb.HasTrigger("trg_Archive_CompletedOrders"));
+
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "Admin" },
                 new Role { Id = 2, Name = "Doctor" },
