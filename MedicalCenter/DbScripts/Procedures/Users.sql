@@ -101,6 +101,26 @@ CREATE ROLE db_analyst;
 ALTER ROLE db_analyst ADD MEMBER MedAnalyst;
 GO
 
+USE MedicalCenterDB;
+GO
+
+-- Słowniki — czytelność raportów
+GRANT SELECT ON dbo.Roles TO db_analyst;
+GRANT SELECT ON dbo.AppointmentStatuses TO db_analyst;
+GRANT SELECT ON dbo.OrderStatuses TO db_analyst;
+GRANT SELECT ON dbo.DeliveryStatuses TO db_analyst;
+GRANT SELECT ON dbo.MedicineCategories TO db_analyst;
+GRANT SELECT ON dbo.Specializations TO db_analyst;
+GRANT SELECT ON dbo.Departments TO db_analyst;
+
+-- Transakcyjne, mniej wrażliwe
+GRANT SELECT ON dbo.Appointments TO db_analyst;
+GRANT SELECT ON dbo.Orders TO db_analyst;
+GRANT SELECT ON dbo.OrderItems TO db_analyst;
+GRANT SELECT ON dbo.Deliveries TO db_analyst;
+GRANT SELECT ON dbo.Reviews TO db_analyst;
+GRANT SELECT ON dbo.Medicines TO db_analyst;  -- katalog leków, nie wrażliwy
+
 GRANT SELECT ON rpt.vw_DoctorPerformance TO db_analyst;
 GRANT SELECT ON rpt.fn_DoctorWorkloadInPeriod TO db_analyst;
 GRANT EXECUTE ON rpt.usp_MonthlySpecializationReport TO db_analyst;
@@ -112,3 +132,4 @@ GRANT SELECT ON rpt.fn_GetCategorySalesStats TO db_analyst;
 GRANT EXECUTE ON rpt.usp_GetLowStockMedicines TO db_analyst;
 GRANT EXECUTE ON rpt.usp_GetPatientSpendingReport TO db_analyst;
 GRANT SELECT ON rpt.fn_GetActivePatientOrders TO db_analyst;
+GO
