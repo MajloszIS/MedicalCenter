@@ -14,7 +14,7 @@ namespace MedicalCenter.Repositories
 
         public Task<List<Patient>> GetAllPatientsAsync()
         {     
-            return _context.Patients.Include(p => p.User).ToListAsync(); 
+            return _context.Patients.Include(p => p.User).OrderBy(p => p.User.FirstName).ToListAsync(); 
         }
         public async Task<Patient?> GetPatientByIdAsync(Guid id)
         {     
