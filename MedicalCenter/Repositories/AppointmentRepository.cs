@@ -92,6 +92,7 @@ namespace MedicalCenter.Repositories
                     .ThenInclude(d => d.Specialization)
                 .Include(a => a.Status)
                 .Where(a => a.PatientId == patientId)
+                .OrderByDescending(a => a.AppointmentDate)
                 .ToListAsync();
         }
         public async Task<List<AppointmentStatus>> GetAllAppointmentStatusAsync()
