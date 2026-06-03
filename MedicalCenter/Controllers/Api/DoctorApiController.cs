@@ -40,5 +40,15 @@ namespace MedicalCenter.Controllers.Api
             }
             return Ok(doctors);
         }
+
+        // GET: api/doctors/{doctorId}/workload?dateFrom=2024-01-01&dateTo=2024-12-31
+        [HttpGet("{doctorId}/workload")]
+        public async Task<IActionResult> GetDoctorWorkload(Guid doctorId, [FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo)
+        {
+            var result = await _doctorService.GetDoctorWorkloadAsync(doctorId, dateFrom, dateTo);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
     }
 }

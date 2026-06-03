@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,18 @@ namespace MedicalCenter.Repositories
             _context = context;
         }
 
-        public Task<List<Patient>> GetAllPatientsAsync()
+        public Task<List<Patient>> GetAllPatientsAsync(int skip = 0, int take = int.MaxValue)
         {     
-            return _context.Patients.Include(p => p.User).OrderBy(p => p.User.FirstName).ToListAsync(); 
+            return _context.Patients
+                .Include(p => p.User)
+                .OrderBy(p => p.User.FirstName)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(); 
+        }
+        public async Task<int> GetPatientsCountAsync()
+        {
+            return await _context.Patients.CountAsync();
         }
         public async Task<Patient?> GetPatientByIdAsync(Guid id)
         {     
@@ -52,6 +62,12 @@ namespace MedicalCenter.Repositories
                 .FirstOrDefaultAsync(p => p.UserId == userId);
 
             return patient;
+        }
+        public async Task<List<PatientDemographicsDto>> GetPatientDemographicsAsync(int ageFrom, int ageTo)
+        {
+            return await _context.PatientDemographics
+                .FromSqlRaw("SELECT * FROM rpt.fn_PatientDemographics({0}, {1})", ageFrom, ageTo)
+                .ToListAsync();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace MedicalCenter.Controllers
         private readonly IMedicineService _medicineService;
         private readonly IDeliveryService _deliveryService;
         private readonly IDepartmentService _departmentService;
+        private readonly ISpecializationService _specializationService;
         public AdminController(
             IPatientService patientService, 
             IDoctorService doctorService, 
@@ -27,7 +28,8 @@ namespace MedicalCenter.Controllers
             IOrderService orderService,
             IMedicineService medicineService,
             IDeliveryService deliveryService,
-            IDepartmentService departmentService
+            IDepartmentService departmentService,
+            ISpecializationService specializationService
             )
         {
             _doctorService = doctorService;
@@ -39,6 +41,7 @@ namespace MedicalCenter.Controllers
             _medicineService = medicineService;
             _deliveryService = deliveryService;
             _departmentService = departmentService;
+            _specializationService = specializationService;
         }
         public IActionResult Index()
         {
@@ -178,9 +181,17 @@ namespace MedicalCenter.Controllers
         }
 
         // Pacjenci
-        public async Task<IActionResult> Patients()
+        public async Task<IActionResult> Patients(int page = 1)
         {
-            var patients = await _patientService.GetAllPatientsAsync();
+            int pageSize = 100;
+            int skip = (page - 1) * pageSize;
+
+            var patients = await _patientService.GetAllPatientsAsync(skip, pageSize);
+            int totalCount = await _patientService.GetPatientsCountAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return View(patients);
         }
 
@@ -370,9 +381,17 @@ namespace MedicalCenter.Controllers
         }
 
         // Apteka
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(int page = 1)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
+            int pageSize = 100;
+            int skip = (page - 1) * pageSize;
+
+            var orders = await _orderService.GetAllOrdersAsync(skip, pageSize);
+            int totalCount = await _orderService.GetOrdersCountAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             return View(orders);
         }
         [HttpGet]
@@ -478,7 +497,49 @@ namespace MedicalCenter.Controllers
 
                 return View(dto);
             }
+        }
+        // Analityka
+        [HttpGet]
+        public IActionResult Analytics()
+        {
+            return View();
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> PatientDemographics(int ageFrom = 0, int ageTo = 100)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientDemographicsAsync(ageFrom, ageTo);
+                ViewBag.AgeFrom = ageFrom;
+                ViewBag.AgeTo = ageTo;
+                return View(result);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Analytics");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MonthlySpecializationReport(int year = 0, int month = 0)
+        {
+            if (year == 0) year = DateTime.Now.Year;
+            if (month == 0) month = DateTime.Now.Month;
+
+            try
+            {
+                var result = await _specializationService.GetMonthlySpecializationReportAsync(year, month);
+                ViewBag.Year = year;
+                ViewBag.Month = month;
+                return View(result);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Analytics");
+            }
         }
     }
 }

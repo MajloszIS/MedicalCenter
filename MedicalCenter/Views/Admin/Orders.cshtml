@@ -56,4 +56,32 @@
             }
         </tbody>
     </table>
+    <div class="d-flex justify-content-center mt-3">
+        @{
+            int current = ViewBag.CurrentPage;
+            int total = ViewBag.TotalPages;
+            int from = Math.Max(1, current - 2);
+            int to = Math.Min(total, current + 2);
+        }
+
+        @if (current > 1)
+        {
+            <a asp-action="Patients" asp-route-page="1" class="btn btn-sm mx-1 btn-outline-secondary">«</a>
+            <a asp-action="Patients" asp-route-page="@(current - 1)" class="btn btn-sm mx-1 btn-outline-secondary">‹</a>
+        }
+
+        @for (int i = from; i <= to; i++)
+        {
+            <a asp-action="Patients" asp-route-page="@i"
+               class="btn btn-sm mx-1 @(i == current ? "btn-primary" : "btn-outline-secondary")">
+                @i
+            </a>
+        }
+
+        @if (current < total)
+        {
+            <a asp-action="Patients" asp-route-page="@(current + 1)" class="btn btn-sm mx-1 btn-outline-secondary">›</a>
+            <a asp-action="Patients" asp-route-page="@total" class="btn btn-sm mx-1 btn-outline-secondary">»</a>
+        }
+    </div>
 </div>

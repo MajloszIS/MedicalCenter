@@ -75,5 +75,9 @@ namespace MedicalCenter.Services
             }
             await _specializationRepository.DeleteSpecializationAsync(id);
         }
+        public async Task<List<SpecializationMonthlyReportDto>> GetMonthlySpecializationReportAsync(int year, int month)
+        {
+            return await _specializationRepository.GetMonthlySpecializationReportAsync(year, month);
+        }
     }
 }

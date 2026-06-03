@@ -1,4 +1,5 @@
-﻿using MedicalCenter.Models;
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Repositories
 {
@@ -10,5 +11,7 @@ namespace MedicalCenter.Repositories
         public Task UpdateSpecializationAsync(Specialization specialization);
         public Task DeleteSpecializationAsync(Guid id);
         public Task<Specialization?> GetSpecializationByNameAsync(string name);
+        public Task<List<SpecializationMonthlyReportDto>> GetMonthlySpecializationReportAsync(int year, int month);
+
     }
 }

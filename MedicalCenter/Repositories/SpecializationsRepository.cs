@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,12 @@ namespace MedicalCenter.Repositories
         public async Task<Specialization?> GetSpecializationByNameAsync(string name)
         {
             return await _context.Specializations.FirstOrDefaultAsync(s => s.Name == name);
+        }
+        public async Task<List<SpecializationMonthlyReportDto>> GetMonthlySpecializationReportAsync(int year, int month)
+        {
+            return await _context.SpecializationReports
+                .FromSqlRaw("EXEC rpt.usp_MonthlySpecializationReport @Year = {0}, @Month = {1}", year, month)
+                .ToListAsync();
         }
     }
 }
