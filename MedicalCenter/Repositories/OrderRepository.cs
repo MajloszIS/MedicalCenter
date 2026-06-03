@@ -18,18 +18,26 @@ namespace MedicalCenter.Repositories
         {
             return await _context.Orders
                 .Include(o => o.Status)
-                .Include(o => o.Items).ThenInclude(i => i.Medicine)
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Medicine)
                 .Where(o => o.PatientId == patientId)
                 .ToListAsync();
         }
 
-        public async Task<List<Order>> GetAllOrdersAsync()
+        public async Task<List<Order>> GetAllOrdersAsync(int skip = 0, int take = int.MaxValue)
         {
             return await _context.Orders
                 .Include(o => o.Status)
                 .Include(o => o.Patient).ThenInclude(p => p.User)
                 .Include(o => o.Items).ThenInclude(i => i.Medicine)
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync();
+        }
+        public async Task<int> GetOrdersCountAsync()
+        {
+            return await _context.Orders.CountAsync();
         }
         public async Task<Order> GetOrderByIdAsync(Guid orderId)
         {

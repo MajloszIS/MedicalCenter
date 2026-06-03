@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace MedicalCenter.Services
@@ -18,9 +19,9 @@ namespace MedicalCenter.Services
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<PatientDto>> GetAllPatientsAsync()
+        public async Task<List<PatientDto>> GetAllPatientsAsync(int skip = 0, int take = int.MaxValue)
         {
-            var patients = await _patientRepository.GetAllPatientsAsync();
+            var patients = await _patientRepository.GetAllPatientsAsync(skip, take);
             var patientDtos = patients.Select(p => new PatientDto
             {
                 Id = p.Id,
@@ -31,6 +32,10 @@ namespace MedicalCenter.Services
             }).ToList();
 
             return patientDtos;
+        }
+        public async Task<int> GetPatientsCountAsync()
+        {
+            return await _patientRepository.GetPatientsCountAsync();
         }
 
         public async Task RegisterAsync(PatientRegisterDto dto)
@@ -166,6 +171,10 @@ namespace MedicalCenter.Services
             await _appointmentRepository.DeleteAppointmentsByPatientIdAsync(patientId);
             await _patientRepository.DeletePatientAsync(patientId);
             await _userRepository.DeleteUserAsync(patient.UserId);
+        }
+        public async Task<List<PatientDemographicsDto>> GetPatientDemographicsAsync(int ageFrom, int ageTo)
+        {
+            return await _patientRepository.GetPatientDemographicsAsync(ageFrom, ageTo);
         }
     }
 }

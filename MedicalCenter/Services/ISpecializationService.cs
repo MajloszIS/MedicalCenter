@@ -9,5 +9,7 @@ namespace MedicalCenter.Services
         public Task CreateSpecializationAsync(SpecializationDto specializationDto);
         public Task UpdateSpecializationAsync(Guid id, SpecializationDto specializationDto);
         public Task DeleteSpecializationAsync(Guid id);
+        public Task<List<SpecializationMonthlyReportDto>> GetMonthlySpecializationReportAsync(int year, int month);
+
     }
 }

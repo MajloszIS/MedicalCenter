@@ -189,5 +189,9 @@ namespace MedicalCenter.Services
             }).ToList();
             return doctorDtos;
         }
+        public async Task<DoctorWorkloadDto?> GetDoctorWorkloadAsync(Guid doctorId, DateTime dateFrom, DateTime dateTo)
+        {
+            return await _doctorRepository.GetDoctorWorkloadAsync(doctorId, dateFrom, dateTo);
+        }
     }
 }

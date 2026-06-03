@@ -1,6 +1,7 @@
 ﻿using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using MedicalCenter.Repositories;
+using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -23,11 +24,15 @@ namespace MedicalCenter.Services
             return MapToDto(orders, ratings);
         }
 
-        public async Task<List<OrderDto>> GetAllOrdersAsync()
+        public async Task<List<OrderDto>> GetAllOrdersAsync(int skip = 0, int take = int.MaxValue)
         {
-            var orders = await _orderRepository.GetAllOrdersAsync();
+            var orders = await _orderRepository.GetAllOrdersAsync(skip, take);
             var ratings = await _orderRepository.GetOrderRatingsMapAsync();
             return MapToDto(orders, ratings);
+        }
+        public async Task<int> GetOrdersCountAsync()
+        {
+            return await _orderRepository.GetOrdersCountAsync();
         }
         public async Task AddOrderRatingAsync(OrderRating rating)
         {

@@ -13,5 +13,7 @@ namespace MedicalCenter.Services
         public Task UpdateDoctorProfileAsync(Guid id, UpdateDoctorProfileDto dto);
         public Task<List<SpecializationDto>> GetAllSpecializationsAsync();
         public Task<List<DoctorDto>> GetDoctorsBySpecializationAsync(string specializationName);
+        public Task<DoctorWorkloadDto?> GetDoctorWorkloadAsync(Guid doctorId, DateTime dateFrom, DateTime dateTo);
+
     }
 }

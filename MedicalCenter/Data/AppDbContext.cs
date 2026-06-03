@@ -1,4 +1,5 @@
-﻿using MedicalCenter.Models;
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -54,6 +55,10 @@ namespace MedicalCenter.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
 
+        public DbSet<DoctorWorkloadDto> DoctorWorkloads { get; set; }
+        public DbSet<PatientDemographicsDto> PatientDemographics { get; set; }
+        public DbSet<SpecializationMonthlyReportDto> SpecializationReports { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,6 +111,10 @@ namespace MedicalCenter.Data
 
             modelBuilder.Entity<Order>()
                 .ToTable(tb => tb.HasTrigger("trg_Archive_CompletedOrders"));
+
+            modelBuilder.Entity<DoctorWorkloadDto>().HasNoKey();
+            modelBuilder.Entity<PatientDemographicsDto>().HasNoKey();
+            modelBuilder.Entity<SpecializationMonthlyReportDto>().HasNoKey();
 
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "Admin" },

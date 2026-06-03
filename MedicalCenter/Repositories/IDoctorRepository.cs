@@ -1,4 +1,5 @@
-﻿using MedicalCenter.Models;
+﻿using MedicalCenter.DTOs;
+using MedicalCenter.Models;
 
 namespace MedicalCenter.Repositories
 {
@@ -12,5 +13,7 @@ namespace MedicalCenter.Repositories
         public Task<Doctor?> GetDoctorByUserIdAsync(Guid userId);
         public Task<List<Doctor>> GetDoctorsBySpecializationAsync(string specializationName);
         public Task UpdateDoctorDepartmentsAsync(Guid doctorId, List<Guid> newDepartmentIds);
+        public Task<DoctorWorkloadDto?> GetDoctorWorkloadAsync(Guid doctorId, DateTime dateFrom, DateTime dateTo);
+
     }
 }

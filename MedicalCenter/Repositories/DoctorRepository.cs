@@ -1,4 +1,5 @@
 ﻿using MedicalCenter.Data;
+using MedicalCenter.DTOs;
 using MedicalCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,6 +91,14 @@ namespace MedicalCenter.Repositories
 
             await _context.DoctorDepartments.AddRangeAsync(newDepartments);
             await _context.SaveChangesAsync();
+        }
+        public async Task<DoctorWorkloadDto?> GetDoctorWorkloadAsync(Guid doctorId, DateTime dateFrom, DateTime dateTo)
+        {
+            return await _context.Database
+                .SqlQuery<DoctorWorkloadDto>($@"
+            SELECT * FROM rpt.fn_DoctorWorkloadInPeriod(
+                {doctorId}, {dateFrom}, {dateTo})")
+                .FirstOrDefaultAsync();
         }
     }
 }
